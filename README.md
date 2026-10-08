@@ -1,26 +1,42 @@
-# Projeto de Desenvolvimento Frontend G2
+# .
 
-Projeto em equipe da disciplina **Desenvolvimento Frontend — 2026.2**, ministrada pela
-Profª Marianne Lacerda Dutra Theodoro.
+This template should help get you started developing with Vue 3 in Vite.
 
-**Marco atual:** Marco 1 — Contrato de dados (`db.json` e `tipos.ts`)
+## Recommended IDE Setup
 
-##  Integrantes da equipe
+[VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
 
-| Nome completo | Usuário no GitHub |
-|---|---|
-| [Raquel Aires Pimenta Silva] | [@RaquelAires](https://github.com/RaquelAires) |
-| [Jacyane Carvalho Martins] | [@Izzieee](https://github.com/Izzieee) |
-| [Ryllen Alves da Silva Nascimento] | [@Ryllen](https://github.com/Ryllen) |
+## Recommended Browser Setup
 
-**Professora:** [@mariannedutra](https://github.com/mariannedutra)
+- Chromium-based browsers (Chrome, Edge, Brave, etc.):
+  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd)
+  - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
+- Firefox:
+  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
+  - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
 
----
+## Type Support for `.vue` Imports in TS
 
-## Stack do projeto
+TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
 
-- **Framework:** [React / Vue / Svelte / Angular]
-- **Linguagem:** TypeScript
-- **Build tool:** Vite
-- **API local:** json-server (v1.x)
-- **Node.js:** 24 LTS ou superior
+## Customize configuration
+
+See [Vite Configuration Reference](https://vite.dev/config/).
+
+## Project Setup
+
+```sh
+npm install
+```
+
+### Compile and Hot-Reload for Development
+
+```sh
+npm run dev
+```
+
+### Type-Check, Compile and Minify for Production
+
+```sh
+npm run build
+```
