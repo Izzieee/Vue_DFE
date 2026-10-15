@@ -1,6 +1,8 @@
 
 import { createRouter, createWebHistory } from 'vue-router'
 import PlaceholderView from './views/PlaceholderView.vue'
+import ListaProjetos from './views/ListaProjetos.vue'
+import DetalhesProjeto from './views/DetalhesProjeto.vue'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -20,13 +22,13 @@ const router = createRouter({
     {
       path: '/projetos',
       name: 'lista-projetos',
-      component: PlaceholderView,
+      component: ListaProjetos,
       meta: { titulo: 'Projetos' }
     },
     {
       path: '/projetos/:id',
       name: 'detalhe-projeto',
-      component: PlaceholderView,
+      component: DetalhesProjeto,
       meta: { titulo: 'Detalhes do projeto' }
     },
     {
