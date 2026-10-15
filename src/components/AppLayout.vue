@@ -8,7 +8,7 @@ import { RouterLink, RouterView } from 'vue-router'
     <header class="cabecalho">
       <div class="cabecalho-conteudo">
         <RouterLink to="/" class="marca" aria-label="Ir para o início">
-          <span class="marca-icone">T</span>
+          <span class="marca-icone">𖦹</span>
           <span class="marca-texto">
             <strong>ERROR 404</strong>
             <small>Organização acadêmica</small>
@@ -105,7 +105,7 @@ a {
   height: 42px;
   place-items: center;
   border-radius: 12px;
-  background: #3157c8;
+  background: #c83131;
   color: #ffffff;
   font-size: 22px;
   font-weight: 800;
@@ -118,12 +118,12 @@ a {
 }
 
 .marca-texto strong {
-  color: #202b46;
+  color: #0a1d50;
   font-size: 18px;
 }
 
 .marca-texto small {
-  color: #737d90;
+  color: #90737e;
   font-size: 12px;
 }
 
@@ -146,13 +146,13 @@ a {
 }
 
 .link-navegacao:hover {
-  background: #f0f3fa;
-  color: #3157c8;
+  background: #ffeaeb;
+  color: rgb(200, 49, 67);
 }
 
 .link-navegacao.ativo {
-  background: #eaf0ff;
-  color: #2448b5;
+  background: #ffeaeb;
+  color: rgb(200, 49, 67);
 }
 
 .conteudo {
