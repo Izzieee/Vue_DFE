@@ -1,4 +1,3 @@
-
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router'
 </script>
@@ -39,7 +38,12 @@ import { RouterLink, RouterView } from 'vue-router'
 
 <style>
 :root {
-  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+  font-family:
+    Inter,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
     sans-serif;
   color: #252a34;
   background: #f5f7fb;

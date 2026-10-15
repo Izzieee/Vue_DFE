@@ -1,4 +1,3 @@
-
 import type { Projeto, Tarefa } from './tipos'
 
 const API_URL = 'http://localhost:3000'
@@ -29,11 +28,9 @@ export function buscarProjeto(id: string): Promise<Projeto> {
   return requisicao<Projeto>(`/projetos/${encodeURIComponent(id)}`)
 }
 
-export function buscarProjetoComTarefas(
-  id: string
-): Promise<Projeto & { tarefas: Tarefa[] }> {
+export function buscarProjetoComTarefas(id: string): Promise<Projeto & { tarefas: Tarefa[] }> {
   return requisicao<Projeto & { tarefas: Tarefa[] }>(
-    `/projetos/${encodeURIComponent(id)}?_embed=tarefas`
+    `/projetos/${encodeURIComponent(id)}?_embed=tarefas`,
   )
 }
 

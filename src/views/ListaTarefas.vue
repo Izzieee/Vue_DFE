@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
-import { listarTarefas } from '../api'
-import type { Tarefa } from '../tipos'
-import CartaoTarefa from '../components/CartaoTarefa.vue'
+import { listarTarefas } from '@/api'
+import type { Tarefa } from '@/tipos'
+import CartaoTarefa from '@/components/CartaoTarefa.vue'
 
 const tarefas = ref<Tarefa[]>([])
 const carregando = ref(true)
@@ -21,18 +21,27 @@ onMounted(async () => {
 
 <template>
   <section>
-    <h2>Tarefas</h2>
+    <h1>Tarefas</h1>
 
     <p v-if="carregando">Carregando...</p>
     <p v-else-if="erro">Erro: {{ erro }}</p>
     <p v-else-if="tarefas.length === 0">Nenhuma tarefa.</p>
 
-    <div v-else>
-      <CartaoTarefa
-        v-for="tarefa in tarefas"
-        :key="tarefa.id"
-        :tarefa="tarefa"
-      />
+    <div v-else class="lista-tarefas">
+      <CartaoTarefa v-for="tarefa in tarefas" :key="tarefa.id" :tarefa="tarefa" />
     </div>
   </section>
 </template>
+
+<style scoped>
+h1 {
+  color: #0a1d50;
+  font-size: 28px;
+  margin: 0 0 24px;
+}
+
+.lista-tarefas {
+  display: grid;
+  gap: 16px;
+}
+</style>
