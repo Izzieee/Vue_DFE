@@ -27,19 +27,19 @@ onMounted(async () => {
 </script>
 
 <template>
-  <section>
-    <p v-if="carregando">Carregando...</p>
-    <p v-else-if="erro">Erro: {{ erro }}</p>
+  <section class="pagina">
+    <p v-if="carregando" class="estado">Carregando...</p>
+    <p v-else-if="erro" class="estado estado-erro">Erro: {{ erro }}</p>
 
     <template v-else-if="projeto">
       <header class="projeto-cabecalho">
         <h1>{{ projeto.nome }}</h1>
         <p class="projeto-descricao">{{ projeto.descricao }}</p>
-        <p class="projeto-disciplina">{{ projeto.disciplina }}</p>
+        <span class="tag-disciplina">{{ projeto.disciplina }}</span>
       </header>
 
-      <h2 class="tarefas-titulo">Tarefas</h2>
-      <p v-if="tarefas.length === 0">Nenhuma tarefa.</p>
+      <h2 class="titulo-secao">Tarefas</h2>
+      <p v-if="tarefas.length === 0" class="estado">Nenhuma tarefa.</p>
       <div v-else class="lista-tarefas">
         <CartaoTarefa v-for="tarefa in tarefas" :key="tarefa.id" :tarefa="tarefa" />
       </div>
@@ -48,46 +48,108 @@ onMounted(async () => {
 </template>
 
 <style scoped>
+.pagina {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
 .projeto-cabecalho {
-  padding: 20px;
-  margin-bottom: 24px;
-  border: 1px solid #e3e8f0;
-  border-left: 4px solid #c83131;
-  border-radius: 12px;
-  background: #ffffff;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-4);
+  border: 1px solid hsl(var(--border));
+  border-left: 3px solid hsl(var(--ring));
+  background: hsl(var(--card) / 0.94);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.07),
+    0 4px 24px rgba(0, 0, 0, 0.4);
 }
 
 .projeto-cabecalho h1 {
-  margin: 0 0 10px;
-  color: #0a1d50;
-  font-size: 26px;
+  margin: 0;
+  color: hsl(var(--ring));
+  font-size: clamp(1.4rem, 1.1rem + 1vw, 1.9rem);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-shadow: 0 0 20px hsl(var(--ring) / 0.4);
 }
 
 .projeto-descricao {
-  margin: 0 0 14px;
-  color: #596579;
-  font-size: 14px;
-}
-
-.projeto-disciplina {
-  display: inline-block;
   margin: 0;
-  padding: 4px 10px;
-  border-radius: 999px;
-  background: #ffeaeb;
-  color: #c83131;
-  font-size: 12px;
-  font-weight: 600;
+  color: hsl(var(--muted-foreground));
+  font-family: 'Share Tech Mono', 'JetBrains Mono', monospace;
+  font-size: 0.9rem;
 }
 
-.tarefas-titulo {
-  margin: 0 0 16px;
-  color: #0a1d50;
-  font-size: 20px;
+.tag-disciplina {
+  display: inline-flex;
+  width: fit-content;
+  align-items: center;
+  padding: var(--space-1) var(--space-2);
+  border: 1px solid hsl(var(--ring) / 0.5);
+  background: hsl(var(--ring) / 0.1);
+  color: hsl(var(--ring));
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.titulo-secao {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0;
+  padding-bottom: var(--space-2);
+  border-bottom: 3px solid hsl(var(--border));
+  color: hsl(var(--ring));
+  font-size: clamp(1.1rem, 0.95rem + 0.6vw, 1.4rem);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-shadow: 0 0 20px hsl(var(--ring) / 0.35);
+}
+
+.titulo-secao::before {
+  content: '//';
+  letter-spacing: 0;
 }
 
 .lista-tarefas {
   display: grid;
-  gap: 16px;
+  grid-template-columns: 1fr;
+  gap: var(--space-3);
+}
+
+.estado {
+  padding: var(--space-5) var(--space-3);
+  border: 1px dashed hsl(var(--border));
+  background: hsl(var(--card) / 0.9);
+  color: hsl(var(--muted-foreground));
+  font-size: 0.9rem;
+  letter-spacing: 0.05em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.estado-erro {
+  border: 1px solid hsl(var(--destructive) / 0.5);
+  background: hsl(var(--destructive) / 0.06);
+  color: hsl(var(--destructive-foreground));
+}
+
+@media (min-width: 680px) {
+  .lista-tarefas {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1080px) {
+  .lista-tarefas {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }
 </style>

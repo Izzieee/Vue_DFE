@@ -26,9 +26,9 @@ onMounted(async () => {
 </script>
 
 <template>
-  <section>
-    <p v-if="carregando">Carregando...</p>
-    <p v-else-if="erro">Erro: {{ erro }}</p>
+  <section class="pagina">
+    <p v-if="carregando" class="estado">Carregando...</p>
+    <p v-else-if="erro" class="estado estado-erro">Erro: {{ erro }}</p>
 
     <article v-else-if="tarefa" class="tarefa">
       <header class="tarefa-cabecalho">
@@ -66,12 +66,25 @@ onMounted(async () => {
 </template>
 
 <style scoped>
+.pagina {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
 .tarefa {
-  padding: 24px;
-  border: 1px solid #e3e8f0;
-  border-left: 4px solid #c83131;
-  border-radius: 12px;
-  background: #ffffff;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border: 1px solid hsl(var(--border));
+  border-left: 3px solid hsl(var(--ring));
+  background: hsl(var(--card) / 0.94);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.07),
+    0 4px 24px rgba(0, 0, 0, 0.4);
 }
 
 .tarefa-cabecalho {
@@ -79,106 +92,129 @@ onMounted(async () => {
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
+  gap: var(--space-3);
 }
 
 .tarefa-cabecalho h1 {
   margin: 0;
-  color: #0a1d50;
-  font-size: 24px;
+  color: hsl(var(--foreground));
+  font-size: clamp(1.3rem, 1.05rem + 0.9vw, 1.7rem);
+  letter-spacing: 0.06em;
+  text-shadow: 0 0 20px hsl(var(--ring) / 0.35);
 }
 
 .etiquetas {
   display: flex;
-  gap: 8px;
+  gap: var(--space-2);
 }
 
 .etiqueta {
-  padding: 4px 10px;
-  border-radius: 999px;
-  font-size: 12px;
-  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-1) var(--space-2);
+  border: 1px solid currentColor;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
   white-space: nowrap;
 }
 
-.status,
-.prioridade {
-  background: #eef1f6;
-  color: #596579;
+.etiqueta::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: currentColor;
 }
 
-.status[data-status='a-fazer'] {
-  background: #eef1f6;
-  color: #596579;
+.status {
+  color: hsl(var(--terminal-dim));
 }
 
 .status[data-status='em-andamento'] {
-  background: #e4edff;
-  color: #2b5fd9;
+  color: hsl(var(--terminal-cyan));
 }
 
 .status[data-status='em-revisao'] {
-  background: #fff1dc;
-  color: #b8730a;
+  color: hsl(var(--terminal-amber));
 }
 
 .status[data-status='concluida'] {
-  background: #e2f5ea;
-  color: #1f8a4c;
+  color: hsl(var(--terminal-green));
 }
 
-.prioridade[data-prioridade='baixa'] {
-  background: #eef1f6;
-  color: #596579;
+.prioridade {
+  color: hsl(var(--priority-low));
 }
 
 .prioridade[data-prioridade='media'] {
-  background: #fff1dc;
-  color: #b8730a;
+  color: hsl(var(--priority-medium));
 }
 
 .prioridade[data-prioridade='alta'] {
-  background: #ffe3e6;
-  color: #c83131;
+  color: hsl(var(--priority-high));
 }
 
 .tarefa-descricao {
-  margin: 16px 0 24px;
-  color: #596579;
-  font-size: 15px;
+  margin: 0;
+  color: hsl(var(--muted-foreground));
+  font-family: 'Share Tech Mono', 'JetBrains Mono', monospace;
+  font-size: 0.92rem;
 }
 
 .detalhes {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-  gap: 16px;
+  gap: var(--space-3);
   margin: 0;
-  padding: 16px 0 0;
-  border-top: 1px solid #e3e8f0;
+  padding-top: var(--space-3);
+  border-top: 1px solid hsl(var(--border));
 }
 
 .detalhe dt {
-  margin-bottom: 4px;
-  color: #90737e;
-  font-size: 12px;
-  font-weight: 600;
+  margin-bottom: var(--space-1);
+  color: hsl(var(--ring));
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  letter-spacing: 0.03em;
 }
 
 .detalhe dd {
   margin: 0;
-  color: #252a34;
-  font-size: 15px;
+  padding-left: var(--space-2);
+  border-left: 2px solid hsl(var(--border));
+  color: hsl(var(--muted-foreground));
+  font-size: 0.92rem;
 }
 
 .detalhe a {
-  color: #c83131;
-  font-weight: 600;
+  color: hsl(var(--ring));
+  font-weight: 700;
   text-decoration: none;
 }
 
 .detalhe a:hover {
   text-decoration: underline;
+}
+
+.estado {
+  padding: var(--space-5) var(--space-3);
+  border: 1px dashed hsl(var(--border));
+  background: hsl(var(--card) / 0.9);
+  color: hsl(var(--muted-foreground));
+  font-size: 0.9rem;
+  letter-spacing: 0.05em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.estado-erro {
+  border: 1px solid hsl(var(--destructive) / 0.5);
+  background: hsl(var(--destructive) / 0.06);
+  color: hsl(var(--destructive-foreground));
 }
 </style>

@@ -8,7 +8,7 @@ defineProps<{
 </script>
 
 <template>
-  <article class="cartao">
+  <article class="cartao" :data-prioridade="tarefa.prioridade">
     <header class="cartao-cabecalho">
       <h3 class="cartao-titulo">
         <RouterLink :to="`/tarefas/${tarefa.id}`">
@@ -34,115 +34,160 @@ defineProps<{
 
 <style scoped>
 .cartao {
+  position: relative;
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  padding: 20px;
-  border: 1px solid #e3e8f0;
-  border-radius: 12px;
-  background: #ffffff;
-  transition:
-    box-shadow 0.2s ease,
-    transform 0.2s ease;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  border: 1px solid hsl(var(--border));
+  border-left: 3px solid hsl(var(--ring));
+  background-color: hsl(var(--card) / 0.94);
+  transition: all 0.3s var(--ease-glass);
 }
 
 .cartao:hover {
-  box-shadow: 0 10px 24px rgba(10, 29, 80, 0.08);
-  transform: translateY(-2px);
+  border-color: hsl(var(--ring));
+  background-color: hsl(var(--secondary) / 0.96);
+  transform: translateY(-3px);
+  box-shadow:
+    0 12px 28px rgba(0, 0, 0, 0.45),
+    0 0 24px hsl(var(--ring) / 0.15);
+}
+
+.cartao[data-prioridade='alta'] {
+  border-color: hsl(var(--priority-high) / 0.55);
+  border-left-color: hsl(var(--priority-high));
+  background-image: linear-gradient(
+    135deg,
+    hsl(var(--priority-high) / 0.26),
+    hsl(var(--priority-high) / 0.08)
+  );
+}
+
+.cartao[data-prioridade='media'] {
+  border-color: hsl(var(--priority-medium) / 0.55);
+  border-left-color: hsl(var(--priority-medium));
+  background-image: linear-gradient(
+    135deg,
+    hsl(var(--priority-medium) / 0.24),
+    hsl(var(--priority-medium) / 0.07)
+  );
+}
+
+.cartao[data-prioridade='baixa'] {
+  border-color: hsl(var(--priority-low) / 0.5);
+  border-left-color: hsl(var(--priority-low));
+  background-image: linear-gradient(
+    135deg,
+    hsl(var(--priority-low) / 0.22),
+    hsl(var(--priority-low) / 0.06)
+  );
 }
 
 .cartao-cabecalho {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 12px;
+  gap: var(--space-3);
 }
 
 .cartao-titulo {
+  min-width: 0;
   margin: 0;
-  font-size: 17px;
+  overflow: hidden;
+  font-size: 0.98rem;
+  font-weight: 500;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .cartao-titulo a {
-  color: #0a1d50;
+  color: hsl(var(--foreground));
   text-decoration: none;
 }
 
 .cartao-titulo a:hover {
-  color: #c83131;
+  color: hsl(var(--ring));
   text-decoration: underline;
 }
 
 .cartao-descricao {
   margin: 0;
-  color: #596579;
-  font-size: 14px;
+  color: hsl(var(--muted-foreground));
+  font-family: 'Share Tech Mono', 'JetBrains Mono', monospace;
+  font-size: 0.82rem;
 }
 
 .cartao-rodape {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-top: 4px;
-  color: #737d90;
-  font-size: 13px;
+  gap: var(--space-2);
+  margin-top: auto;
+  padding-top: var(--space-1);
+  color: hsl(var(--muted-foreground));
+  font-size: 0.72rem;
 }
 
 .cartao-responsavel {
-  font-weight: 600;
+  color: hsl(var(--foreground));
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 
 .cartao-prazo {
   margin-left: auto;
+  font-family: 'Share Tech Mono', 'JetBrains Mono', monospace;
   white-space: nowrap;
 }
 
 .etiqueta {
-  padding: 4px 10px;
-  border-radius: 999px;
-  font-size: 12px;
-  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-1) var(--space-2);
+  border: 1px solid currentColor;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
   white-space: nowrap;
 }
 
-.status,
-.prioridade {
-  background: #eef1f6;
-  color: #596579;
+.etiqueta::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: currentColor;
 }
 
-.status[data-status='a-fazer'] {
-  background: #eef1f6;
-  color: #596579;
+.status {
+  color: hsl(var(--terminal-dim));
 }
 
 .status[data-status='em-andamento'] {
-  background: #e4edff;
-  color: #2b5fd9;
+  color: hsl(var(--terminal-cyan));
 }
 
 .status[data-status='em-revisao'] {
-  background: #fff1dc;
-  color: #b8730a;
+  color: hsl(var(--terminal-amber));
 }
 
 .status[data-status='concluida'] {
-  background: #e2f5ea;
-  color: #1f8a4c;
+  color: hsl(var(--terminal-green));
 }
 
-.prioridade[data-prioridade='baixa'] {
-  background: #eef1f6;
-  color: #596579;
+.prioridade {
+  color: hsl(var(--priority-low));
 }
 
 .prioridade[data-prioridade='media'] {
-  background: #fff1dc;
-  color: #b8730a;
+  color: hsl(var(--priority-medium));
 }
 
 .prioridade[data-prioridade='alta'] {
-  background: #ffe3e6;
-  color: #c83131;
+  color: hsl(var(--priority-high));
 }
 </style>

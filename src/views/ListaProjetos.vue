@@ -20,25 +20,27 @@ onMounted(async () => {
 </script>
 
 <template>
-  <section>
-    <h1>Projetos</h1>
+  <section class="pagina">
+    <h1 class="titulo-secao">Projetos</h1>
 
-    <p v-if="carregando">Carregando...</p>
-    <p v-else-if="erro">Erro: {{ erro }}</p>
-    <p v-else-if="projetos.length === 0">Nenhum projeto.</p>
+    <p v-if="carregando" class="estado">Carregando...</p>
+    <p v-else-if="erro" class="estado estado-erro">Erro: {{ erro }}</p>
+    <p v-else-if="projetos.length === 0" class="estado">Nenhum projeto.</p>
 
     <ul v-else class="lista-projetos">
       <li v-for="projeto in projetos" :key="projeto.id" class="cartao-projeto">
         <header class="cartao-cabecalho">
-          <h2>{{ projeto.nome }}</h2>
+          <h3>{{ projeto.nome }}</h3>
           <time class="cartao-data" :datetime="projeto.criadoEm">{{ projeto.criadoEm }}</time>
         </header>
 
         <p class="cartao-descricao">{{ projeto.descricao }}</p>
 
         <footer class="cartao-rodape">
-          <span class="cartao-disciplina">{{ projeto.disciplina }}</span>
-          <RouterLink class="cartao-link" :to="`/projetos/${projeto.id}`"> Ver projeto </RouterLink>
+          <span class="tag-disciplina">{{ projeto.disciplina }}</span>
+          <RouterLink class="cartao-link" :to="`/projetos/${projeto.id}`">
+            Ver projeto →
+          </RouterLink>
         </footer>
       </li>
     </ul>
@@ -46,88 +48,151 @@ onMounted(async () => {
 </template>
 
 <style scoped>
-h1 {
-  color: #0a1d50;
-  font-size: 28px;
-  margin: 0 0 24px;
+.pagina {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.titulo-secao {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0;
+  padding-bottom: var(--space-2);
+  border-bottom: 3px solid hsl(var(--border));
+  color: hsl(var(--ring));
+  font-size: clamp(1.3rem, 1.05rem + 0.9vw, 1.7rem);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-shadow: 0 0 20px hsl(var(--ring) / 0.35);
+}
+
+.titulo-secao::before {
+  content: '//';
+  letter-spacing: 0;
 }
 
 .lista-projetos {
   display: grid;
-  gap: 16px;
-  list-style: none;
+  grid-template-columns: 1fr;
+  gap: var(--space-3);
   margin: 0;
   padding: 0;
+  list-style: none;
 }
 
 .cartao-projeto {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  padding: 20px;
-  border: 1px solid #e3e8f0;
-  border-radius: 12px;
-  background: #ffffff;
-  transition:
-    box-shadow 0.2s ease,
-    transform 0.2s ease;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  border: 1px solid hsl(var(--border));
+  border-left: 3px solid hsl(var(--ring));
+  background: hsl(var(--card) / 0.94);
+  transition: all 0.3s var(--ease-glass);
 }
 
 .cartao-projeto:hover {
-  box-shadow: 0 10px 24px rgba(10, 29, 80, 0.08);
-  transform: translateY(-2px);
+  border-color: hsl(var(--ring));
+  background: hsl(var(--secondary) / 0.96);
+  transform: translateY(-3px);
+  box-shadow:
+    0 12px 28px rgba(0, 0, 0, 0.45),
+    0 0 24px hsl(var(--ring) / 0.15);
 }
 
 .cartao-cabecalho {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  gap: 12px;
+  gap: var(--space-3);
 }
 
-.cartao-cabecalho h2 {
+.cartao-cabecalho h3 {
   margin: 0;
-  color: #0a1d50;
-  font-size: 18px;
+  color: hsl(var(--foreground));
+  font-size: 0.98rem;
+  font-weight: 500;
 }
 
 .cartao-data {
-  color: #90737e;
-  font-size: 12px;
+  color: hsl(var(--muted-foreground));
+  font-family: 'Share Tech Mono', 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
   white-space: nowrap;
 }
 
 .cartao-descricao {
   margin: 0;
-  color: #596579;
-  font-size: 14px;
+  color: hsl(var(--muted-foreground));
+  font-family: 'Share Tech Mono', 'JetBrains Mono', monospace;
+  font-size: 0.82rem;
 }
 
 .cartao-rodape {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  margin-top: 4px;
+  gap: var(--space-3);
+  margin-top: auto;
+  padding-top: var(--space-1);
 }
 
-.cartao-disciplina {
-  padding: 4px 10px;
-  border-radius: 999px;
-  background: #ffeaeb;
-  color: #c83131;
-  font-size: 12px;
-  font-weight: 600;
+.tag-disciplina {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-1) var(--space-2);
+  border: 1px solid hsl(var(--ring) / 0.5);
+  background: hsl(var(--ring) / 0.1);
+  color: hsl(var(--ring));
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 .cartao-link {
-  color: #c83131;
-  font-size: 14px;
-  font-weight: 600;
+  color: hsl(var(--ring));
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
   text-decoration: none;
+  text-transform: uppercase;
 }
 
 .cartao-link:hover {
   text-decoration: underline;
+  text-shadow: 0 0 12px hsl(var(--ring) / 0.5);
+}
+
+.estado {
+  grid-column: 1 / -1;
+  padding: var(--space-5) var(--space-3);
+  border: 1px dashed hsl(var(--border));
+  background: hsl(var(--card) / 0.9);
+  color: hsl(var(--muted-foreground));
+  font-size: 0.9rem;
+  letter-spacing: 0.05em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.estado-erro {
+  border: 1px solid hsl(var(--destructive) / 0.5);
+  background: hsl(var(--destructive) / 0.06);
+  color: hsl(var(--destructive-foreground));
+}
+
+@media (min-width: 680px) {
+  .lista-projetos {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1080px) {
+  .lista-projetos {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }
 </style>
