@@ -3,6 +3,7 @@
     import { useRoute } from 'vue-router'
     import { buscarProjetoComTarefas } from '@/api'
     import type { Projeto, Tarefa } from '@/tipos'
+    import CartaoTarefa from '@/components/CartaoTarefa.vue'
 
     const route = useRoute()
     const projeto = ref<Projeto | null >(null)
@@ -25,8 +26,7 @@
             {{ projeto.disciplina }}</p>
 
         <h2>Tarefas</h2>
-        <ul>
-            <li v-for="tarefa in tarefas" :key="tarefa.id">{{ tarefa.titulo }}</li>
-        </ul>
+        <CartaoTarefa 
+            v-for="tarefa in tarefas" :key="tarefa.id" :tarefa="tarefa"/>
     </main>
 </template>
