@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
-import { useRoute } from 'vue-router'
+import { RouterLink, useRoute } from 'vue-router'
 import { buscarProjetoComTarefas } from '@/api'
 import type { Projeto, Tarefa } from '@/tipos'
 import CartaoTarefa from '@/components/CartaoTarefa.vue'
@@ -36,6 +36,8 @@ onMounted(async () => {
         <h1>{{ projeto.nome }}</h1>
         <p class="projeto-descricao">{{ projeto.descricao }}</p>
         <span class="tag-disciplina">{{ projeto.disciplina }}</span>
+
+        <RouterLink class="botao-editar" :to="`/projetos/${projeto.id}/editar`">Editar projeto</RouterLink>
       </header>
 
       <h2 class="titulo-secao">Tarefas</h2>
@@ -97,6 +99,32 @@ onMounted(async () => {
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+}
+
+.projeto-acoes{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.botao-editar{
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-1) var(--space-2);
+  border: 1px solid hsl(var(--ring));
+  background: hsl(var(--ring) / 0.1);
+  color: hsl(var(--ring));
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.botao-editar:hover {
+  background: hsl(var(--ring) / 0.2);
+  box-shadow: 0 0 18px hsl(var(--ring) / 0.2);
 }
 
 .titulo-secao {

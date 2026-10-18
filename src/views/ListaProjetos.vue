@@ -23,6 +23,10 @@ onMounted(async () => {
   <section class="pagina">
     <h1 class="titulo-secao">Projetos</h1>
 
+    <div class="acoes-pagina">
+      <RouterLink class="botao-novo" to="/projetos/novo"> + Novo Projeto</RouterLink>
+    </div>
+
     <p v-if="carregando" class="estado">Carregando...</p>
     <p v-else-if="erro" class="estado estado-erro">Erro: {{ erro }}</p>
     <p v-else-if="projetos.length === 0" class="estado">Nenhum projeto.</p>
@@ -48,6 +52,29 @@ onMounted(async () => {
 </template>
 
 <style scoped>
+.acoes-pagina{
+  display: flex;
+  justify-content: flex-end;
+}
+
+.botao-novo{
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid hsl(var(--ring));
+  background: hsl(var(--ring) / 0.1);
+  color: hsl(var(--ring));
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.botao-novo:hover{
+  background: hsl(var(--ring/0.2));
+  box-shadow: 0 0 18px hsl(var(--ring) / 0.2);
+}
 .pagina {
   display: flex;
   flex-direction: column;
