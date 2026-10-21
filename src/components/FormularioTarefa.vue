@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from 'vue'
+import { computed, nextTick, onMounted, ref, watch } from 'vue'
 import { listarProjetos } from '@/api'
+import { validarTarefa, type Campo, type Erros } from '@/validacao'
 import type { Tarefa, Projeto } from '@/tipos'
 
 interface Props {
@@ -21,13 +22,26 @@ const projetos = ref<Projeto[]>([])
 const carregando = ref(true)
 const erro = ref<string | null>(null)
 
+/** Mensagens de erro dos campos, indexadas pelo nome do campo. */
+const erros = ref<Erros>({})
+/** Os erros só passam a ser exibidos depois da primeira tentativa de envio. */
+const envioTentado = ref(false)
+/**
+ * Trava o envio de forma síncrona. A prop `enviando` só chega ao componente depois
+ * que a tela re-renderiza, o que não impede cliques rápidos em sequência.
+ */
+const envioBloqueado = ref(false)
+
 // Sem `modo` explícito, uma tarefa já persistida (com id) indica edição.
 const modo = computed(() => props.modo ?? (props.inicial?.id ? 'editar' : 'criar'))
 
 const titulo = computed(() => (modo.value === 'editar' ? 'Editar tarefa' : 'Nova tarefa'))
 
+/** Há uma requisição em andamento: os controles ficam bloqueados. */
+const ocupado = computed(() => props.enviando || envioBloqueado.value)
+
 const rotuloBotao = computed(() => {
-  if (props.enviando) {
+  if (ocupado.value) {
     return modo.value === 'editar' ? 'Salvando...' : 'Criando...'
   }
   return modo.value === 'editar' ? 'Salvar alterações' : 'Criar tarefa'
@@ -73,10 +87,72 @@ watch(
 
 function handleSubmit(event: Event) {
   event.preventDefault()
-  if (props.enviando) {
+
+  // Evita envios duplicados enquanto a requisição anterior não termina.
+  if (props.enviando || envioBloqueado.value) {
     return
   }
+
+  envioBloqueado.value = true
+  envioTentado.value = true
+
+  const resultado = validarTarefa(form.value, projetos.value)
+  erros.value = resultado
+
+  // Só envia quando todos os campos obrigatórios estiverem válidos.
+  if (Object.keys(resultado).length > 0) {
+    envioBloqueado.value = false
+    return
+  }
+
   emit('submit', { ...form.value })
+
+  // Caso a tela não controle a prop `enviando`, a trava é liberada no mesmo ciclo.
+  nextTick(() => {
+    if (!props.enviando) {
+      envioBloqueado.value = false
+    }
+  })
+}
+
+// A trava é liberada quando a tela avisa que a requisição terminou, mesmo com falha.
+watch(
+  () => props.enviando,
+  (enviando) => {
+    if (!enviando) {
+      envioBloqueado.value = false
+    }
+  },
+)
+
+// Depois da primeira tentativa de envio, os erros são recalculados a cada alteração
+// para que o usuário consiga corrigir os campos que foram sinalizados.
+watch(
+  form,
+  () => {
+    if (!envioTentado.value) {
+      return
+    }
+
+    const resultado = validarTarefa(form.value, projetos.value)
+    const atualizados: Erros = { ...erros.value }
+
+    for (const campo of Object.keys(atualizados) as Campo[]) {
+      if (resultado[campo]) {
+        atualizados[campo] = resultado[campo]
+      } else {
+        delete atualizados[campo]
+      }
+    }
+
+    erros.value = atualizados
+  },
+  { deep: true },
+)
+
+/** Identificador da mensagem de erro de um campo. */
+function idErro(campo: Campo): string {
+  return `erro-${campo}`
 }
 </script>
 
@@ -87,8 +163,8 @@ function handleSubmit(event: Event) {
     <p v-if="carregando" class="estado">Carregando projetos...</p>
     <p v-else-if="erro" class="estado estado-erro">Erro: {{ erro }}</p>
 
-    <form v-else @submit="handleSubmit" class="form" :aria-busy="enviando">
-      <div class="campo">
+    <form v-else @submit="handleSubmit" class="form" :aria-busy="ocupado" novalidate>
+      <div class="campo" :class="{ 'campo-invalido': erros.titulo }">
         <label for="titulo" class="rotulo">Título</label>
         <input
           id="titulo"
@@ -96,12 +172,15 @@ function handleSubmit(event: Event) {
           v-model="form.titulo"
           type="text"
           required
-          :disabled="enviando"
+          :disabled="ocupado"
           placeholder="Título da tarefa"
         />
+        <p v-if="erros.titulo" class="erro-campo" :id="idErro('titulo')">
+          {{ erros.titulo }}
+        </p>
       </div>
 
-      <div class="campo">
+      <div class="campo" :class="{ 'campo-invalido': erros.descricao }">
         <label for="descricao" class="rotulo">Descrição</label>
         <textarea
           id="descricao"
@@ -109,40 +188,49 @@ function handleSubmit(event: Event) {
           v-model="form.descricao"
           rows="4"
           required
-          :disabled="enviando"
+          :disabled="ocupado"
           placeholder="Descreva a tarefa"
         ></textarea>
+        <p v-if="erros.descricao" class="erro-campo" :id="idErro('descricao')">
+          {{ erros.descricao }}
+        </p>
       </div>
 
       <div class="linha">
-        <div class="campo">
+        <div class="campo" :class="{ 'campo-invalido': erros.status }">
           <label for="status" class="rotulo">Status</label>
-          <select id="status" name="status" v-model="form.status" required :disabled="enviando">
+          <select id="status" name="status" v-model="form.status" required :disabled="ocupado">
             <option value="a-fazer">A fazer</option>
             <option value="em-andamento">Em andamento</option>
             <option value="em-revisao">Em revisão</option>
             <option value="concluida">Concluída</option>
           </select>
+          <p v-if="erros.status" class="erro-campo" :id="idErro('status')">
+            {{ erros.status }}
+          </p>
         </div>
 
-        <div class="campo">
+        <div class="campo" :class="{ 'campo-invalido': erros.prioridade }">
           <label for="prioridade" class="rotulo">Prioridade</label>
           <select
             id="prioridade"
             name="prioridade"
             v-model="form.prioridade"
             required
-            :disabled="enviando"
+            :disabled="ocupado"
           >
             <option value="baixa">Baixa</option>
             <option value="media">Média</option>
             <option value="alta">Alta</option>
           </select>
+          <p v-if="erros.prioridade" class="erro-campo" :id="idErro('prioridade')">
+            {{ erros.prioridade }}
+          </p>
         </div>
       </div>
 
       <div class="linha">
-        <div class="campo">
+        <div class="campo" :class="{ 'campo-invalido': erros.responsavel }">
           <label for="responsavel" class="rotulo">Responsável</label>
           <input
             id="responsavel"
@@ -150,12 +238,15 @@ function handleSubmit(event: Event) {
             v-model="form.responsavel"
             type="text"
             required
-            :disabled="enviando"
+            :disabled="ocupado"
             placeholder="Nome do responsável"
           />
+          <p v-if="erros.responsavel" class="erro-campo" :id="idErro('responsavel')">
+            {{ erros.responsavel }}
+          </p>
         </div>
 
-        <div class="campo">
+        <div class="campo" :class="{ 'campo-invalido': erros.prazo }">
           <label for="prazo" class="rotulo">Prazo</label>
           <input
             id="prazo"
@@ -163,28 +254,35 @@ function handleSubmit(event: Event) {
             v-model="form.prazo"
             type="date"
             required
-            :disabled="enviando"
+            :disabled="ocupado"
           />
+          <p v-if="erros.prazo" class="erro-campo" :id="idErro('prazo')">
+            {{ erros.prazo }}
+          </p>
         </div>
       </div>
 
-      <div class="campo">
+      <div class="campo" :class="{ 'campo-invalido': erros.projetoId }">
         <label for="projetoId" class="rotulo">Projeto</label>
         <select
           id="projetoId"
           name="projetoId"
           v-model="form.projetoId"
           required
-          :disabled="enviando"
+          :disabled="ocupado"
         >
+          <option value="" disabled>Selecione um projeto</option>
           <option v-for="projeto in projetos" :key="projeto.id" :value="projeto.id">
             {{ projeto.nome }}
           </option>
         </select>
+        <p v-if="erros.projetoId" class="erro-campo" :id="idErro('projetoId')">
+          {{ erros.projetoId }}
+        </p>
       </div>
 
       <footer class="acoes">
-        <button type="submit" class="botao botao-primario" :disabled="enviando">
+        <button type="submit" class="botao botao-primario" :disabled="ocupado">
           {{ rotuloBotao }}
         </button>
       </footer>
@@ -268,6 +366,21 @@ textarea:disabled,
 select:disabled {
   opacity: 0.55;
   cursor: not-allowed;
+}
+
+.campo-invalido input,
+.campo-invalido textarea,
+.campo-invalido select {
+  border-color: hsl(var(--destructive));
+}
+
+.erro-campo {
+  margin: 0;
+  padding-left: var(--space-2);
+  border-left: 3px solid hsl(var(--destructive));
+  color: hsl(var(--destructive));
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
 }
 
 .linha {

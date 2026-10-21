@@ -24,6 +24,11 @@ const inicial: Tarefa = {
 }
 
 async function cadastrar(dados: Omit<Tarefa, 'id'>) {
+  // Ignora envios duplicados enquanto a requisição estiver em andamento.
+  if (salvando.value) {
+    return
+  }
+
   salvando.value = true
   erro.value = null
 

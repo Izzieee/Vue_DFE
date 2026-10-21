@@ -37,6 +37,11 @@ onMounted(async () => {
 })
 
 async function salvar(dados: Omit<Tarefa, 'id'>) {
+  // Ignora envios duplicados enquanto a requisição estiver em andamento.
+  if (salvando.value) {
+    return
+  }
+
   salvando.value = true
   erro.value = null
 
@@ -80,6 +85,7 @@ onUnmounted(() => {
       </p>
 
       <FormularioTarefa
+        v-else
         modo="editar"
         :inicial="tarefa ?? undefined"
         :enviando="salvando"
