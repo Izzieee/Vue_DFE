@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import PlaceholderView from './views/PlaceholderView.vue'
 import ListaTarefas from './views/ListaTarefas.vue'
 import DetalheTarefa from './views/DetalheTarefa.vue'
+import NovaTarefa from './views/NovaTarefa.vue'
 import ListaProjetos from './views/ListaProjetos.vue'
 import DetalhesProjeto from './views/DetalhesProjeto.vue'
 
@@ -13,6 +14,12 @@ const router = createRouter({
       name: 'inicio',
       component: ListaTarefas,
       meta: { titulo: 'Tarefas' },
+    },
+    {
+      path: '/tarefas/nova',
+      name: 'nova-tarefa',
+      component: NovaTarefa,
+      meta: { titulo: 'Nova tarefa' },
     },
     {
       path: '/tarefas/:id',
