@@ -35,7 +35,9 @@ onMounted(async () => {
       <li v-for="projeto in projetos" :key="projeto.id" class="cartao-projeto">
         <header class="cartao-cabecalho">
           <h3>{{ projeto.nome }}</h3>
-          <time class="cartao-data" :datetime="projeto.criadoEm">{{ projeto.criadoEm.slice(0,10) }}</time>
+          <time class="cartao-data" :datetime="projeto.criadoEm">{{
+            projeto.criadoEm.slice(0, 10)
+          }}</time>
         </header>
 
         <p class="cartao-descricao">{{ projeto.descricao }}</p>
@@ -52,12 +54,12 @@ onMounted(async () => {
 </template>
 
 <style scoped>
-.acoes-pagina{
+.acoes-pagina {
   display: flex;
   justify-content: flex-end;
 }
 
-.botao-novo{
+.botao-novo {
   display: inline-flex;
   align-items: center;
   padding: var(--space-2) var(--space-3);
@@ -71,8 +73,8 @@ onMounted(async () => {
   text-transform: uppercase;
 }
 
-.botao-novo:hover{
-  background: hsl(var(--ring/0.2));
+.botao-novo:hover {
+  background: hsl(var(--ring) / 0.2);
   box-shadow: 0 0 18px hsl(var(--ring) / 0.2);
 }
 .pagina {

@@ -8,6 +8,7 @@ import type { Tarefa } from '@/tipos'
 const route = useRoute()
 const router = useRouter()
 const erro = ref<string | null>(null)
+const salvando = ref(false)
 
 const projetoIdDaQuery = route.query.projetoId as string | undefined
 
@@ -23,22 +24,25 @@ const inicial: Tarefa = {
 }
 
 async function cadastrar(dados: Omit<Tarefa, 'id'>) {
+  salvando.value = true
+  erro.value = null
+
   try {
     await criarTarefa(dados)
     router.push({ name: 'inicio' })
   } catch (e) {
     erro.value = (e as Error).message || 'Erro ao salvar a tarefa.'
+  } finally {
+    salvando.value = false
   }
 }
 </script>
 
 <template>
   <section class="pagina">
-    <h1 class="titulo-secao">Nova Tarefa</h1>
-
     <p v-if="erro" class="estado estado-erro">Erro: {{ erro }}</p>
 
-    <FormularioTarefa :inicial="inicial" @submit="cadastrar" />
+    <FormularioTarefa modo="criar" :inicial="inicial" :enviando="salvando" @submit="cadastrar" />
   </section>
 </template>
 

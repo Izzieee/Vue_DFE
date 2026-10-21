@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import PlaceholderView from './views/PlaceholderView.vue'
 import ListaTarefas from './views/ListaTarefas.vue'
 import DetalheTarefa from './views/DetalheTarefa.vue'
+import EditarTarefa from './views/EditarTarefa.vue'
 import NovaTarefa from './views/NovaTarefa.vue'
 import ListaProjetos from './views/ListaProjetos.vue'
 import DetalhesProjeto from './views/DetalhesProjeto.vue'
@@ -30,6 +31,12 @@ const router = createRouter({
       meta: { titulo: 'Detalhes da tarefa' },
     },
     {
+      path: '/tarefas/:id/editar',
+      name: 'editar-tarefa',
+      component: EditarTarefa,
+      meta: { titulo: 'Editar tarefa' },
+    },
+    {
       path: '/projetos',
       name: 'lista-projetos',
       component: ListaProjetos,
@@ -39,7 +46,7 @@ const router = createRouter({
       path: '/projetos/novo',
       name: 'novo-projeto',
       component: NovoProjeto,
-      meta: {titulo: 'Novo projeto'}
+      meta: { titulo: 'Novo projeto' },
     },
     {
       path: '/projetos/:id',
@@ -47,11 +54,11 @@ const router = createRouter({
       component: DetalhesProjeto,
       meta: { titulo: 'Detalhes do projeto' },
     },
-        {
+    {
       path: '/projetos/:id/editar',
       name: 'editar-projeto',
       component: EditarProjeto,
-      meta: {titulo: 'Editar projeto'}
+      meta: { titulo: 'Editar projeto' },
     },
     {
       path: '/:pathMatch(.*)*',

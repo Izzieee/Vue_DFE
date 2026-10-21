@@ -1,10 +1,14 @@
 <script setup lang="ts">
-import { onMounted, ref, watch } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { listarProjetos } from '@/api'
 import type { Tarefa, Projeto } from '@/tipos'
 
 interface Props {
   inicial?: Tarefa
+  /** Informa se o formulário cria ou edita. Por padrão, deduz a partir do id. */
+  modo?: 'criar' | 'editar'
+  /** Bloqueia os campos enquanto a gravação está em andamento. */
+  enviando?: boolean
 }
 
 const props = defineProps<Props>()
@@ -16,6 +20,18 @@ const emit = defineEmits<{
 const projetos = ref<Projeto[]>([])
 const carregando = ref(true)
 const erro = ref<string | null>(null)
+
+// Sem `modo` explícito, uma tarefa já persistida (com id) indica edição.
+const modo = computed(() => props.modo ?? (props.inicial?.id ? 'editar' : 'criar'))
+
+const titulo = computed(() => (modo.value === 'editar' ? 'Editar tarefa' : 'Nova tarefa'))
+
+const rotuloBotao = computed(() => {
+  if (props.enviando) {
+    return modo.value === 'editar' ? 'Salvando...' : 'Criando...'
+  }
+  return modo.value === 'editar' ? 'Salvar alterações' : 'Criar tarefa'
+})
 
 const form = ref<Omit<Tarefa, 'id'>>({
   projetoId: '',
@@ -52,23 +68,26 @@ watch(
       }
     }
   },
-  { immediate: true }
+  { immediate: true },
 )
 
 function handleSubmit(event: Event) {
   event.preventDefault()
+  if (props.enviando) {
+    return
+  }
   emit('submit', { ...form.value })
 }
 </script>
 
 <template>
   <section class="formulario">
-    <h1 class="titulo-secao">{{ props.inicial ? 'Editar tarefa' : 'Nova tarefa' }}</h1>
+    <h1 class="titulo-secao">{{ titulo }}</h1>
 
     <p v-if="carregando" class="estado">Carregando projetos...</p>
     <p v-else-if="erro" class="estado estado-erro">Erro: {{ erro }}</p>
 
-    <form v-else @submit="handleSubmit" class="form">
+    <form v-else @submit="handleSubmit" class="form" :aria-busy="enviando">
       <div class="campo">
         <label for="titulo" class="rotulo">Título</label>
         <input
@@ -77,6 +96,7 @@ function handleSubmit(event: Event) {
           v-model="form.titulo"
           type="text"
           required
+          :disabled="enviando"
           placeholder="Título da tarefa"
         />
       </div>
@@ -89,6 +109,7 @@ function handleSubmit(event: Event) {
           v-model="form.descricao"
           rows="4"
           required
+          :disabled="enviando"
           placeholder="Descreva a tarefa"
         ></textarea>
       </div>
@@ -96,7 +117,7 @@ function handleSubmit(event: Event) {
       <div class="linha">
         <div class="campo">
           <label for="status" class="rotulo">Status</label>
-          <select id="status" name="status" v-model="form.status" required>
+          <select id="status" name="status" v-model="form.status" required :disabled="enviando">
             <option value="a-fazer">A fazer</option>
             <option value="em-andamento">Em andamento</option>
             <option value="em-revisao">Em revisão</option>
@@ -106,7 +127,13 @@ function handleSubmit(event: Event) {
 
         <div class="campo">
           <label for="prioridade" class="rotulo">Prioridade</label>
-          <select id="prioridade" name="prioridade" v-model="form.prioridade" required>
+          <select
+            id="prioridade"
+            name="prioridade"
+            v-model="form.prioridade"
+            required
+            :disabled="enviando"
+          >
             <option value="baixa">Baixa</option>
             <option value="media">Média</option>
             <option value="alta">Alta</option>
@@ -123,6 +150,7 @@ function handleSubmit(event: Event) {
             v-model="form.responsavel"
             type="text"
             required
+            :disabled="enviando"
             placeholder="Nome do responsável"
           />
         </div>
@@ -135,13 +163,20 @@ function handleSubmit(event: Event) {
             v-model="form.prazo"
             type="date"
             required
+            :disabled="enviando"
           />
         </div>
       </div>
 
       <div class="campo">
         <label for="projetoId" class="rotulo">Projeto</label>
-        <select id="projetoId" name="projetoId" v-model="form.projetoId" required>
+        <select
+          id="projetoId"
+          name="projetoId"
+          v-model="form.projetoId"
+          required
+          :disabled="enviando"
+        >
           <option v-for="projeto in projetos" :key="projeto.id" :value="projeto.id">
             {{ projeto.nome }}
           </option>
@@ -149,8 +184,8 @@ function handleSubmit(event: Event) {
       </div>
 
       <footer class="acoes">
-        <button type="submit" class="botao botao-primario">
-          {{ props.inicial ? 'Salvar alterações' : 'Criar tarefa' }}
+        <button type="submit" class="botao botao-primario" :disabled="enviando">
+          {{ rotuloBotao }}
         </button>
       </footer>
     </form>
@@ -228,6 +263,13 @@ select:focus {
   outline-offset: 2px;
 }
 
+input:disabled,
+textarea:disabled,
+select:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
 .linha {
   display: grid;
   grid-template-columns: 1fr;
@@ -279,6 +321,12 @@ select:focus {
 .botao-primario:hover {
   background: hsl(var(--ring));
   color: hsl(var(--background));
+}
+
+.botao:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  box-shadow: none;
 }
 
 .estado {
