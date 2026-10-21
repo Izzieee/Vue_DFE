@@ -1,23 +1,21 @@
-import type {
-  NovaProjeto,
-  NovaTarefa,
-  Projeto,
-  Tarefa,
-} from './tipos'
+import type { NovaProjeto, NovaTarefa, Projeto, Tarefa } from './tipos'
 
 const API_URL = 'http://localhost:3000'
 
 type MetodoHttp = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
+
+/**
+ * Erro lançado pela camada de API. Carrega o status HTTP para que as telas
+ * possam tratar casos específicos (por exemplo, 404 para recurso inexistente).
+ */
+export type ErroApi = Error & { status?: number }
 
 interface OpcoesRequisicao {
   method?: MetodoHttp
   body?: unknown
 }
 
-async function requisicao<T>(
-  url: string,
-  options: OpcoesRequisicao = {},
-): Promise<T> {
+async function requisicao<T>(url: string, options: OpcoesRequisicao = {}): Promise<T> {
   const { method = 'GET', body } = options
 
   const headers: Record<string, string> = {}
@@ -41,7 +39,7 @@ async function requisicao<T>(
     } catch {
       // ignora falha ao ler corpo do erro
     }
-    throw new Error(mensagem)
+    throw Object.assign(new Error(mensagem), { status: resposta.status })
   }
 
   if (resposta.status === 204) {
@@ -73,39 +71,21 @@ export function buscarProjetoComTarefas(id: string): Promise<Projeto & { tarefas
   )
 }
 
-export async function tarefasDoProjeto(id: string): Promise<Tarefa[]> {
-  const projeto = await buscarProjetoComTarefas(id)
-  return projeto.tarefas ?? []
-}
-
-export function listarTarefasDoProjeto(id: string): Promise<Tarefa[]> {
-  return tarefasDoProjeto(id)
-}
-
 export function criarTarefa(tarefa: NovaTarefa): Promise<Tarefa> {
   return requisicao<Tarefa>('/tarefas', { method: 'POST', body: tarefa })
 }
 
-export function atualizarTarefa(
-  id: string,
-  tarefa: Partial<Tarefa>,
-): Promise<Tarefa> {
-  return requisicao<Tarefa>(
-    `/tarefas/${encodeURIComponent(id)}`,
-    { method: 'PATCH', body: tarefa },
-  )
+export function atualizarTarefa(id: string, tarefa: Partial<Tarefa>): Promise<Tarefa> {
+  return requisicao<Tarefa>(`/tarefas/${encodeURIComponent(id)}`, { method: 'PATCH', body: tarefa })
 }
 
 export function criarProjeto(projeto: NovaProjeto): Promise<Projeto> {
   return requisicao<Projeto>('/projetos', { method: 'POST', body: projeto })
 }
 
-export function atualizarProjeto(
-  id: string,
-  projeto: Partial<Projeto>,
-): Promise<Projeto> {
-  return requisicao<Projeto>(
-    `/projetos/${encodeURIComponent(id)}`,
-    { method: 'PATCH', body: projeto },
-  )
+export function atualizarProjeto(id: string, projeto: Partial<Projeto>): Promise<Projeto> {
+  return requisicao<Projeto>(`/projetos/${encodeURIComponent(id)}`, {
+    method: 'PATCH',
+    body: projeto,
+  })
 }

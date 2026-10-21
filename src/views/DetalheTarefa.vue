@@ -43,6 +43,10 @@ onMounted(async () => {
 
       <p class="tarefa-descricao">{{ tarefa.descricao }}</p>
 
+      <RouterLink class="botao-editar" :to="`/tarefas/${tarefa.id}/editar`">
+        Editar tarefa
+      </RouterLink>
+
       <dl class="detalhes">
         <div class="detalhe">
           <dt>Responsável</dt>
@@ -163,6 +167,29 @@ onMounted(async () => {
   color: hsl(var(--muted-foreground));
   font-family: 'Share Tech Mono', 'JetBrains Mono', monospace;
   font-size: 0.92rem;
+}
+
+.botao-editar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  padding: var(--space-1) var(--space-2);
+  border: 1px solid hsl(var(--ring));
+  background: hsl(var(--ring) / 0.08);
+  color: hsl(var(--ring));
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  line-height: 1;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: all 0.3s var(--ease-glass);
+}
+
+.botao-editar:hover {
+  background: hsl(var(--ring) / 0.18);
+  box-shadow: 0 0 12px hsl(var(--ring) / 0.15);
 }
 
 .detalhes {

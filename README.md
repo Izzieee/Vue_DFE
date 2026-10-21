@@ -61,9 +61,13 @@ npm run build
 | Rota | Tela |
 |---|---|
 | `/` | Lista de tarefas |
+| `/tarefas/nova` | Nova tarefa |
 | `/tarefas/:id` | Detalhe da tarefa |
+| `/tarefas/:id/editar` | Edição da tarefa |
 | `/projetos` | Lista de projetos |
+| `/projetos/novo` | Novo projeto |
 | `/projetos/:id` | Detalhe do projeto com as tarefas |
+| `/projetos/:id/editar` | Edição do projeto |
 | `*` | Página não encontrada |
 
 ## Contrato de dados
@@ -88,11 +92,11 @@ no título (`#19`).
 | [#15](https://github.com/Izzieee/Vue_DFE/issues/15) | #17 | Criar o componente de formulário de tarefa | @RaquelAires | Concluída |
 | [#16](https://github.com/Izzieee/Vue_DFE/issues/16) | #18 | Criar a tela de nova tarefa | @RaquelAires | Concluída |
 | [#20](https://github.com/Izzieee/Vue_DFE/issues/20) | #22 | Criar cadastro e edição de projeto | @Izzieee | Concluída |
-| [#17](https://github.com/Izzieee/Vue_DFE/issues/17) | #19 | **Criar a tela de edição de tarefa** | @Izzieee | **Em andamento** |
+| [#17](https://github.com/Izzieee/Vue_DFE/issues/17) | #19 | **Criar a tela de edição de tarefa** | @Izzieee | **Concluída** |
 | [#18](https://github.com/Izzieee/Vue_DFE/issues/18) | #20 | Validar o formulário | @Izzieee | A fazer |
 | [#19](https://github.com/Izzieee/Vue_DFE/issues/19) | #21 | Tornar o formulário acessível | @Izzieee | A fazer |
 
-### Issue em andamento — #19 Criar a tela de edição de tarefa
+### Issue concluída — #19 Criar a tela de edição de tarefa
 
 Issue [#17](https://github.com/Izzieee/Vue_DFE/issues/17) · rótulo `marco-3` · responsável @Izzieee
 
@@ -106,12 +110,12 @@ consulta já existentes no projeto.
 
 **Critérios de aceite**
 
-- [ ] Cria e disponibiliza a rota `/tarefas/:id/editar`.
-- [ ] Obtém o ID da tarefa pelos parâmetros da rota.
-- [ ] Busca os dados atuais da tarefa na API.
-- [ ] Preenche o componente `FormularioTarefa.vue` com os dados existentes.
-- [ ] Permite modificar os campos da tarefa.
-- [ ] Salva as alterações utilizando a função de atualização da API.
-- [ ] Apresenta feedback de carregamento, sucesso e erro.
-- [ ] Trata situações em que a tarefa não é encontrada.
-- [ ] Retorna à tela adequada após salvar com sucesso.
+- [x] Cria e disponibiliza a rota `/tarefas/:id/editar`.
+- [x] Obtém o ID da tarefa pelos parâmetros da rota.
+- [x] Busca os dados atuais da tarefa na API.
+- [x] Preenche o componente `FormularioTarefa.vue` com os dados existentes.
+- [x] Permite modificar os campos da tarefa.
+- [x] Salva as alterações utilizando a função de atualização da API.
+- [x] Apresenta feedback de carregamento, sucesso e erro.
+- [x] Trata situações em que a tarefa não é encontrada.
+- [x] Retorna à tela adequada após salvar com sucesso.
