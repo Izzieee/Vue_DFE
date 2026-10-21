@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, nextTick, onMounted, ref, watch } from 'vue'
 import { listarProjetos } from '@/api'
-import { validarTarefa, type Campo, type Erros } from '@/validacao'
+import { ORDEM_CAMPOS, ROTULOS, validarTarefa, type Campo, type Erros } from '@/validacao'
 import type { Tarefa, Projeto } from '@/tipos'
 
 interface Props {
@@ -32,6 +32,11 @@ const envioTentado = ref(false)
  */
 const envioBloqueado = ref(false)
 
+/** Resumo dos erros, que recebe o foco quando o envio é bloqueado. */
+const resumoErros = ref<HTMLElement | null>(null)
+/** Aviso do estado do envio, lido por tecnologias assistivas. */
+const statusEnvio = ref<HTMLElement | null>(null)
+
 // Sem `modo` explícito, uma tarefa já persistida (com id) indica edição.
 const modo = computed(() => props.modo ?? (props.inicial?.id ? 'editar' : 'criar'))
 
@@ -46,6 +51,12 @@ const rotuloBotao = computed(() => {
   }
   return modo.value === 'editar' ? 'Salvar alterações' : 'Criar tarefa'
 })
+
+/** Campos com erro, na ordem em que aparecem no formulário. */
+const camposComErro = computed(() => ORDEM_CAMPOS.filter((campo) => Boolean(erros.value[campo])))
+
+/** Estado do envio, anunciado para quem usa leitor de tela. */
+const mensagemEnvio = computed(() => (ocupado.value ? 'Enviando a tarefa...' : ''))
 
 const form = ref<Omit<Tarefa, 'id'>>({
   projetoId: '',
@@ -102,13 +113,17 @@ function handleSubmit(event: Event) {
   // Só envia quando todos os campos obrigatórios estiverem válidos.
   if (Object.keys(resultado).length > 0) {
     envioBloqueado.value = false
+    focarResumoErros()
     return
   }
 
   emit('submit', { ...form.value })
 
-  // Caso a tela não controle a prop `enviando`, a trava é liberada no mesmo ciclo.
   nextTick(() => {
+    // O foco vai para o aviso de envio: o botão desabilitado perderia o foco.
+    statusEnvio.value?.focus()
+
+    // Caso a tela não controle a prop `enviando`, a trava é liberada no mesmo ciclo.
     if (!props.enviando) {
       envioBloqueado.value = false
     }
@@ -154,76 +169,133 @@ watch(
 function idErro(campo: Campo): string {
   return `erro-${campo}`
 }
+
+/** Identificador do controle de um campo. */
+function idCampo(campo: Campo): string {
+  return `campo-${campo}`
+}
+
+/** Leva o foco até o controle de um campo. */
+function focarCampo(campo: Campo) {
+  document.getElementById(idCampo(campo))?.focus()
+}
+
+/** Leva o foco até o resumo de erros, que lista os campos que precisam de correção. */
+function focarResumoErros() {
+  nextTick(() => resumoErros.value?.focus())
+}
 </script>
 
 <template>
   <section class="formulario">
     <h1 class="titulo-secao">{{ titulo }}</h1>
 
-    <p v-if="carregando" class="estado">Carregando projetos...</p>
-    <p v-else-if="erro" class="estado estado-erro">Erro: {{ erro }}</p>
+    <p v-if="carregando" class="estado" role="status">Carregando projetos...</p>
+    <p v-else-if="erro" class="estado estado-erro" role="alert">Erro: {{ erro }}</p>
 
     <form v-else @submit="handleSubmit" class="form" :aria-busy="ocupado" novalidate>
+      <div
+        v-if="camposComErro.length"
+        id="resumo-erros"
+        ref="resumoErros"
+        class="resumo-erros"
+        role="alert"
+        tabindex="-1"
+        aria-labelledby="resumo-erros-titulo"
+      >
+        <h2 id="resumo-erros-titulo" class="resumo-titulo">Não foi possível enviar a tarefa</h2>
+        <p class="resumo-texto">Corrija os campos abaixo:</p>
+        <ul class="resumo-lista">
+          <li v-for="campo in camposComErro" :key="campo">
+            <a :href="`#${idCampo(campo)}`" @click.prevent="focarCampo(campo)">
+              {{ ROTULOS[campo] }}
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <p ref="statusEnvio" class="apenas-leitor" role="status" tabindex="-1">
+        {{ mensagemEnvio }}
+      </p>
+
       <div class="campo" :class="{ 'campo-invalido': erros.titulo }">
-        <label for="titulo" class="rotulo">Título</label>
+        <label for="campo-titulo" class="rotulo">Título</label>
         <input
-          id="titulo"
+          id="campo-titulo"
           name="titulo"
           v-model="form.titulo"
           type="text"
           required
           :disabled="ocupado"
+          :aria-invalid="Boolean(erros.titulo)"
+          :aria-describedby="erros.titulo ? idErro('titulo') : undefined"
           placeholder="Título da tarefa"
         />
         <p v-if="erros.titulo" class="erro-campo" :id="idErro('titulo')">
+          <span class="erro-marcador" aria-hidden="true">!</span>
           {{ erros.titulo }}
         </p>
       </div>
 
       <div class="campo" :class="{ 'campo-invalido': erros.descricao }">
-        <label for="descricao" class="rotulo">Descrição</label>
+        <label for="campo-descricao" class="rotulo">Descrição</label>
         <textarea
-          id="descricao"
+          id="campo-descricao"
           name="descricao"
           v-model="form.descricao"
           rows="4"
           required
           :disabled="ocupado"
+          :aria-invalid="Boolean(erros.descricao)"
+          :aria-describedby="erros.descricao ? idErro('descricao') : undefined"
           placeholder="Descreva a tarefa"
         ></textarea>
         <p v-if="erros.descricao" class="erro-campo" :id="idErro('descricao')">
+          <span class="erro-marcador" aria-hidden="true">!</span>
           {{ erros.descricao }}
         </p>
       </div>
 
       <div class="linha">
         <div class="campo" :class="{ 'campo-invalido': erros.status }">
-          <label for="status" class="rotulo">Status</label>
-          <select id="status" name="status" v-model="form.status" required :disabled="ocupado">
+          <label for="campo-status" class="rotulo">Status</label>
+          <select
+            id="campo-status"
+            name="status"
+            v-model="form.status"
+            required
+            :disabled="ocupado"
+            :aria-invalid="Boolean(erros.status)"
+            :aria-describedby="erros.status ? idErro('status') : undefined"
+          >
             <option value="a-fazer">A fazer</option>
             <option value="em-andamento">Em andamento</option>
             <option value="em-revisao">Em revisão</option>
             <option value="concluida">Concluída</option>
           </select>
           <p v-if="erros.status" class="erro-campo" :id="idErro('status')">
+            <span class="erro-marcador" aria-hidden="true">!</span>
             {{ erros.status }}
           </p>
         </div>
 
         <div class="campo" :class="{ 'campo-invalido': erros.prioridade }">
-          <label for="prioridade" class="rotulo">Prioridade</label>
+          <label for="campo-prioridade" class="rotulo">Prioridade</label>
           <select
-            id="prioridade"
+            id="campo-prioridade"
             name="prioridade"
             v-model="form.prioridade"
             required
             :disabled="ocupado"
+            :aria-invalid="Boolean(erros.prioridade)"
+            :aria-describedby="erros.prioridade ? idErro('prioridade') : undefined"
           >
             <option value="baixa">Baixa</option>
             <option value="media">Média</option>
             <option value="alta">Alta</option>
           </select>
           <p v-if="erros.prioridade" class="erro-campo" :id="idErro('prioridade')">
+            <span class="erro-marcador" aria-hidden="true">!</span>
             {{ erros.prioridade }}
           </p>
         </div>
@@ -231,45 +303,53 @@ function idErro(campo: Campo): string {
 
       <div class="linha">
         <div class="campo" :class="{ 'campo-invalido': erros.responsavel }">
-          <label for="responsavel" class="rotulo">Responsável</label>
+          <label for="campo-responsavel" class="rotulo">Responsável</label>
           <input
-            id="responsavel"
+            id="campo-responsavel"
             name="responsavel"
             v-model="form.responsavel"
             type="text"
             required
             :disabled="ocupado"
+            :aria-invalid="Boolean(erros.responsavel)"
+            :aria-describedby="erros.responsavel ? idErro('responsavel') : undefined"
             placeholder="Nome do responsável"
           />
           <p v-if="erros.responsavel" class="erro-campo" :id="idErro('responsavel')">
+            <span class="erro-marcador" aria-hidden="true">!</span>
             {{ erros.responsavel }}
           </p>
         </div>
 
         <div class="campo" :class="{ 'campo-invalido': erros.prazo }">
-          <label for="prazo" class="rotulo">Prazo</label>
+          <label for="campo-prazo" class="rotulo">Prazo</label>
           <input
-            id="prazo"
+            id="campo-prazo"
             name="prazo"
             v-model="form.prazo"
             type="date"
             required
             :disabled="ocupado"
+            :aria-invalid="Boolean(erros.prazo)"
+            :aria-describedby="erros.prazo ? idErro('prazo') : undefined"
           />
           <p v-if="erros.prazo" class="erro-campo" :id="idErro('prazo')">
+            <span class="erro-marcador" aria-hidden="true">!</span>
             {{ erros.prazo }}
           </p>
         </div>
       </div>
 
       <div class="campo" :class="{ 'campo-invalido': erros.projetoId }">
-        <label for="projetoId" class="rotulo">Projeto</label>
+        <label for="campo-projetoId" class="rotulo">Projeto</label>
         <select
-          id="projetoId"
+          id="campo-projetoId"
           name="projetoId"
           v-model="form.projetoId"
           required
           :disabled="ocupado"
+          :aria-invalid="Boolean(erros.projetoId)"
+          :aria-describedby="erros.projetoId ? idErro('projetoId') : undefined"
         >
           <option value="" disabled>Selecione um projeto</option>
           <option v-for="projeto in projetos" :key="projeto.id" :value="projeto.id">
@@ -277,6 +357,7 @@ function idErro(campo: Campo): string {
           </option>
         </select>
         <p v-if="erros.projetoId" class="erro-campo" :id="idErro('projetoId')">
+          <span class="erro-marcador" aria-hidden="true">!</span>
           {{ erros.projetoId }}
         </p>
       </div>
@@ -375,12 +456,78 @@ select:disabled {
 }
 
 .erro-campo {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-1);
   margin: 0;
-  padding-left: var(--space-2);
-  border-left: 3px solid hsl(var(--destructive));
   color: hsl(var(--destructive));
   font-size: 0.78rem;
   letter-spacing: 0.04em;
+}
+
+/* Marcador do erro: identifica a mensagem sem depender apenas da cor. */
+.erro-marcador {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1rem;
+  height: 1rem;
+  border: 1px solid hsl(var(--destructive));
+  border-radius: 50%;
+  font-size: 0.7rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.resumo-erros {
+  padding: var(--space-3);
+  border: 1px solid hsl(var(--destructive) / 0.6);
+  border-left: 3px solid hsl(var(--destructive));
+  background: hsl(var(--destructive) / 0.08);
+}
+
+.resumo-titulo {
+  margin: 0 0 var(--space-1);
+  color: hsl(var(--destructive));
+  font-size: 0.95rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.resumo-texto {
+  margin: 0 0 var(--space-1);
+  font-size: 0.85rem;
+}
+
+.resumo-lista {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: 0;
+  padding-left: var(--space-4);
+  font-size: 0.85rem;
+}
+
+.resumo-lista a {
+  color: hsl(var(--foreground));
+  text-decoration: underline;
+}
+
+.resumo-lista a:hover {
+  color: hsl(var(--ring));
+}
+
+/* Conteúdo lido por tecnologias assistivas, mas não exibido na tela. */
+.apenas-leitor {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 .linha {

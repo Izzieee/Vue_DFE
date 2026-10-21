@@ -94,8 +94,47 @@ no título (`#19`).
 | [#20](https://github.com/Izzieee/Vue_DFE/issues/20) | #22 | Criar cadastro e edição de projeto | @Izzieee | Concluída |
 | [#17](https://github.com/Izzieee/Vue_DFE/issues/17) | #19 | Criar a tela de edição de tarefa | @Izzieee | Concluída |
 | [#18](https://github.com/Izzieee/Vue_DFE/issues/18) | #20 | **Validar o formulário** | @Izzieee | **Concluída** |
-| [#19](https://github.com/Izzieee/Vue_DFE/issues/19) | #21 | Tornar o formulário acessível | @Izzieee | A fazer |
+| [#19](https://github.com/Izzieee/Vue_DFE/issues/19) | #21 | **Tornar o formulário acessível** | @Izzieee | **Concluída** |
 | [#21](https://github.com/Izzieee/Vue_DFE/issues/21) | #23 | Criar o slide de apresentação do Marco 3 | @Ryllen | A fazer |
+
+### Issue concluída — #21 Tornar o formulário acessível
+
+Issue [#19](https://github.com/Izzieee/Vue_DFE/issues/19) · rótulo `marco-3` · responsável @Izzieee
+
+**Objetivo:** garantir que o formulário de tarefas seja acessível, permitindo a navegação por
+teclado e tornando os campos e as mensagens de erro compreensíveis para diferentes usuários.
+
+**Arquivos alvo:** `src/components/FormularioTarefa.vue` e as telas de cadastro e edição que
+apresentam o resultado das operações.
+
+**Dependências:** #15 (formulário de tarefa) e as validações definidas em #18 (validar o
+formulário).
+
+**Critérios de aceite**
+
+- [x] Todos os campos possuem labels associadas corretamente.
+- [x] É possível navegar pelos campos utilizando o teclado.
+- [x] A ordem de navegação é lógica e previsível.
+- [x] Os campos inválidos possuem identificação acessível.
+- [x] As mensagens de erro são perceptíveis sem depender apenas de cores.
+- [x] Os estados de erro são associados aos respectivos campos.
+- [x] Os controles interativos podem ser utilizados por teclado.
+- [x] A acessibilidade é mantida tanto no cadastro quanto na edição.
+
+**Recursos de acessibilidade aplicados**
+
+| Recurso | Onde foi aplicado |
+|---|---|
+| `label` associada por `for`/`id` | Todos os sete campos do formulário |
+| `aria-invalid` | Campos com erro, `false` quando o campo está válido |
+| `aria-describedby` | Campo inválido aponta para a sua mensagem de erro |
+| Resumo de erros (`role="alert"`) | Lista os campos com erro e recebe o foco no envio bloqueado |
+| Marcador textual de erro | As mensagens não dependem apenas da cor |
+| Aviso de envio (`role="status"`) | Informa o estado do envio e evita a perda de foco no botão desabilitado |
+| Foco dirigido | Resumo de erros, links do resumo e mensagem de sucesso |
+
+A ordem de navegação segue a ordem visual dos campos e todos os controles são nativos
+(`input`, `select`, `textarea` e `button`), portanto funcionam apenas com o teclado.
 
 ### Issue concluída — #20 Validar o formulário
 

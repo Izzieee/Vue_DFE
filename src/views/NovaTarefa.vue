@@ -45,7 +45,7 @@ async function cadastrar(dados: Omit<Tarefa, 'id'>) {
 
 <template>
   <section class="pagina">
-    <p v-if="erro" class="estado estado-erro">Erro: {{ erro }}</p>
+    <p v-if="erro" class="estado estado-erro" role="alert">Erro: {{ erro }}</p>
 
     <FormularioTarefa modo="criar" :inicial="inicial" :enviando="salvando" @submit="cadastrar" />
   </section>
