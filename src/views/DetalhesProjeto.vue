@@ -37,7 +37,9 @@ onMounted(async () => {
         <p class="projeto-descricao">{{ projeto.descricao }}</p>
         <span class="tag-disciplina">{{ projeto.disciplina }}</span>
 
-        <RouterLink class="botao-editar" :to="`/projetos/${projeto.id}/editar`">Editar projeto</RouterLink>
+        <RouterLink class="botao-editar" :to="`/projetos/${projeto.id}/editar`"
+          >Editar projeto</RouterLink
+        >
       </header>
 
       <h2 class="titulo-secao">Tarefas</h2>
@@ -101,30 +103,34 @@ onMounted(async () => {
   text-transform: uppercase;
 }
 
-.projeto-acoes{
+.projeto-acoes {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--space-3);
+  gap: var(--space-2);
+  flex-wrap: wrap;
 }
 
-.botao-editar{
+.botao-editar {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
+  width: fit-content;
   padding: var(--space-1) var(--space-2);
   border: 1px solid hsl(var(--ring));
-  background: hsl(var(--ring) / 0.1);
+  background: hsl(var(--ring) / 0.08);
   color: hsl(var(--ring));
-  font-size: 0.72rem;
+  font-size: 0.68rem;
   font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
+  line-height: 1;
   text-decoration: none;
   text-transform: uppercase;
 }
 
 .botao-editar:hover {
-  background: hsl(var(--ring) / 0.2);
-  box-shadow: 0 0 18px hsl(var(--ring) / 0.2);
+  background: hsl(var(--ring) / 0.18);
+  box-shadow: 0 0 12px hsl(var(--ring) / 0.15);
 }
 
 .titulo-secao {

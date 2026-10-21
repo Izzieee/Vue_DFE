@@ -1,72 +1,84 @@
 <script setup lang="ts">
-    import {onMounted, ref} from 'vue'
-    import { useRoute } from 'vue-router';
-    import { buscarProjeto } from '@/api';
+import { onMounted, ref } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { atualizarProjeto, buscarProjeto } from '@/api'
 
-    const route = useRoute()
+const route = useRoute()
+const router = useRouter()
 
-    const nome = ref('')
-    const descricao = ref('')
-    const disciplina = ref('')
+const nome = ref('')
+const descricao = ref('')
+const disciplina = ref('')
 
-    const carregando = ref(true)
-    const erro = ref<string | null>(null)
+const carregando = ref(true)
+const erro = ref<string | null>(null)
+const salvando = ref(false)
 
-    onMounted(async() => {
-        try{
-            const id = String(route.params.id)
-            const projeto = await buscarProjeto(id)
+onMounted(async () => {
+  try {
+    const id = String(route.params.id)
+    const projeto = await buscarProjeto(id)
 
-            nome.value = projeto.nome
-            descricao.value = projeto.descricao
-            disciplina.value = projeto.disciplina
-        }
-        catch(e){
-            erro.value = (e as Error).message
-        }
-        finally{
-            carregando.value = false
-        }
+    nome.value = projeto.nome
+    descricao.value = projeto.descricao
+    disciplina.value = projeto.disciplina
+  } catch (e) {
+    erro.value = (e as Error).message
+  } finally {
+    carregando.value = false
+  }
+})
+
+async function salvarProjeto() {
+  const id = String(route.params.id)
+
+  salvando.value = true
+  erro.value = null
+
+  try {
+    await atualizarProjeto(id, {
+      nome: nome.value,
+      descricao: descricao.value,
+      disciplina: disciplina.value,
     })
 
-    function salvarProjeto(){
-        const id = String(route.params.id)
-
-        console.log({id , 
-            nome: nome.value , 
-            descricao: descricao.value , 
-            disciplina: disciplina.value})
-
-        //aqui é a função que ainda vai ser feita
-    }
+    router.push(`/projetos/${id}`)
+  } catch (e) {
+    erro.value = (e as Error).message
+  } finally {
+    salvando.value = false
+  }
+}
 </script>
 
 <template>
-    <section class="pagina">
-        <h1 class="titulo-secao">Editar projeto</h1>
+  <section class="pagina">
+    <h1 class="titulo-secao">Editar projeto</h1>
 
-        <p v-if="carregando" class="estado">Carregando projeto...</p>
-        <p v-else-if="erro" class="estado estado-erro">Erro:{{ erro }}</p>
+    <p v-if="carregando" class="estado">Carregando projeto...</p>
+    <p v-else-if="erro" class="estado estado-erro">Erro:{{ erro }}</p>
 
-        <form v-else class="formulario" @submit.prevent="salvarProjeto">
-            <div class="campo">
-                <label for="nome">Nome</label>
-                <input id="nome" v-model="nome" type="text"/>
-            </div>
+    <form v-else class="formulario" @submit.prevent="salvarProjeto">
+      <div class="campo">
+        <label for="nome">Nome</label>
+        <input id="nome" v-model="nome" type="text" />
+      </div>
 
-            <div class="campo">
-                <label for="descricao">Descrição</label>
-                <textarea id="descricao" v-model="descricao"></textarea>
-            </div>
+      <div class="campo">
+        <label for="descricao">Descrição</label>
+        <textarea id="descricao" v-model="descricao"></textarea>
+      </div>
 
-            <div class="campo">
-                <label for="disciplina">Disciplina</label>
-                <input id="disciplina" v-model="disciplina" type="text"/>
-            </div>
+      <div class="campo">
+        <label for="disciplina">Disciplina</label>
+        <input id="disciplina" v-model="disciplina" type="text" />
+      </div>
 
-            <button class="botao-salvar" type="submit">Salvar alterações</button>
-        </form>
-    </section>
+      <button class="botao-salvar" type="submit" :disabled="salvando">
+        {{ salvando ? 'Salvando...' : 'Salvar alterações' }}
+      </button>
+    </form>
+  </section>
 </template>
 
 <style scoped>

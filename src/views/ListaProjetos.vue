@@ -35,7 +35,7 @@ onMounted(async () => {
       <li v-for="projeto in projetos" :key="projeto.id" class="cartao-projeto">
         <header class="cartao-cabecalho">
           <h3>{{ projeto.nome }}</h3>
-          <time class="cartao-data" :datetime="projeto.criadoEm">{{ projeto.criadoEm }}</time>
+          <time class="cartao-data" :datetime="projeto.criadoEm">{{ projeto.criadoEm.slice(0,10) }}</time>
         </header>
 
         <p class="cartao-descricao">{{ projeto.descricao }}</p>

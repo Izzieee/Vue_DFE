@@ -1,18 +1,33 @@
 <script setup lang="ts">
     import {ref} from 'vue'
+    import { useRouter } from 'vue-router'
+    import { criarProjeto } from '@/api'
+
+    const router = useRouter()
 
     const nome = ref('')
     const descricao = ref('')
     const disciplina = ref('')
 
-    function salvarProjeto(){
-        console.log({
-            nome : nome.value,
-            descricao: descricao.value,
-            disciplina : disciplina.value
+    const salvando = ref(false)
+    const erro = ref<string | null >(null)
+
+    async function salvarProjeto() {
+      salvando.value = true
+      erro.value = null
+
+      try{
+        await criarProjeto({
+          nome : nome.value,
+          descricao : descricao.value,
+          disciplina : disciplina.value,
+          criadoEm : new Date().toISOString(),
         })
 
-        // função que ainda vai ser feita
+        router.push('/projetos')
+      } catch (e) {
+        erro.value=(e as Error).message
+      }finally{ salvando.value = false}
     }
 </script>
 <template>
@@ -35,7 +50,10 @@
                 <input id="disciplina" v-model="disciplina" type="text"/>
             </div>
 
-            <button class="botao-salvar" type="submit">Salvar projeto</button>
+            <p v-if="erro" class="estado estado-erro"> Erro: {{ erro }}</p>
+            <button class="botao-salvar" type="submit" :disabled="salvando">
+              {{ salvando ? 'Salvando...' :'Salvar projeto' }}
+            </button>
         </form>
     </section>
 </template>
