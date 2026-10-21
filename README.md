@@ -94,8 +94,32 @@ no título (`#19`).
 | [#20](https://github.com/Izzieee/Vue_DFE/issues/20) | #22 | Criar cadastro e edição de projeto | @Izzieee | Concluída |
 | [#17](https://github.com/Izzieee/Vue_DFE/issues/17) | #19 | Criar a tela de edição de tarefa | @Izzieee | Concluída |
 | [#18](https://github.com/Izzieee/Vue_DFE/issues/18) | #20 | **Validar o formulário** | @Izzieee | **Concluída** |
-| [#19](https://github.com/Izzieee/Vue_DFE/issues/19) | #21 | Tornar o formulário acessível | @Izzieee | A fazer |
+| [#19](https://github.com/Izzieee/Vue_DFE/issues/19) | #21 | **Tornar o formulário acessível** | @Izzieee | **Em andamento** |
 | [#21](https://github.com/Izzieee/Vue_DFE/issues/21) | #23 | Criar o slide de apresentação do Marco 3 | @Ryllen | A fazer |
+
+### Issue em andamento — #21 Tornar o formulário acessível
+
+Issue [#19](https://github.com/Izzieee/Vue_DFE/issues/19) · rótulo `marco-3` · responsável @Izzieee
+
+**Objetivo:** garantir que o formulário de tarefas seja acessível, permitindo a navegação por
+teclado e tornando os campos e as mensagens de erro compreensíveis para diferentes usuários.
+
+**Arquivos alvo:** `src/components/FormularioTarefa.vue` e as telas de cadastro e edição que
+apresentam o resultado das operações.
+
+**Dependências:** #15 (formulário de tarefa) e as validações definidas em #18 (validar o
+formulário).
+
+**Critérios de aceite**
+
+- [ ] Todos os campos possuem labels associadas corretamente.
+- [ ] É possível navegar pelos campos utilizando o teclado.
+- [ ] A ordem de navegação é lógica e previsível.
+- [ ] Os campos inválidos possuem identificação acessível.
+- [ ] As mensagens de erro são perceptíveis sem depender apenas de cores.
+- [ ] Os estados de erro são associados aos respectivos campos.
+- [ ] Os controles interativos podem ser utilizados por teclado.
+- [ ] A acessibilidade é mantida tanto no cadastro quanto na edição.
 
 ### Issue concluída — #20 Validar o formulário
 
