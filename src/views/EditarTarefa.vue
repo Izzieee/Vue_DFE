@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref } from 'vue'
+import { nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 import { RouterLink, useRoute, useRouter } from 'vue-router'
 import { atualizarTarefa, buscarTarefa, type ErroApi } from '@/api'
 import FormularioTarefa from '@/components/FormularioTarefa.vue'
@@ -14,11 +14,19 @@ const salvando = ref(false)
 const salvo = ref(false)
 const erro = ref<string | null>(null)
 const naoEncontrada = ref(false)
+const sucesso = ref<HTMLElement | null>(null)
 
 let redirecionamento: ReturnType<typeof setTimeout> | undefined
 
 // O id da tarefa vem do parâmetro da rota: /tarefas/:id/editar
 const idTarefa = String(route.params.id ?? '')
+
+// O foco vai para a mensagem de sucesso, para que a mudança seja percebida.
+watch(salvo, (confirmado) => {
+  if (confirmado) {
+    nextTick(() => sucesso.value?.focus())
+  }
+})
 
 onMounted(async () => {
   try {
@@ -72,15 +80,15 @@ onUnmounted(() => {
 
 <template>
   <section class="pagina">
-    <p v-if="carregando" class="estado">Carregando tarefa...</p>
+    <p v-if="carregando" class="estado" role="status">Carregando tarefa...</p>
 
     <template v-else-if="erro">
-      <p class="estado estado-erro">{{ erro }}</p>
+      <p class="estado estado-erro" role="alert">{{ erro }}</p>
       <RouterLink class="botao-voltar" to="/">Voltar para a lista de tarefas</RouterLink>
     </template>
 
     <template v-else>
-      <p v-if="salvo" class="estado estado-sucesso">
+      <p v-if="salvo" ref="sucesso" class="estado estado-sucesso" role="status" tabindex="-1">
         Tarefa atualizada com sucesso. Redirecionando para o detalhe...
       </p>
 
