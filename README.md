@@ -92,9 +92,34 @@ no título (`#19`).
 | [#15](https://github.com/Izzieee/Vue_DFE/issues/15) | #17 | Criar o componente de formulário de tarefa | @RaquelAires | Concluída |
 | [#16](https://github.com/Izzieee/Vue_DFE/issues/16) | #18 | Criar a tela de nova tarefa | @RaquelAires | Concluída |
 | [#20](https://github.com/Izzieee/Vue_DFE/issues/20) | #22 | Criar cadastro e edição de projeto | @Izzieee | Concluída |
-| [#17](https://github.com/Izzieee/Vue_DFE/issues/17) | #19 | **Criar a tela de edição de tarefa** | @Izzieee | **Concluída** |
-| [#18](https://github.com/Izzieee/Vue_DFE/issues/18) | #20 | Validar o formulário | @Izzieee | A fazer |
+| [#17](https://github.com/Izzieee/Vue_DFE/issues/17) | #19 | Criar a tela de edição de tarefa | @Izzieee | Concluída |
+| [#18](https://github.com/Izzieee/Vue_DFE/issues/18) | #20 | **Validar o formulário** | @Izzieee | **Em andamento** |
 | [#19](https://github.com/Izzieee/Vue_DFE/issues/19) | #21 | Tornar o formulário acessível | @Izzieee | A fazer |
+| [#21](https://github.com/Izzieee/Vue_DFE/issues/21) | #23 | Criar o slide de apresentação do Marco 3 | @Ryllen | A fazer |
+
+### Issue em andamento — #20 Validar o formulário
+
+Issue [#18](https://github.com/Izzieee/Vue_DFE/issues/18) · rótulo `marco-3` · responsável @Izzieee
+
+**Objetivo:** implementar validações nos formulários de cadastro e edição de tarefas para evitar o
+envio de dados inválidos e informar os erros de maneira clara.
+
+**Arquivos alvo:** `src/components/FormularioTarefa.vue` e as telas de cadastro e edição que
+controlam o estado de envio.
+
+**Dependências:** #15 (formulário de tarefa) e a integração com as telas de cadastro e edição,
+#16 (tela de nova tarefa) e #17 (tela de edição de tarefa).
+
+**Critérios de aceite**
+
+- [ ] Valida os campos obrigatórios conforme o contrato da API.
+- [ ] Impede o envio quando houver campos obrigatórios inválidos.
+- [ ] Exibe mensagens de erro próximas aos respectivos campos.
+- [ ] Permite corrigir os campos após a identificação de erros.
+- [ ] Bloqueia o botão enquanto a requisição estiver em andamento.
+- [ ] Evita envios duplicados durante o processamento.
+- [ ] Libera o botão após o término da requisição, mesmo quando ocorrer uma falha.
+- [ ] Mantém o comportamento de validação nas telas de cadastro e edição.
 
 ### Issue concluída — #19 Criar a tela de edição de tarefa
 
