@@ -3,7 +3,7 @@
 Projeto em equipe da disciplina **Desenvolvimento Frontend — 2026.2**, ministrada pela
 Profª Marianne Lacerda Dutra Theodoro.
 
-**Marco atual:** Marco 2 — Listagem e rotas
+**Marco atual:** Marco 3 — Cadastro e edição
 
 ## Integrantes da equipe
 
@@ -71,3 +71,47 @@ npm run build
 Definido em `db.json` e tipado em `src/tipos.ts`. As tarefas de um projeto são obtidas por
 `GET /projetos/:id?_embed=tarefas`, pois o json-server trata os ids numéricos da URL
 (`?projetoId=1`) de forma diferente do texto usado no `db.json`.
+
+---
+
+## Registro de issues
+
+Issues do quadro do projeto ([GitHub Projects](https://github.com/Izzieee/Vue_DFE/projects)),
+em ordem de execução. Cada issue do repositório é identificada por dois números: o da issue
+(`[#17](https://github.com/Izzieee/Vue_DFE/issues/17)`) e o número do item do roadmap citado
+no título (`#19`).
+
+### Marco 3 — Cadastro e edição
+
+| Issue | Item | Título | Responsável | Situação |
+|---|---|---|---|---|
+| [#15](https://github.com/Izzieee/Vue_DFE/issues/15) | #17 | Criar o componente de formulário de tarefa | @RaquelAires | Concluída |
+| [#16](https://github.com/Izzieee/Vue_DFE/issues/16) | #18 | Criar a tela de nova tarefa | @RaquelAires | Concluída |
+| [#20](https://github.com/Izzieee/Vue_DFE/issues/20) | #22 | Criar cadastro e edição de projeto | @Izzieee | Concluída |
+| [#17](https://github.com/Izzieee/Vue_DFE/issues/17) | #19 | **Criar a tela de edição de tarefa** | @Izzieee | **Em andamento** |
+| [#18](https://github.com/Izzieee/Vue_DFE/issues/18) | #20 | Validar o formulário | @Izzieee | A fazer |
+| [#19](https://github.com/Izzieee/Vue_DFE/issues/19) | #21 | Tornar o formulário acessível | @Izzieee | A fazer |
+
+### Issue em andamento — #19 Criar a tela de edição de tarefa
+
+Issue [#17](https://github.com/Izzieee/Vue_DFE/issues/17) · rótulo `marco-3` · responsável @Izzieee
+
+**Objetivo:** criar a tela que permite editar uma tarefa existente, carregando os dados atuais e
+salvando as alterações na API.
+
+**Arquivo alvo:** `src/views/EditarTarefa.vue`
+
+**Dependências:** #14 (API de escrita), #15 (formulário de tarefa) e das rotas e funções de
+consulta já existentes no projeto.
+
+**Critérios de aceite**
+
+- [ ] Cria e disponibiliza a rota `/tarefas/:id/editar`.
+- [ ] Obtém o ID da tarefa pelos parâmetros da rota.
+- [ ] Busca os dados atuais da tarefa na API.
+- [ ] Preenche o componente `FormularioTarefa.vue` com os dados existentes.
+- [ ] Permite modificar os campos da tarefa.
+- [ ] Salva as alterações utilizando a função de atualização da API.
+- [ ] Apresenta feedback de carregamento, sucesso e erro.
+- [ ] Trata situações em que a tarefa não é encontrada.
+- [ ] Retorna à tela adequada após salvar com sucesso.
