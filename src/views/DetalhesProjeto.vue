@@ -37,9 +37,16 @@ onMounted(async () => {
         <p class="projeto-descricao">{{ projeto.descricao }}</p>
         <span class="tag-disciplina">{{ projeto.disciplina }}</span>
 
-        <RouterLink class="botao-editar" :to="`/projetos/${projeto.id}/editar`"
-          >Editar projeto</RouterLink
-        >
+        <div class="projeto-acoes">
+          <RouterLink class="botao-editar" :to="`/projetos/${projeto.id}/editar`"
+            >Editar projeto</RouterLink
+          >
+          <RouterLink
+            class="botao-editar"
+            :to="{ path: '/tarefas/nova', query: { projetoId: projeto.id } }"
+            >+ Nova Tarefa</RouterLink
+          >
+        </div>
       </header>
 
       <h2 class="titulo-secao">Tarefas</h2>
