@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { listarTarefas } from '@/api'
 import type { Tarefa } from '@/tipos'
 import CartaoTarefa from '@/components/CartaoTarefa.vue'
@@ -7,6 +7,7 @@ import CartaoTarefa from '@/components/CartaoTarefa.vue'
 const tarefas = ref<Tarefa[]>([])
 const carregando = ref(true)
 const erro = ref<string | null>(null)
+const termoBusca = ref('')
 
 onMounted(async () => {
   try {
@@ -17,18 +18,46 @@ onMounted(async () => {
     carregando.value = false
   }
 })
+
+const tarefasFiltradas = computed(() => {
+  const termo = termoBusca.value.toLowerCase().trim()
+  if (!termo) {
+    return tarefas.value
+  }
+  return tarefas.value.filter((tarefa) =>
+    tarefa.titulo.toLowerCase().includes(termo)
+  )
+})
 </script>
 
 <template>
   <section class="pagina">
     <h1 class="titulo-secao">Tarefas</h1>
 
+    <div class="busca">
+      <label for="busca-titulo" class="rotulo-busca">Buscar por título</label>
+      <input
+        id="busca-titulo"
+        name="busca-titulo"
+        v-model="termoBusca"
+        type="text"
+        placeholder="Digite o título da tarefa..."
+      />
+    </div>
+
     <p v-if="carregando" class="estado">Carregando...</p>
     <p v-else-if="erro" class="estado estado-erro">Erro: {{ erro }}</p>
     <p v-else-if="tarefas.length === 0" class="estado">Nenhuma tarefa.</p>
+    <p v-else-if="tarefasFiltradas.length === 0" class="estado">
+      Nenhuma tarefa encontrada para "{{ termoBusca }}".
+    </p>
 
     <div v-else class="lista-tarefas">
-      <CartaoTarefa v-for="tarefa in tarefas" :key="tarefa.id" :tarefa="tarefa" />
+      <CartaoTarefa
+        v-for="tarefa in tarefasFiltradas"
+        :key="tarefa.id"
+        :tarefa="tarefa"
+      />
     </div>
   </section>
 </template>
@@ -57,6 +86,37 @@ onMounted(async () => {
 .titulo-secao::before {
   content: '//';
   letter-spacing: 0;
+}
+
+.busca {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.rotulo-busca {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: hsl(var(--ring));
+}
+
+.busca input {
+  width: 100%;
+  max-width: 400px;
+  padding: var(--space-2);
+  border: 1px solid hsl(var(--border));
+  background: hsl(var(--input));
+  color: hsl(var(--foreground));
+  font: inherit;
+  font-size: 0.92rem;
+}
+
+.busca input:focus {
+  border-color: hsl(var(--ring));
+  outline: var(--focus-ring);
+  outline-offset: 2px;
 }
 
 .lista-tarefas {
