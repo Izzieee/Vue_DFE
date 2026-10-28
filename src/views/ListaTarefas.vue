@@ -12,6 +12,7 @@ const {
   busca: termoBusca,
   status: filtroStatus,
   prioridade: filtroPrioridade,
+  filtrarTarefas,
 } = useFiltrosTarefas()
 
 onMounted(async () => {
@@ -25,18 +26,7 @@ onMounted(async () => {
 })
 
 const tarefasFiltradas = computed(() => {
-  const termo = termoBusca.value.toLowerCase().trim()
-
-  return tarefas.value.filter((tarefa) => {
-    const correspondeBusca = !termo || tarefa.titulo.toLowerCase().includes(termo)
-
-    const correspondeStatus = !filtroStatus.value || tarefa.status === filtroStatus.value
-
-    const correspondePrioridade =
-      !filtroPrioridade.value || tarefa.prioridade === filtroPrioridade.value
-
-    return correspondeBusca && correspondeStatus && correspondePrioridade
-  })
+  return filtrarTarefas(tarefas.value)
 })
 
 const temFiltrosAtivos = computed(() =>

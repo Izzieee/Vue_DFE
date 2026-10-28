@@ -8,8 +8,7 @@ import { useFiltrosTarefas } from '@/estadoFiltros'
 const tarefas = ref<Tarefa[]>([])
 const carregando = ref(true)
 const erro = ref<string | null>(null)
-const { busca, status, prioridade } = useFiltrosTarefas()
-
+const { filtrarTarefas } = useFiltrosTarefas()
 const colunas: { status: Status; titulo: string }[] = [
   { status: 'a-fazer', titulo: 'A fazer' },
   { status: 'em-andamento', titulo: 'Em andamento' },
@@ -18,17 +17,7 @@ const colunas: { status: Status; titulo: string }[] = [
 ]
 
 const tarefasFiltradas = computed(() => {
-  const termo = busca.value.toLowerCase().trim()
-
-  return tarefas.value.filter((tarefa) => {
-    const correspondeBusca = !termo || tarefa.titulo.toLowerCase().includes(termo)
-
-    const correspondeStatus = !status.value || tarefa.status === status.value
-
-    const correspondePrioridade = !prioridade.value || tarefa.prioridade === prioridade.value
-
-    return correspondeBusca && correspondeStatus && correspondePrioridade
-  })
+  return filtrarTarefas(tarefas.value)
 })
 
 const tarefasPorStatus = computed(() => {
