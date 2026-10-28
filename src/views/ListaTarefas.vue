@@ -63,12 +63,18 @@ function limparFiltros() {
           v-model="termoBusca"
           type="text"
           placeholder="Digite o título da tarefa..."
+          class="campo-input"
         />
       </div>
 
       <div class="filtro-campo">
         <label for="filtro-status" class="rotulo-filtro">Status</label>
-        <select id="filtro-status" name="filtro-status" v-model="filtroStatus">
+        <select
+          id="filtro-status"
+          name="filtro-status"
+          v-model="filtroStatus"
+          class="campo-input"
+        >
           <option value="">Todos</option>
           <option value="a-fazer">A fazer</option>
           <option value="em-andamento">Em andamento</option>
@@ -83,6 +89,7 @@ function limparFiltros() {
           id="filtro-prioridade"
           name="filtro-prioridade"
           v-model="filtroPrioridade"
+          class="campo-input"
         >
           <option value="">Todas</option>
           <option value="baixa">Baixa</option>
@@ -93,7 +100,7 @@ function limparFiltros() {
 
       <button
         v-if="temFiltrosAtivos"
-        class="botao botao-secundario botao-limpar"
+        class="botao"
         @click="limparFiltros"
       >
         Limpar filtros
@@ -157,7 +164,7 @@ function limparFiltros() {
   color: hsl(var(--ring));
 }
 
-.busca input {
+.campo-input {
   width: 100%;
   max-width: 400px;
   padding: var(--space-2);
@@ -168,7 +175,7 @@ function limparFiltros() {
   font-size: 0.92rem;
 }
 
-.busca input:focus {
+.campo-input:focus {
   border-color: hsl(var(--ring));
   outline: var(--focus-ring);
   outline-offset: 2px;
@@ -202,28 +209,11 @@ function limparFiltros() {
   color: hsl(var(--ring));
 }
 
-.filtro-campo select {
-  width: 100%;
-  max-width: 220px;
-  padding: var(--space-2);
-  border: 1px solid hsl(var(--border));
-  background: hsl(var(--input));
-  color: hsl(var(--foreground));
-  font: inherit;
-  font-size: 0.92rem;
-}
-
-.filtro-campo select:focus {
-  border-color: hsl(var(--ring));
-  outline: var(--focus-ring);
-  outline-offset: 2px;
-}
-
-.botao-limpar {
+.botao {
   display: inline-flex;
   align-items: center;
-  gap: var(--space-1);
-  padding: var(--space-1) var(--space-3);
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
   border: 1px solid hsl(var(--border));
   background: hsl(var(--secondary));
   color: hsl(var(--muted-foreground));
@@ -236,7 +226,7 @@ function limparFiltros() {
   transition: all 0.3s var(--ease-glass);
 }
 
-.botao-limpar:hover {
+.botao:hover {
   border-color: hsl(var(--ring));
   color: hsl(var(--ring));
 }
