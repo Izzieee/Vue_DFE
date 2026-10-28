@@ -3,10 +3,12 @@ import { computed, onMounted, ref } from 'vue'
 import { listarTarefas } from '@/api'
 import type { Status, Tarefa } from '@/tipos'
 import CartaoTarefa from '@/components/CartaoTarefa.vue'
+import { useFiltrosTarefas } from '@/estadoFiltros'
 
 const tarefas = ref<Tarefa[]>([])
 const carregando = ref(true)
 const erro = ref<string | null>(null)
+const { busca, status, prioridade } = useFiltrosTarefas()
 
 const colunas: { status: Status; titulo: string }[] = [
   { status: 'a-fazer', titulo: 'A fazer' },
@@ -15,12 +17,26 @@ const colunas: { status: Status; titulo: string }[] = [
   { status: 'concluida', titulo: 'Concluída' },
 ]
 
+const tarefasFiltradas = computed(() => {
+  const termo = busca.value.toLowerCase().trim()
+
+  return tarefas.value.filter((tarefa) => {
+    const correspondeBusca = !termo || tarefa.titulo.toLowerCase().includes(termo)
+
+    const correspondeStatus = !status.value || tarefa.status === status.value
+
+    const correspondePrioridade = !prioridade.value || tarefa.prioridade === prioridade.value
+
+    return correspondeBusca && correspondeStatus && correspondePrioridade
+  })
+})
+
 const tarefasPorStatus = computed(() => {
   return {
-    'a-fazer': tarefas.value.filter((tarefa) => tarefa.status === 'a-fazer'),
-    'em-andamento': tarefas.value.filter((tarefa) => tarefa.status === 'em-andamento'),
-    'em-revisao': tarefas.value.filter((tarefa) => tarefa.status === 'em-revisao'),
-    concluida: tarefas.value.filter((tarefa) => tarefa.status === 'concluida'),
+    'a-fazer': tarefasFiltradas.value.filter((tarefa) => tarefa.status === 'a-fazer'),
+    'em-andamento': tarefasFiltradas.value.filter((tarefa) => tarefa.status === 'em-andamento'),
+    'em-revisao': tarefasFiltradas.value.filter((tarefa) => tarefa.status === 'em-revisao'),
+    concluida: tarefasFiltradas.value.filter((tarefa) => tarefa.status === 'concluida'),
   }
 })
 

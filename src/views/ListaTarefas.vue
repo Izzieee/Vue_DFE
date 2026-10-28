@@ -1,15 +1,18 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
 import { listarTarefas } from '@/api'
-import type { Prioridade, Status, Tarefa } from '@/tipos'
+import type { Tarefa } from '@/tipos'
 import CartaoTarefa from '@/components/CartaoTarefa.vue'
+import { useFiltrosTarefas } from '@/estadoFiltros'
 
 const tarefas = ref<Tarefa[]>([])
 const carregando = ref(true)
 const erro = ref<string | null>(null)
-const termoBusca = ref('')
-const filtroStatus = ref<Status | ''>('')
-const filtroPrioridade = ref<Prioridade | ''>('')
+const {
+  busca: termoBusca,
+  status: filtroStatus,
+  prioridade: filtroPrioridade,
+} = useFiltrosTarefas()
 
 onMounted(async () => {
   try {
@@ -25,22 +28,19 @@ const tarefasFiltradas = computed(() => {
   const termo = termoBusca.value.toLowerCase().trim()
 
   return tarefas.value.filter((tarefa) => {
-    const correspondeBusca =
-      !termo || tarefa.titulo.toLowerCase().includes(termo)
+    const correspondeBusca = !termo || tarefa.titulo.toLowerCase().includes(termo)
 
-    const correspondeStatus =
-      !filtroStatus.value || tarefa.status === filtroStatus.value
+    const correspondeStatus = !filtroStatus.value || tarefa.status === filtroStatus.value
 
     const correspondePrioridade =
-      !filtroPrioridade.value ||
-      tarefa.prioridade === filtroPrioridade.value
+      !filtroPrioridade.value || tarefa.prioridade === filtroPrioridade.value
 
     return correspondeBusca && correspondeStatus && correspondePrioridade
   })
 })
 
 const temFiltrosAtivos = computed(() =>
-  Boolean(termoBusca.value.trim() || filtroStatus.value || filtroPrioridade.value)
+  Boolean(termoBusca.value.trim() || filtroStatus.value || filtroPrioridade.value),
 )
 
 function limparFiltros() {
@@ -69,12 +69,7 @@ function limparFiltros() {
 
       <div class="filtro-campo">
         <label for="filtro-status" class="rotulo-filtro">Status</label>
-        <select
-          id="filtro-status"
-          name="filtro-status"
-          v-model="filtroStatus"
-          class="campo-input"
-        >
+        <select id="filtro-status" name="filtro-status" v-model="filtroStatus" class="campo-input">
           <option value="">Todos</option>
           <option value="a-fazer">A fazer</option>
           <option value="em-andamento">Em andamento</option>
@@ -98,13 +93,7 @@ function limparFiltros() {
         </select>
       </div>
 
-      <button
-        v-if="temFiltrosAtivos"
-        class="botao"
-        @click="limparFiltros"
-      >
-        Limpar filtros
-      </button>
+      <button v-if="temFiltrosAtivos" class="botao" @click="limparFiltros">Limpar filtros</button>
     </div>
 
     <p v-if="carregando" class="estado">Carregando...</p>
@@ -115,11 +104,7 @@ function limparFiltros() {
     </p>
 
     <div v-else class="lista-tarefas">
-      <CartaoTarefa
-        v-for="tarefa in tarefasFiltradas"
-        :key="tarefa.id"
-        :tarefa="tarefa"
-      />
+      <CartaoTarefa v-for="tarefa in tarefasFiltradas" :key="tarefa.id" :tarefa="tarefa" />
     </div>
   </section>
 </template>
