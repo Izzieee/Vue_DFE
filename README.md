@@ -124,15 +124,19 @@ Marco 3 e da issue #25 (visão de quadro) para os critérios que dependem do qua
 
 **Critérios de aceite**
 
-- [ ] Disponibiliza um controle para alterar o status no cartão.
-- [ ] Utiliza os valores de status previstos no contrato da API.
-- [ ] Envia a alteração para a API.
-- [ ] Atualiza a interface após a confirmação da gravação.
+- [x] Disponibiliza um controle para alterar o status no cartão.
+- [x] Utiliza os valores de status previstos no contrato da API.
+- [x] Envia a alteração para a API.
+- [x] Atualiza a interface após a confirmação da gravação.
 - [ ] No quadro, o cartão passa para a coluna correspondente ao novo status.
-- [ ] Na lista, o status atualizado também é apresentado.
-- [ ] Trata erros de gravação e informa o usuário.
-- [ ] Evita indicar uma alteração como concluída quando a API retornar erro.
-- [ ] Não utiliza arrastar e soltar para modificar o status.
+- [x] Na lista, o status atualizado também é apresentado.
+- [x] Trata erros de gravação e informa o usuário.
+- [x] Evita indicar uma alteração como concluída quando a API retornar erro.
+- [x] Não utiliza arrastar e soltar para modificar o status.
+
+O critério de movimentação no quadro depende da issue #25 (visão de quadro), ainda não
+implementada. O cartão emite o evento `atualizada` somente depois da confirmação da API, então
+basta a visão de quadro reagrupar as tarefas por status para o cartão mudar de coluna.
 
 ### Issue concluída — #21 Tornar o formulário acessível
 

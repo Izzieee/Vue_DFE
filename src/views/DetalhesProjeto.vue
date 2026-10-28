@@ -11,6 +11,15 @@ const tarefas = ref<Tarefa[]>([])
 const carregando = ref(true)
 const erro = ref<string | null>(null)
 
+/** Aplica nas tarefas do projeto o status confirmado pela API. */
+function aoAtualizarTarefa(atualizada: Tarefa) {
+  const indice = tarefas.value.findIndex((tarefa) => tarefa.id === atualizada.id)
+
+  if (indice !== -1) {
+    tarefas.value[indice] = atualizada
+  }
+}
+
 onMounted(async () => {
   try {
     const id = String(route.params.id)
@@ -52,7 +61,12 @@ onMounted(async () => {
       <h2 class="titulo-secao">Tarefas</h2>
       <p v-if="tarefas.length === 0" class="estado">Nenhuma tarefa.</p>
       <div v-else class="lista-tarefas">
-        <CartaoTarefa v-for="tarefa in tarefas" :key="tarefa.id" :tarefa="tarefa" />
+        <CartaoTarefa
+          v-for="tarefa in tarefas"
+          :key="tarefa.id"
+          :tarefa="tarefa"
+          @atualizada="aoAtualizarTarefa"
+        />
       </div>
     </template>
   </section>
