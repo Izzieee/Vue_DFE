@@ -31,11 +31,11 @@ const hoje = new Date().toLocaleDateString('pt-BR', {
             Tarefas
           </RouterLink>
 
-          <RouterLink
-            to="/tarefas/nova"
-            class="link-navegacao"
-            active-class="ativo"
+          <RouterLink to="/quadro" class="link-navegacao" exact-active-class="ativo">
+            Quadro</RouterLink
           >
+
+          <RouterLink to="/tarefas/nova" class="link-navegacao" active-class="ativo">
             Nova Tarefa
           </RouterLink>
 
