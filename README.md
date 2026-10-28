@@ -197,3 +197,7 @@ consulta já existentes no projeto.
 - [x] Apresenta feedback de carregamento, sucesso e erro.
 - [x] Trata situações em que a tarefa não é encontrada.
 - [x] Retorna à tela adequada após salvar com sucesso.
+
+**Edição sem alterações:** quando nenhum campo é modificado, o formulário avisa que não há
+alterações em relação aos dados atuais, mas mantém o botão de salvar habilitado. A gravação
+continua sendo um `PATCH` idempotente, então salvar novamente não altera os dados.
