@@ -3,7 +3,7 @@
 Projeto em equipe da disciplina **Desenvolvimento Frontend — 2026.2**, ministrada pela
 Profª Marianne Lacerda Dutra Theodoro.
 
-**Marco atual:** Marco 3 — Cadastro e edição
+**Marco atual:** Marco 4 — Busca, filtros e quadro
 
 ## Integrantes da equipe
 
@@ -96,6 +96,43 @@ no título (`#19`).
 | [#18](https://github.com/Izzieee/Vue_DFE/issues/18) | #20 | **Validar o formulário** | @Izzieee | **Concluída** |
 | [#19](https://github.com/Izzieee/Vue_DFE/issues/19) | #21 | **Tornar o formulário acessível** | @Izzieee | **Concluída** |
 | [#21](https://github.com/Izzieee/Vue_DFE/issues/21) | #23 | Criar o slide de apresentação do Marco 3 | @Ryllen | A fazer |
+
+### Marco 4 — Busca, filtros e quadro
+
+| Issue | Item | Título | Responsável | Situação |
+|---|---|---|---|---|
+| [#22](https://github.com/Izzieee/Vue_DFE/issues/22) | #24 | Implementar a busca por título | @RaquelAires | Concluída |
+| [#23](https://github.com/Izzieee/Vue_DFE/issues/23) | #25 | Implementar os filtros por status e prioridade | @RaquelAires | Concluída |
+| [#24](https://github.com/Izzieee/Vue_DFE/issues/24) | #26 | Centralizar o estado de busca e filtros | @Ryllen | A fazer |
+| [#25](https://github.com/Izzieee/Vue_DFE/issues/25) | #27 | Criar a visão de quadro | @Ryllen | A fazer |
+| [#26](https://github.com/Izzieee/Vue_DFE/issues/26) | #28 | Alternar entre lista e quadro | @Ryllen | A fazer |
+| [#27](https://github.com/Izzieee/Vue_DFE/issues/27) | #29 | Mudar o status pelo cartão | @Izzieee | Em andamento |
+| [#28](https://github.com/Izzieee/Vue_DFE/issues/28) | #30 | Criar o slide de apresentação do Marco 4 | @Izzieee | A fazer |
+
+### Issue — #29 Mudar o status pelo cartão
+
+Issue [#27](https://github.com/Izzieee/Vue_DFE/issues/27) · rótulo `marco-4` · responsável @Izzieee
+
+**Objetivo:** permitir que o usuário altere o status de uma tarefa diretamente pelo cartão,
+gravando a alteração na API e apresentando o novo status na lista.
+
+**Arquivos alvo:** `src/components/CartaoTarefa.vue`, `src/views/ListaTarefas.vue`,
+`src/views/DetalhesProjeto.vue` e `src/api.ts`.
+
+**Dependências:** #23 (filtros por status e prioridade), das funções de atualização da API do
+Marco 3 e da issue #25 (visão de quadro) para os critérios que dependem do quadro.
+
+**Critérios de aceite**
+
+- [ ] Disponibiliza um controle para alterar o status no cartão.
+- [ ] Utiliza os valores de status previstos no contrato da API.
+- [ ] Envia a alteração para a API.
+- [ ] Atualiza a interface após a confirmação da gravação.
+- [ ] No quadro, o cartão passa para a coluna correspondente ao novo status.
+- [ ] Na lista, o status atualizado também é apresentado.
+- [ ] Trata erros de gravação e informa o usuário.
+- [ ] Evita indicar uma alteração como concluída quando a API retornar erro.
+- [ ] Não utiliza arrastar e soltar para modificar o status.
 
 ### Issue concluída — #21 Tornar o formulário acessível
 
