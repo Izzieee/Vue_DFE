@@ -35,6 +35,14 @@ export const ROTULOS: Record<Campo, string> = {
 /** Status aceitos pelo contrato de dados da API. */
 export const STATUS_VALIDOS: Status[] = ['a-fazer', 'em-andamento', 'em-revisao', 'concluida']
 
+/** Rótulos exibidos para cada status aceito pelo contrato da API. */
+export const ROTULOS_STATUS: Record<Status, string> = {
+  'a-fazer': 'A fazer',
+  'em-andamento': 'Em andamento',
+  'em-revisao': 'Em revisão',
+  concluida: 'Concluída',
+}
+
 /** Prioridades aceitas pelo contrato de dados da API. */
 export const PRIORIDADES_VALIDAS: Prioridade[] = ['baixa', 'media', 'alta']
 
