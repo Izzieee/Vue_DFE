@@ -103,13 +103,13 @@ no título (`#19`).
 |---|---|---|---|---|
 | [#22](https://github.com/Izzieee/Vue_DFE/issues/22) | #24 | Implementar a busca por título | @RaquelAires | Concluída |
 | [#23](https://github.com/Izzieee/Vue_DFE/issues/23) | #25 | Implementar os filtros por status e prioridade | @RaquelAires | Concluída |
-| [#24](https://github.com/Izzieee/Vue_DFE/issues/24) | #26 | Centralizar o estado de busca e filtros | @Ryllen | A fazer |
-| [#25](https://github.com/Izzieee/Vue_DFE/issues/25) | #27 | Criar a visão de quadro | @Ryllen | A fazer |
-| [#26](https://github.com/Izzieee/Vue_DFE/issues/26) | #28 | Alternar entre lista e quadro | @Ryllen | A fazer |
-| [#27](https://github.com/Izzieee/Vue_DFE/issues/27) | #29 | Mudar o status pelo cartão | @Izzieee | Em andamento |
-| [#28](https://github.com/Izzieee/Vue_DFE/issues/28) | #30 | Criar o slide de apresentação do Marco 4 | @Izzieee | A fazer |
+| [#24](https://github.com/Izzieee/Vue_DFE/issues/24) | #26 | Centralizar o estado de busca e filtros | @Ryllen | Concluída |
+| [#25](https://github.com/Izzieee/Vue_DFE/issues/25) | #27 | Criar a visão de quadro | @Ryllen | Concluída |
+| [#26](https://github.com/Izzieee/Vue_DFE/issues/26) | #28 | Alternar entre lista e quadro | @Ryllen | Concluída |
+| [#27](https://github.com/Izzieee/Vue_DFE/issues/27) | #29 | Mudar o status pelo cartão | @Izzieee | Concluída |
+| [#28](https://github.com/Izzieee/Vue_DFE/issues/28) | #30 | Criar o slide de apresentação do Marco 4 | @Izzieee | Em andamento |
 
-### Issue — #29 Mudar o status pelo cartão
+### Issue concluída — #29 Mudar o status pelo cartão
 
 Issue [#27](https://github.com/Izzieee/Vue_DFE/issues/27) · rótulo `marco-4` · responsável @Izzieee
 
@@ -117,10 +117,10 @@ Issue [#27](https://github.com/Izzieee/Vue_DFE/issues/27) · rótulo `marco-4` �
 gravando a alteração na API e apresentando o novo status na lista.
 
 **Arquivos alvo:** `src/components/CartaoTarefa.vue`, `src/views/ListaTarefas.vue`,
-`src/views/DetalhesProjeto.vue` e `src/api.ts`.
+`src/views/QuadroTarefas.vue`, `src/views/DetalhesProjeto.vue` e `src/api.ts`.
 
 **Dependências:** #23 (filtros por status e prioridade), das funções de atualização da API do
-Marco 3 e da issue #25 (visão de quadro) para os critérios que dependem do quadro.
+Marco 3 e da issue #25 (visão de quadro).
 
 **Critérios de aceite**
 
@@ -128,15 +128,17 @@ Marco 3 e da issue #25 (visão de quadro) para os critérios que dependem do qua
 - [x] Utiliza os valores de status previstos no contrato da API.
 - [x] Envia a alteração para a API.
 - [x] Atualiza a interface após a confirmação da gravação.
-- [ ] No quadro, o cartão passa para a coluna correspondente ao novo status.
+- [x] No quadro, o cartão passa para a coluna correspondente ao novo status.
 - [x] Na lista, o status atualizado também é apresentado.
 - [x] Trata erros de gravação e informa o usuário.
 - [x] Evita indicar uma alteração como concluída quando a API retornar erro.
 - [x] Não utiliza arrastar e soltar para modificar o status.
 
-O critério de movimentação no quadro depende da issue #25 (visão de quadro), ainda não
-implementada. O cartão emite o evento `atualizada` somente depois da confirmação da API, então
-basta a visão de quadro reagrupar as tarefas por status para o cartão mudar de coluna.
+**Como funciona:** o seletor do cartão envia um `PATCH /tarefas/:id` com apenas o novo status.
+Enquanto a requisição acontece o seletor fica bloqueado. Quando a API confirma, o cartão emite
+`atualizada` e a lista, o detalhe do projeto e o quadro substituem a tarefa no array; no quadro,
+como as colunas são derivadas do status, o cartão muda de coluna sem arrastar e soltar. Em caso
+de erro, o seletor volta ao status anterior e a mensagem da API aparece no próprio cartão.
 
 ### Issue concluída — #21 Tornar o formulário acessível
 
