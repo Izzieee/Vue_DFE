@@ -68,6 +68,28 @@ const form = ref<Omit<Tarefa, 'id'>>({
   prazo: '',
 })
 
+/**
+ * Indica que o formulário de edição está igual aos dados carregados.
+ * O envio continua liberado: o usuário pode salvar mesmo sem alterar nada.
+ */
+const semAlteracoes = computed(() => {
+  const original = props.inicial
+
+  if (modo.value !== 'editar' || !original) {
+    return false
+  }
+
+  return (
+    form.value.titulo === original.titulo &&
+    form.value.descricao === original.descricao &&
+    form.value.status === original.status &&
+    form.value.prioridade === original.prioridade &&
+    form.value.responsavel === original.responsavel &&
+    form.value.prazo === original.prazo &&
+    form.value.projetoId === original.projetoId
+  )
+})
+
 onMounted(async () => {
   try {
     projetos.value = await listarProjetos()
@@ -362,6 +384,11 @@ function focarResumoErros() {
         </p>
       </div>
 
+      <p v-if="semAlteracoes" class="aviso-sem-alteracoes" role="status">
+        <span class="aviso-marcador" aria-hidden="true">i</span>
+        Nenhuma alteração em relação aos dados atuais. Você pode salvar mesmo assim.
+      </p>
+
       <footer class="acoes">
         <button type="submit" class="botao botao-primario" :disabled="ocupado">
           {{ rotuloBotao }}
@@ -473,6 +500,34 @@ select:disabled {
   width: 1rem;
   height: 1rem;
   border: 1px solid hsl(var(--destructive));
+  border-radius: 50%;
+  font-size: 0.7rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+/* Aviso de edição sem alterações: informa o usuário sem bloquear o envio. */
+.aviso-sem-alteracoes {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-1);
+  margin: 0;
+  padding: var(--space-2);
+  border-left: 3px solid hsl(var(--terminal-amber));
+  background: hsl(var(--terminal-amber) / 0.08);
+  color: hsl(var(--terminal-amber));
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+}
+
+.aviso-marcador {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
+  border: 1px solid hsl(var(--terminal-amber));
   border-radius: 50%;
   font-size: 0.7rem;
   font-weight: 700;
