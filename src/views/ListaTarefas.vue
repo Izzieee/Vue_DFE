@@ -25,6 +25,15 @@ onMounted(async () => {
   }
 })
 
+/** Aplica na lista o status confirmado pela API, mantendo os demais dados. */
+function aoAtualizarTarefa(atualizada: Tarefa) {
+  const indice = tarefas.value.findIndex((tarefa) => tarefa.id === atualizada.id)
+
+  if (indice !== -1) {
+    tarefas.value[indice] = atualizada
+  }
+}
+
 const tarefasFiltradas = computed(() => {
   return filtrarTarefas(tarefas.value)
 })
@@ -94,7 +103,12 @@ function limparFiltros() {
     </p>
 
     <div v-else class="lista-tarefas">
-      <CartaoTarefa v-for="tarefa in tarefasFiltradas" :key="tarefa.id" :tarefa="tarefa" />
+      <CartaoTarefa
+        v-for="tarefa in tarefasFiltradas"
+        :key="tarefa.id"
+        :tarefa="tarefa"
+        @atualizada="aoAtualizarTarefa"
+      />
     </div>
   </section>
 </template>

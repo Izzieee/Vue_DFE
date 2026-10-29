@@ -38,6 +38,15 @@ onMounted(async () => {
     carregando.value = false
   }
 })
+
+/** Aplica no quadro o status confirmado pela API, mantendo os demais dados. */
+function aoAtualizarTarefa(atualizada: Tarefa) {
+  const indice = tarefas.value.findIndex((tarefa) => tarefa.id === atualizada.id)
+
+  if (indice !== -1) {
+    tarefas.value[indice] = atualizada
+  }
+}
 </script>
 
 <template>
@@ -57,6 +66,7 @@ onMounted(async () => {
             v-for="tarefa in tarefasPorStatus[coluna.status]"
             :key="tarefa.id"
             :tarefa="tarefa"
+            @atualizada="aoAtualizarTarefa"
           />
 
           <p v-if="tarefasPorStatus[coluna.status].length === 0" class="coluna-vazia">

@@ -1,4 +1,4 @@
-import type { NovaProjeto, NovaTarefa, Projeto, Tarefa } from './tipos'
+import type { NovaProjeto, NovaTarefa, Projeto, Status, Tarefa } from './tipos'
 
 const API_URL = 'http://localhost:3000'
 
@@ -77,6 +77,11 @@ export function criarTarefa(tarefa: NovaTarefa): Promise<Tarefa> {
 
 export function atualizarTarefa(id: string, tarefa: Partial<Tarefa>): Promise<Tarefa> {
   return requisicao<Tarefa>(`/tarefas/${encodeURIComponent(id)}`, { method: 'PATCH', body: tarefa })
+}
+
+/** Altera apenas o status de uma tarefa, usando os valores do contrato da API. */
+export function atualizarStatusTarefa(id: string, status: Status): Promise<Tarefa> {
+  return atualizarTarefa(id, { status })
 }
 
 export function criarProjeto(projeto: NovaProjeto): Promise<Projeto> {
