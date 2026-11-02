@@ -8,7 +8,10 @@ const projetos = ref<Projeto[]>([])
 const carregando = ref(true)
 const erro = ref<string | null>(null)
 
-onMounted(async () => {
+async function carregarProjetos() {
+  carregando.value = true
+  erro.value = null
+
   try {
     projetos.value = await listarProjetos()
   } catch (e) {
@@ -16,7 +19,9 @@ onMounted(async () => {
   } finally {
     carregando.value = false
   }
-})
+}
+
+onMounted(carregarProjetos)
 </script>
 
 <template>
@@ -28,7 +33,11 @@ onMounted(async () => {
     </div>
 
     <p v-if="carregando" class="estado">Carregando...</p>
-    <p v-else-if="erro" class="estado estado-erro">Erro: {{ erro }}</p>
+    <div v-else-if="erro" class="estado estado-erro">
+      <p>Erro: {{ erro }}</p>
+
+      <button type="button" class="botao" @click="carregarProjetos">Tentar Novamente</button>
+    </div>
     <p v-else-if="projetos.length === 0" class="estado">Nenhum projeto.</p>
 
     <ul v-else class="lista-projetos">
@@ -211,6 +220,29 @@ onMounted(async () => {
   border: 1px solid hsl(var(--destructive) / 0.5);
   background: hsl(var(--destructive) / 0.06);
   color: hsl(var(--destructive-foreground));
+}
+
+.botao {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  padding: 0.5rem 0.85rem;
+  border: 1px solid hsl(var(--ring));
+  border-radius: 4px;
+  background: hsl(var(--ring) / 0.08);
+  color: hsl(var(--ring));
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.botao:hover {
+  background: hsl(var(--ring) / 0.18);
+  box-shadow: 0 0 12px hsl(var(--ring) / 0.15);
 }
 
 @media (min-width: 680px) {
