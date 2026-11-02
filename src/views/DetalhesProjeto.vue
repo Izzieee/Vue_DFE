@@ -2,6 +2,7 @@
 import { onMounted, ref } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import { buscarProjetoComTarefas } from '@/api'
+import type { ErroApi } from '@/api'
 import type { Projeto, Tarefa } from '@/tipos'
 import CartaoTarefa from '@/components/CartaoTarefa.vue'
 
@@ -20,7 +21,12 @@ function aoAtualizarTarefa(atualizada: Tarefa) {
   }
 }
 
-onMounted(async () => {
+async function carregarProjeto() {
+  carregando.value = true
+  erro.value = null
+  projeto.value = null
+  tarefas.value = []
+
   try {
     const id = String(route.params.id)
     const resultado = await buscarProjetoComTarefas(id)
@@ -28,17 +34,31 @@ onMounted(async () => {
     projeto.value = resultado
     tarefas.value = resultado.tarefas ?? []
   } catch (e) {
-    erro.value = (e as Error).message
+    const erroApi = e as ErroApi
+
+    if (erroApi.status === 404) {
+      erro.value = 'Projeto não encontrado'
+    } else {
+      erro.value = erroApi.message
+    }
   } finally {
     carregando.value = false
   }
-})
+}
+
+onMounted(carregarProjeto)
 </script>
 
 <template>
   <section class="pagina">
     <p v-if="carregando" class="estado">Carregando...</p>
-    <p v-else-if="erro" class="estado estado-erro">Erro: {{ erro }}</p>
+    <div v-else-if="erro" class="estado estado-erro">
+      <p>{{ erro }}</p>
+
+      <RouterLink class="botao-editar" to="/projetos">Voltar para projetos</RouterLink>
+
+      <button type="button" class="botao" @click="carregarProjeto">Tentar Novamente</button>
+    </div>
 
     <template v-else-if="projeto">
       <header class="projeto-cabecalho">
@@ -132,6 +152,29 @@ onMounted(async () => {
   flex-wrap: wrap;
 }
 
+.botao {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  padding: 0.5rem 0.85rem;
+  border: 1px solid hsl(var(--ring));
+  border-radius: 4px;
+  background: hsl(var(--ring) / 0.08);
+  color: hsl(var(--ring));
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.botao:hover {
+  background: hsl(var(--ring) / 0.18);
+  box-shadow: 0 0 12px hsl(var(--ring) / 0.15);
+}
+
 .botao-editar {
   display: inline-flex;
   align-items: center;
@@ -147,6 +190,7 @@ onMounted(async () => {
   line-height: 1;
   text-decoration: none;
   text-transform: uppercase;
+  transition: all 0.3s var(--ease-glass);
 }
 
 .botao-editar:hover {

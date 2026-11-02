@@ -8,7 +8,12 @@ import { useFiltrosTarefas } from '@/estadoFiltros'
 const tarefas = ref<Tarefa[]>([])
 const carregando = ref(true)
 const erro = ref<string | null>(null)
-const { filtrarTarefas } = useFiltrosTarefas()
+const {
+  busca: termoBusca,
+  status: filtroStatus,
+  prioridade: filtroPrioridade,
+  filtrarTarefas,
+} = useFiltrosTarefas()
 const colunas: { status: Status; titulo: string }[] = [
   { status: 'a-fazer', titulo: 'A fazer' },
   { status: 'em-andamento', titulo: 'Em andamento' },
@@ -20,6 +25,10 @@ const tarefasFiltradas = computed(() => {
   return filtrarTarefas(tarefas.value)
 })
 
+const temFiltrosAtivos = computed(() =>
+  Boolean(termoBusca.value.trim() || filtroStatus.value || filtroPrioridade.value),
+)
+
 const tarefasPorStatus = computed(() => {
   return {
     'a-fazer': tarefasFiltradas.value.filter((tarefa) => tarefa.status === 'a-fazer'),
@@ -29,7 +38,10 @@ const tarefasPorStatus = computed(() => {
   }
 })
 
-onMounted(async () => {
+async function carregarTarefas() {
+  carregando.value = true
+  erro.value = null
+
   try {
     tarefas.value = await listarTarefas()
   } catch (e) {
@@ -37,7 +49,9 @@ onMounted(async () => {
   } finally {
     carregando.value = false
   }
-})
+}
+
+onMounted(carregarTarefas)
 
 /** Aplica no quadro o status confirmado pela API, mantendo os demais dados. */
 function aoAtualizarTarefa(atualizada: Tarefa) {
@@ -55,7 +69,16 @@ function aoAtualizarTarefa(atualizada: Tarefa) {
 
     <p v-if="carregando" class="estado">Carregando...</p>
 
-    <p v-else-if="erro" class="estado estado-erro">Erro: {{ erro }}</p>
+    <div v-else-if="erro" class="estado estado-erro">
+      <p>Erro: {{ erro }}</p>
+
+      <button type="button" class="botao" @click="carregarTarefas">Tentar Novamente</button>
+    </div>
+
+    <div v-else-if="tarefas.length === 0" class="estado">Nenhuma tarefa cadastrada.</div>
+    <div v-else-if="tarefasFiltradas.length === 0 && temFiltrosAtivos" class="estado">
+      Nenhuma tarefa encontrada com os critérios selecionados.
+    </div>
 
     <div v-else class="quadro">
       <section v-for="coluna in colunas" :key="coluna.status" class="coluna">
@@ -70,7 +93,7 @@ function aoAtualizarTarefa(atualizada: Tarefa) {
           />
 
           <p v-if="tarefasPorStatus[coluna.status].length === 0" class="coluna-vazia">
-            Nenhuma tarefa
+            Nenhuma tarefa.
           </p>
         </div>
       </section>
@@ -140,12 +163,40 @@ function aoAtualizarTarefa(atualizada: Tarefa) {
 .estado {
   padding: var(--space-5) var(--space-3);
   border: 1px dashed hsl(var(--border));
+  background: hsl(var(--card) / 0.9);
   color: hsl(var(--muted-foreground));
+  font-size: 0.9rem;
+  letter-spacing: 0.05em;
   text-align: center;
+  text-transform: uppercase;
 }
 
 .estado-erro {
-  border-color: hsl(var(--destructive) / 0.5);
+  border: 1px solid hsl(var(--destructive) / 0.5);
+  background: hsl(var(--destructive) / 0.06);
   color: hsl(var(--destructive-foreground));
+}
+
+.botao {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  padding: 0.5rem 0.85rem;
+  border: 1px solid hsl(var(--ring));
+  border-radius: 4px;
+  background: hsl(var(--ring) / 0.08);
+  color: hsl(var(--ring));
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.botao:hover {
+  background: hsl(var(--ring) / 0.18);
+  box-shadow: 0 0 12px hsl(var(--ring) / 0.15);
 }
 </style>

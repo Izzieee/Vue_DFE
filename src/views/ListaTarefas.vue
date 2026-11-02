@@ -15,7 +15,10 @@ const {
   filtrarTarefas,
 } = useFiltrosTarefas()
 
-onMounted(async () => {
+async function carregarTarefas() {
+  carregando.value = true
+  erro.value = null
+
   try {
     tarefas.value = await listarTarefas()
   } catch (e) {
@@ -23,7 +26,9 @@ onMounted(async () => {
   } finally {
     carregando.value = false
   }
-})
+}
+
+onMounted(carregarTarefas)
 
 /** Aplica na lista o status confirmado pela API, mantendo os demais dados. */
 function aoAtualizarTarefa(atualizada: Tarefa) {
@@ -92,11 +97,17 @@ function limparFiltros() {
         </select>
       </div>
 
-      <button v-if="temFiltrosAtivos" class="botao" @click="limparFiltros">Limpar filtros</button>
+      <button v-if="temFiltrosAtivos" type="button" class="botao" @click="limparFiltros">
+        Limpar filtros
+      </button>
     </div>
 
     <p v-if="carregando" class="estado">Carregando...</p>
-    <p v-else-if="erro" class="estado estado-erro">Erro: {{ erro }}</p>
+    <div v-else-if="erro" class="estado estado-erro">
+      <p>Erro: {{ erro }}</p>
+
+      <button type="button" class="botao" @click="carregarTarefas">Tentar Novamente</button>
+    </div>
     <p v-else-if="tarefas.length === 0" class="estado">Nenhuma tarefa.</p>
     <p v-else-if="tarefasFiltradas.length === 0" class="estado">
       Nenhuma tarefa encontrada com os critérios selecionados.
@@ -201,22 +212,24 @@ function limparFiltros() {
 .botao {
   display: inline-flex;
   align-items: center;
-  gap: var(--space-2);
-  padding: var(--space-2) var(--space-4);
-  border: 1px solid hsl(var(--border));
-  background: hsl(var(--secondary));
-  color: hsl(var(--muted-foreground));
-  font-size: 0.85rem;
+  justify-content: center;
+  width: fit-content;
+  padding: 0.5rem 0.85rem;
+  border: 1px solid hsl(var(--ring));
+  border-radius: 4px;
+  background: hsl(var(--ring) / 0.08);
+  color: hsl(var(--ring));
+  font-size: 0.7rem;
   font-weight: 700;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
-  text-decoration: none;
   cursor: pointer;
-  transition: all 0.3s var(--ease-glass);
+  transition: 0.2s ease;
 }
 
 .botao:hover {
-  border-color: hsl(var(--ring));
+  background: hsl(var(--ring) / 0.18);
+  box-shadow: 0 0 12px hsl(var(--ring) / 0.15);
   color: hsl(var(--ring));
 }
 

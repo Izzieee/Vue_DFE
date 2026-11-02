@@ -2,6 +2,7 @@
 import { onMounted, ref } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import { buscarProjeto, buscarTarefa } from '@/api'
+import type { ErroApi } from '@/api'
 import type { Tarefa } from '@/tipos'
 
 const rota = useRoute()
@@ -10,7 +11,12 @@ const nomeProjeto = ref<string | null>(null)
 const carregando = ref(true)
 const erro = ref<string | null>(null)
 
-onMounted(async () => {
+async function carregarTarefa() {
+  carregando.value = true
+  erro.value = null
+  tarefa.value = null
+  nomeProjeto.value = ''
+
   try {
     const resultado = await buscarTarefa(rota.params.id as string)
     tarefa.value = resultado
@@ -18,17 +24,31 @@ onMounted(async () => {
     const projeto = await buscarProjeto(resultado.projetoId)
     nomeProjeto.value = projeto.nome
   } catch (e) {
-    erro.value = (e as Error).message
+    const erroApi = e as ErroApi
+
+    if (erroApi.status === 404) {
+      erro.value = 'Tarefa ou projeto não encontrado.'
+    } else {
+      erro.value = erroApi.message
+    }
   } finally {
     carregando.value = false
   }
-})
+}
+
+onMounted(carregarTarefa)
 </script>
 
 <template>
   <section class="pagina">
     <p v-if="carregando" class="estado">Carregando...</p>
-    <p v-else-if="erro" class="estado estado-erro">Erro: {{ erro }}</p>
+    <div v-else-if="erro" class="estado estado-erro">
+      <p>{{ erro }}</p>
+
+      <RouterLink class="botao-editar" to="/">Voltar para tarefas</RouterLink>
+
+      <button type="button" class="botao" @click="carregarTarefa">Tentar Novamente</button>
+    </div>
 
     <article v-else-if="tarefa" class="tarefa">
       <header class="tarefa-cabecalho">
@@ -167,6 +187,29 @@ onMounted(async () => {
   color: hsl(var(--muted-foreground));
   font-family: 'Share Tech Mono', 'JetBrains Mono', monospace;
   font-size: 0.92rem;
+}
+
+.botao {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  padding: 0.5rem 0.85rem;
+  border: 1px solid hsl(var(--ring));
+  border-radius: 4px;
+  background: hsl(var(--ring) / 0.08);
+  color: hsl(var(--ring));
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.botao:hover {
+  background: hsl(var(--ring) / 0.18);
+  box-shadow: 0 0 12px hsl(var(--ring) / 0.15);
 }
 
 .botao-editar {

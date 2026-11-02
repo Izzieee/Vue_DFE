@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { atualizarProjeto, buscarProjeto } from '@/api'
+import { atualizarProjeto, buscarProjeto, type ErroApi } from '@/api'
+import { RouterLink } from 'vue-router'
 
 const route = useRoute()
 const router = useRouter()
@@ -23,7 +24,13 @@ onMounted(async () => {
     descricao.value = projeto.descricao
     disciplina.value = projeto.disciplina
   } catch (e) {
-    erro.value = (e as Error).message
+    const falha = e as ErroApi
+
+    if (falha.status === 404) {
+      erro.value = 'Projeto não encontrado'
+    } else {
+      erro.value = falha.message
+    }
   } finally {
     carregando.value = false
   }
@@ -44,7 +51,13 @@ async function salvarProjeto() {
 
     router.push(`/projetos/${id}`)
   } catch (e) {
-    erro.value = (e as Error).message
+    const falha = e as ErroApi
+
+    if (falha.status === 404) {
+      erro.value = 'Projeto não encontrado'
+    } else {
+      erro.value = falha.message
+    }
   } finally {
     salvando.value = false
   }
@@ -56,7 +69,11 @@ async function salvarProjeto() {
     <h1 class="titulo-secao">Editar projeto</h1>
 
     <p v-if="carregando" class="estado">Carregando projeto...</p>
-    <p v-else-if="erro" class="estado estado-erro">Erro:{{ erro }}</p>
+    <div v-else-if="erro" class="estado estado-erro">
+      <p>{{ erro }}</p>
+
+      <RouterLink class="botao-voltar" to="/projetos">Voltar para Projetos</RouterLink>
+    </div>
 
     <form v-else class="formulario" @submit.prevent="salvarProjeto">
       <div class="campo">
@@ -159,16 +176,42 @@ async function salvarProjeto() {
   background: hsl(var(--ring) / 0.2);
 }
 
+.botao-voltar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  padding: 0.4rem 0.75rem;
+  border: 1px solid hsl(var(--ring));
+  background: hsl(var(--ring) / 0.08);
+  color: hsl(var(--ring));
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  line-height: 1;
+  text-decoration: none;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.botao-voltar:hover {
+  background: hsl(var(--ring) / 0.18);
+  box-shadow: 0 0 12px hsl(var(--ring) / 0.15);
+}
+
 .estado {
   padding: var(--space-5) var(--space-3);
   border: 1px dashed hsl(var(--border));
   background: hsl(var(--card) / 0.9);
   color: hsl(var(--muted-foreground));
   text-align: center;
+  text-transform: uppercase;
 }
 
 .estado-erro {
-  border-color: hsl(var(--destructive) / 0.5);
+  border: 1px solid hsl(var(--destructive) / 0.5);
+  background: hsl(var(--destructive) / 0.06);
   color: hsl(var(--destructive-foreground));
 }
 </style>
