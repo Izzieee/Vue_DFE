@@ -26,10 +26,21 @@ const botaoCancelar = ref<HTMLButtonElement | null>(null)
 /** Guarda quem abriu o diálogo para devolver o foco ao fechar. */
 let focoAnterior: HTMLElement | null = null
 
+/** Devolve o foco a quem abriu o diálogo, evitando que ele se perca no `body`. */
+function devolverFoco() {
+  if (focoAnterior?.isConnected) {
+    focoAnterior.focus()
+  }
+  focoAnterior = null
+}
+
 watch(
   () => props.tarefa,
   async (tarefa) => {
     if (!tarefa) {
+      // O diálogo é removido por `v-if`, então o componente continua montado:
+      // o foco precisa ser devolvido aqui, não apenas em `onBeforeUnmount`.
+      devolverFoco()
       return
     }
 
@@ -40,11 +51,7 @@ watch(
   },
 )
 
-onBeforeUnmount(() => {
-  if (focoAnterior?.isConnected) {
-    focoAnterior.focus()
-  }
-})
+onBeforeUnmount(devolverFoco)
 
 function cancelar() {
   if (!props.excluindo) {
