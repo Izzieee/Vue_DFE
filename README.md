@@ -3,7 +3,7 @@
 Projeto em equipe da disciplina **Desenvolvimento Frontend — 2026.2**, ministrada pela
 Profª Marianne Lacerda Dutra Theodoro.
 
-**Marco atual:** Marco 4 — Busca, filtros e quadro
+**Marco atual:** Marco 5 — Exclusão, erros e estados da tela
 
 ## Integrantes da equipe
 
@@ -114,6 +114,7 @@ no título (`#19`).
 | Issue | Item | Título | Responsável | Situação |
 |---|---|---|---|---|
 | [#29](https://github.com/Izzieee/Vue_DFE/issues/29) | #31 | Excluir tarefa com confirmação | @Izzieee | Concluída |
+| [#30](https://github.com/Izzieee/Vue_DFE/issues/30) | #32 | Mostrar o estado de carregamento | @Izzieee | Concluída |
 
 ### Issue concluída — #31 Excluir tarefa com confirmação
 
@@ -146,6 +147,36 @@ sucesso, e a atualização vale para a lista, o quadro e o detalhe do projeto. S
 o diálogo exibe a mensagem e continua aberto, a tarefa permanece na tela e o usuário pode
 tentar novamente. O diálogo usa `role="alertdialog"`, `aria-modal`, fecha com `Esc` e mantém
 o foco entre os botões.
+
+### Issue concluída — #32 Mostrar o estado de carregamento
+
+Issue [#30](https://github.com/Izzieee/Vue_DFE/issues/30) · rótulo `marco-5` · responsável @Izzieee
+
+**Objetivo:** informar que os dados estão sendo carregados e garantir que a interface saia
+desse estado ao final da requisição, inclusive quando ocorrer uma falha.
+
+**Arquivos alvo:** `src/components/EstadoCarregamento.vue`, `src/api.ts`,
+`src/views/ListaTarefas.vue`, `src/views/QuadroTarefas.vue`, `src/views/ListaProjetos.vue`,
+`src/views/DetalheTarefa.vue`, `src/views/DetalhesProjeto.vue`, `src/views/EditarTarefa.vue`,
+`src/views/EditarProjeto.vue` e `src/components/FormularioTarefa.vue`.
+
+**Dependências:** #1 (módulo de acesso à API) e as telas dos Marcos 2, 3 e 4 (#7, #8, #9,
+#10, #17, #19, #25 e #26).
+
+**Critérios de aceite**
+
+- [x] As telas que buscam dados exibem um indicador de carregamento.
+- [x] O indicador permanece visível enquanto a requisição está em andamento.
+- [x] O indicador desaparece após a conclusão da requisição.
+- [x] O carregamento é encerrado mesmo quando ocorre uma falha.
+- [x] A interface não permanece indefinidamente no estado de carregamento.
+
+**Como funciona:** o componente `EstadoCarregamento` reúne um girador e um texto em uma
+região `role="status"`, respeitando `prefers-reduced-motion`. Todas as telas que consultam a
+API usam o componente e marcam a seção com `aria-busy`. O estado de carregamento é encerrado
+no `finally` de cada requisição, então uma falha também libera a tela. Além disso, a camada de
+API limita cada requisição a 10 segundos e converte falhas de conexão em mensagens
+compreensíveis, impedindo que a tela fique carregando para sempre.
 
 ### Issue concluída — #29 Mudar o status pelo cartão
 
