@@ -109,6 +109,44 @@ no título (`#19`).
 | [#27](https://github.com/Izzieee/Vue_DFE/issues/27) | #29 | Mudar o status pelo cartão | @Izzieee | Concluída |
 | [#28](https://github.com/Izzieee/Vue_DFE/issues/28) | #30 | Criar o slide de apresentação do Marco 4 | @Izzieee | Em andamento |
 
+### Marco 5 — Exclusão, erros e estados da tela
+
+| Issue | Item | Título | Responsável | Situação |
+|---|---|---|---|---|
+| [#29](https://github.com/Izzieee/Vue_DFE/issues/29) | #31 | Excluir tarefa com confirmação | @Izzieee | Concluída |
+
+### Issue concluída — #31 Excluir tarefa com confirmação
+
+Issue [#29](https://github.com/Izzieee/Vue_DFE/issues/29) · rótulo `marco-5` · responsável @Izzieee
+
+**Objetivo:** permitir a exclusão de tarefas pela API somente depois de uma confirmação
+explícita do usuário, mantendo a lista coerente quando a operação falhar.
+
+**Arquivos alvo:** `src/api.ts`, `src/exclusaoTarefa.ts`,
+`src/components/ConfirmacaoExclusao.vue`, `src/components/CartaoTarefa.vue`,
+`src/views/ListaTarefas.vue`, `src/views/QuadroTarefas.vue` e
+`src/views/DetalhesProjeto.vue`.
+
+**Dependências:** #1 (módulo de acesso à API), #5 (cartão de tarefa) e #7 (tela de lista de
+tarefas), além da issue #25 (visão de quadro) para manter o quadro coerente.
+
+**Critérios de aceite**
+
+- [x] Existe um botão para excluir tarefas.
+- [x] A exclusão solicita confirmação do usuário.
+- [x] A tarefa é removida da API após a confirmação.
+- [x] A lista é atualizada após a exclusão bem-sucedida.
+- [x] Uma mensagem é exibida caso ocorra uma falha na exclusão.
+- [x] A tarefa permanece na lista caso a exclusão não seja concluída.
+
+**Como funciona:** o botão `Excluir` do cartão emite o evento `excluir` e a tela abre o
+diálogo de confirmação, que começa com o foco em `Cancelar`. Somente ao confirmar é feito
+`DELETE /tarefas/:id`. A tarefa é retirada do array local apenas quando a API responde com
+sucesso, e a atualização vale para a lista, o quadro e o detalhe do projeto. Se a API falhar,
+o diálogo exibe a mensagem e continua aberto, a tarefa permanece na tela e o usuário pode
+tentar novamente. O diálogo usa `role="alertdialog"`, `aria-modal`, fecha com `Esc` e mantém
+o foco entre os botões.
+
 ### Issue concluída — #29 Mudar o status pelo cartão
 
 Issue [#27](https://github.com/Izzieee/Vue_DFE/issues/27) · rótulo `marco-4` · responsável @Izzieee
