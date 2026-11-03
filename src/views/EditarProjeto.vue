@@ -3,6 +3,7 @@ import { onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { atualizarProjeto, buscarProjeto, type ErroApi } from '@/api'
 import { RouterLink } from 'vue-router'
+import EstadoCarregamento from '@/components/EstadoCarregamento.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -65,10 +66,10 @@ async function salvarProjeto() {
 </script>
 
 <template>
-  <section class="pagina">
+  <section class="pagina" :aria-busy="carregando">
     <h1 class="titulo-secao">Editar projeto</h1>
 
-    <p v-if="carregando" class="estado">Carregando projeto...</p>
+    <EstadoCarregamento v-if="carregando" mensagem="Carregando projeto..." />
     <div v-else-if="erro" class="estado estado-erro">
       <p>{{ erro }}</p>
 

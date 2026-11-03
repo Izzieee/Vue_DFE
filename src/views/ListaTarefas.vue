@@ -3,6 +3,9 @@ import { computed, onMounted, ref } from 'vue'
 import { listarTarefas } from '@/api'
 import type { Tarefa } from '@/tipos'
 import CartaoTarefa from '@/components/CartaoTarefa.vue'
+import ConfirmacaoExclusao from '@/components/ConfirmacaoExclusao.vue'
+import EstadoCarregamento from '@/components/EstadoCarregamento.vue'
+import { useExclusaoTarefa } from '@/exclusaoTarefa'
 import { useFiltrosTarefas } from '@/estadoFiltros'
 
 const tarefas = ref<Tarefa[]>([])
@@ -14,6 +17,19 @@ const {
   prioridade: filtroPrioridade,
   filtrarTarefas,
 } = useFiltrosTarefas()
+
+const {
+  tarefaSelecionada,
+  excluindo,
+  erro: erroExclusao,
+  mensagem: mensagemExclusao,
+  solicitarExclusao,
+  cancelarExclusao,
+  confirmarExclusao,
+} = useExclusaoTarefa((tarefa) => {
+  // A lista só perde a tarefa depois que a API confirma a exclusão.
+  tarefas.value = tarefas.value.filter((item) => item.id !== tarefa.id)
+})
 
 async function carregarTarefas() {
   carregando.value = true
@@ -55,7 +71,7 @@ function limparFiltros() {
 </script>
 
 <template>
-  <section class="pagina">
+  <section class="pagina" :aria-busy="carregando">
     <h1 class="titulo-secao">Tarefas</h1>
 
     <div class="filtros">
@@ -102,7 +118,7 @@ function limparFiltros() {
       </button>
     </div>
 
-    <p v-if="carregando" class="estado">Carregando...</p>
+    <EstadoCarregamento v-if="carregando" mensagem="Carregando tarefas..." />
     <div v-else-if="erro" class="estado estado-erro">
       <p>Erro: {{ erro }}</p>
 
@@ -119,8 +135,21 @@ function limparFiltros() {
         :key="tarefa.id"
         :tarefa="tarefa"
         @atualizada="aoAtualizarTarefa"
+        @excluir="solicitarExclusao"
       />
     </div>
+
+    <p v-if="mensagemExclusao" class="estado estado-sucesso" role="status">
+      {{ mensagemExclusao }}
+    </p>
+
+    <ConfirmacaoExclusao
+      :tarefa="tarefaSelecionada"
+      :excluindo="excluindo"
+      :erro="erroExclusao"
+      @confirmar="confirmarExclusao"
+      @cancelar="cancelarExclusao"
+    />
   </section>
 </template>
 
@@ -255,6 +284,12 @@ function limparFiltros() {
   border: 1px solid hsl(var(--destructive) / 0.5);
   background: hsl(var(--destructive) / 0.06);
   color: hsl(var(--destructive-foreground));
+}
+
+.estado-sucesso {
+  border: 1px solid hsl(var(--terminal-green) / 0.5);
+  background: hsl(var(--terminal-green) / 0.08);
+  color: hsl(var(--terminal-green));
 }
 
 @media (min-width: 680px) {

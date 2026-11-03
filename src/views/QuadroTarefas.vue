@@ -3,6 +3,9 @@ import { computed, onMounted, ref } from 'vue'
 import { listarTarefas } from '@/api'
 import type { Status, Tarefa } from '@/tipos'
 import CartaoTarefa from '@/components/CartaoTarefa.vue'
+import ConfirmacaoExclusao from '@/components/ConfirmacaoExclusao.vue'
+import EstadoCarregamento from '@/components/EstadoCarregamento.vue'
+import { useExclusaoTarefa } from '@/exclusaoTarefa'
 import { useFiltrosTarefas } from '@/estadoFiltros'
 
 const tarefas = ref<Tarefa[]>([])
@@ -14,6 +17,19 @@ const {
   prioridade: filtroPrioridade,
   filtrarTarefas,
 } = useFiltrosTarefas()
+
+const {
+  tarefaSelecionada,
+  excluindo,
+  erro: erroExclusao,
+  mensagem: mensagemExclusao,
+  solicitarExclusao,
+  cancelarExclusao,
+  confirmarExclusao,
+} = useExclusaoTarefa((tarefa) => {
+  // O quadro só perde a tarefa depois que a API confirma a exclusão.
+  tarefas.value = tarefas.value.filter((item) => item.id !== tarefa.id)
+})
 const colunas: { status: Status; titulo: string }[] = [
   { status: 'a-fazer', titulo: 'A fazer' },
   { status: 'em-andamento', titulo: 'Em andamento' },
@@ -64,10 +80,10 @@ function aoAtualizarTarefa(atualizada: Tarefa) {
 </script>
 
 <template>
-  <section class="pagina">
+  <section class="pagina" :aria-busy="carregando">
     <h1 class="titulo-secao">Quadro de tarefas</h1>
 
-    <p v-if="carregando" class="estado">Carregando...</p>
+    <EstadoCarregamento v-if="carregando" mensagem="Carregando tarefas..." />
 
     <div v-else-if="erro" class="estado estado-erro">
       <p>Erro: {{ erro }}</p>
@@ -90,6 +106,7 @@ function aoAtualizarTarefa(atualizada: Tarefa) {
             :key="tarefa.id"
             :tarefa="tarefa"
             @atualizada="aoAtualizarTarefa"
+            @excluir="solicitarExclusao"
           />
 
           <p v-if="tarefasPorStatus[coluna.status].length === 0" class="coluna-vazia">
@@ -98,6 +115,18 @@ function aoAtualizarTarefa(atualizada: Tarefa) {
         </div>
       </section>
     </div>
+
+    <p v-if="mensagemExclusao" class="estado estado-sucesso" role="status">
+      {{ mensagemExclusao }}
+    </p>
+
+    <ConfirmacaoExclusao
+      :tarefa="tarefaSelecionada"
+      :excluindo="excluindo"
+      :erro="erroExclusao"
+      @confirmar="confirmarExclusao"
+      @cancelar="cancelarExclusao"
+    />
   </section>
 </template>
 
@@ -175,6 +204,12 @@ function aoAtualizarTarefa(atualizada: Tarefa) {
   border: 1px solid hsl(var(--destructive) / 0.5);
   background: hsl(var(--destructive) / 0.06);
   color: hsl(var(--destructive-foreground));
+}
+
+.estado-sucesso {
+  border: 1px solid hsl(var(--terminal-green) / 0.5);
+  background: hsl(var(--terminal-green) / 0.08);
+  color: hsl(var(--terminal-green));
 }
 
 .botao {

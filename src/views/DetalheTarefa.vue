@@ -4,6 +4,7 @@ import { RouterLink, useRoute } from 'vue-router'
 import { buscarProjeto, buscarTarefa } from '@/api'
 import type { ErroApi } from '@/api'
 import type { Tarefa } from '@/tipos'
+import EstadoCarregamento from '@/components/EstadoCarregamento.vue'
 
 const rota = useRoute()
 const tarefa = ref<Tarefa | null>(null)
@@ -40,8 +41,8 @@ onMounted(carregarTarefa)
 </script>
 
 <template>
-  <section class="pagina">
-    <p v-if="carregando" class="estado">Carregando...</p>
+  <section class="pagina" :aria-busy="carregando">
+    <EstadoCarregamento v-if="carregando" mensagem="Carregando tarefa..." />
     <div v-else-if="erro" class="estado estado-erro">
       <p>{{ erro }}</p>
 

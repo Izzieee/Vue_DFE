@@ -5,12 +5,28 @@ import { buscarProjetoComTarefas } from '@/api'
 import type { ErroApi } from '@/api'
 import type { Projeto, Tarefa } from '@/tipos'
 import CartaoTarefa from '@/components/CartaoTarefa.vue'
+import ConfirmacaoExclusao from '@/components/ConfirmacaoExclusao.vue'
+import EstadoCarregamento from '@/components/EstadoCarregamento.vue'
+import { useExclusaoTarefa } from '@/exclusaoTarefa'
 
 const route = useRoute()
 const projeto = ref<Projeto | null>(null)
 const tarefas = ref<Tarefa[]>([])
 const carregando = ref(true)
 const erro = ref<string | null>(null)
+
+const {
+  tarefaSelecionada,
+  excluindo,
+  erro: erroExclusao,
+  mensagem: mensagemExclusao,
+  solicitarExclusao,
+  cancelarExclusao,
+  confirmarExclusao,
+} = useExclusaoTarefa((tarefa) => {
+  // A lista do projeto só perde a tarefa depois que a API confirma a exclusão.
+  tarefas.value = tarefas.value.filter((item) => item.id !== tarefa.id)
+})
 
 /** Aplica nas tarefas do projeto o status confirmado pela API. */
 function aoAtualizarTarefa(atualizada: Tarefa) {
@@ -50,8 +66,8 @@ onMounted(carregarProjeto)
 </script>
 
 <template>
-  <section class="pagina">
-    <p v-if="carregando" class="estado">Carregando...</p>
+  <section class="pagina" :aria-busy="carregando">
+    <EstadoCarregamento v-if="carregando" mensagem="Carregando projeto..." />
     <div v-else-if="erro" class="estado estado-erro">
       <p>{{ erro }}</p>
 
@@ -79,6 +95,9 @@ onMounted(carregarProjeto)
       </header>
 
       <h2 class="titulo-secao">Tarefas</h2>
+      <p v-if="mensagemExclusao" class="estado estado-sucesso" role="status">
+        {{ mensagemExclusao }}
+      </p>
       <p v-if="tarefas.length === 0" class="estado">Nenhuma tarefa.</p>
       <div v-else class="lista-tarefas">
         <CartaoTarefa
@@ -86,9 +105,18 @@ onMounted(carregarProjeto)
           :key="tarefa.id"
           :tarefa="tarefa"
           @atualizada="aoAtualizarTarefa"
+          @excluir="solicitarExclusao"
         />
       </div>
     </template>
+
+    <ConfirmacaoExclusao
+      :tarefa="tarefaSelecionada"
+      :excluindo="excluindo"
+      :erro="erroExclusao"
+      @confirmar="confirmarExclusao"
+      @cancelar="cancelarExclusao"
+    />
   </section>
 </template>
 
@@ -238,6 +266,12 @@ onMounted(carregarProjeto)
   border: 1px solid hsl(var(--destructive) / 0.5);
   background: hsl(var(--destructive) / 0.06);
   color: hsl(var(--destructive-foreground));
+}
+
+.estado-sucesso {
+  border: 1px solid hsl(var(--terminal-green) / 0.5);
+  background: hsl(var(--terminal-green) / 0.08);
+  color: hsl(var(--terminal-green));
 }
 
 @media (min-width: 680px) {

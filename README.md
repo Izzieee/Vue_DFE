@@ -3,7 +3,7 @@
 Projeto em equipe da disciplina **Desenvolvimento Frontend — 2026.2**, ministrada pela
 Profª Marianne Lacerda Dutra Theodoro.
 
-**Marco atual:** Marco 4 — Busca, filtros e quadro
+**Marco atual:** Marco 5 — Exclusão, erros e estados da tela
 
 ## Integrantes da equipe
 
@@ -108,6 +108,75 @@ no título (`#19`).
 | [#26](https://github.com/Izzieee/Vue_DFE/issues/26) | #28 | Alternar entre lista e quadro | @Ryllen | Concluída |
 | [#27](https://github.com/Izzieee/Vue_DFE/issues/27) | #29 | Mudar o status pelo cartão | @Izzieee | Concluída |
 | [#28](https://github.com/Izzieee/Vue_DFE/issues/28) | #30 | Criar o slide de apresentação do Marco 4 | @Izzieee | Em andamento |
+
+### Marco 5 — Exclusão, erros e estados da tela
+
+| Issue | Item | Título | Responsável | Situação |
+|---|---|---|---|---|
+| [#29](https://github.com/Izzieee/Vue_DFE/issues/29) | #31 | Excluir tarefa com confirmação | @Izzieee | Concluída |
+| [#30](https://github.com/Izzieee/Vue_DFE/issues/30) | #32 | Mostrar o estado de carregamento | @Izzieee | Concluída |
+
+### Issue concluída — #31 Excluir tarefa com confirmação
+
+Issue [#29](https://github.com/Izzieee/Vue_DFE/issues/29) · rótulo `marco-5` · responsável @Izzieee
+
+**Objetivo:** permitir a exclusão de tarefas pela API somente depois de uma confirmação
+explícita do usuário, mantendo a lista coerente quando a operação falhar.
+
+**Arquivos alvo:** `src/api.ts`, `src/exclusaoTarefa.ts`,
+`src/components/ConfirmacaoExclusao.vue`, `src/components/CartaoTarefa.vue`,
+`src/views/ListaTarefas.vue`, `src/views/QuadroTarefas.vue` e
+`src/views/DetalhesProjeto.vue`.
+
+**Dependências:** #1 (módulo de acesso à API), #5 (cartão de tarefa) e #7 (tela de lista de
+tarefas), além da issue #25 (visão de quadro) para manter o quadro coerente.
+
+**Critérios de aceite**
+
+- [x] Existe um botão para excluir tarefas.
+- [x] A exclusão solicita confirmação do usuário.
+- [x] A tarefa é removida da API após a confirmação.
+- [x] A lista é atualizada após a exclusão bem-sucedida.
+- [x] Uma mensagem é exibida caso ocorra uma falha na exclusão.
+- [x] A tarefa permanece na lista caso a exclusão não seja concluída.
+
+**Como funciona:** o botão `Excluir` do cartão emite o evento `excluir` e a tela abre o
+diálogo de confirmação, que começa com o foco em `Cancelar`. Somente ao confirmar é feito
+`DELETE /tarefas/:id`. A tarefa é retirada do array local apenas quando a API responde com
+sucesso, e a atualização vale para a lista, o quadro e o detalhe do projeto. Se a API falhar,
+o diálogo exibe a mensagem e continua aberto, a tarefa permanece na tela e o usuário pode
+tentar novamente. O diálogo usa `role="alertdialog"`, `aria-modal`, fecha com `Esc`, mantém
+o foco entre os botões e, ao cancelar, devolve o foco ao botão que abriu a confirmação.
+
+### Issue concluída — #32 Mostrar o estado de carregamento
+
+Issue [#30](https://github.com/Izzieee/Vue_DFE/issues/30) · rótulo `marco-5` · responsável @Izzieee
+
+**Objetivo:** informar que os dados estão sendo carregados e garantir que a interface saia
+desse estado ao final da requisição, inclusive quando ocorrer uma falha.
+
+**Arquivos alvo:** `src/components/EstadoCarregamento.vue`, `src/api.ts`,
+`src/views/ListaTarefas.vue`, `src/views/QuadroTarefas.vue`, `src/views/ListaProjetos.vue`,
+`src/views/DetalheTarefa.vue`, `src/views/DetalhesProjeto.vue`, `src/views/EditarTarefa.vue`,
+`src/views/EditarProjeto.vue` e `src/components/FormularioTarefa.vue`.
+
+**Dependências:** #1 (módulo de acesso à API) e as telas dos Marcos 2, 3 e 4 (#7, #8, #9,
+#10, #17, #19, #25 e #26).
+
+**Critérios de aceite**
+
+- [x] As telas que buscam dados exibem um indicador de carregamento.
+- [x] O indicador permanece visível enquanto a requisição está em andamento.
+- [x] O indicador desaparece após a conclusão da requisição.
+- [x] O carregamento é encerrado mesmo quando ocorre uma falha.
+- [x] A interface não permanece indefinidamente no estado de carregamento.
+
+**Como funciona:** o componente `EstadoCarregamento` reúne um girador e um texto em uma
+região `role="status"`, respeitando `prefers-reduced-motion`. Todas as telas que consultam a
+API usam o componente e marcam a seção com `aria-busy`. O estado de carregamento é encerrado
+no `finally` de cada requisição, então uma falha também libera a tela. Além disso, a camada de
+API limita cada requisição a 10 segundos e converte falhas de conexão em mensagens
+compreensíveis, impedindo que a tela fique carregando para sempre.
 
 ### Issue concluída — #29 Mudar o status pelo cartão
 
