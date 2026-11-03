@@ -12,6 +12,8 @@ const props = defineProps<{
 const emit = defineEmits<{
   /** Emitido somente depois que a API confirma a gravação do novo status. */
   (evento: 'atualizada', tarefa: Tarefa): void
+  /** Pede à tela que abra a confirmação de exclusão para esta tarefa. */
+  (evento: 'excluir', tarefa: Tarefa): void
 }>()
 
 const statusSelecionado = ref<Status>(props.tarefa.status)
@@ -95,6 +97,14 @@ async function alterarStatus() {
       </span>
       <span class="cartao-responsavel">{{ tarefa.responsavel }}</span>
       <time class="cartao-prazo" :datetime="tarefa.prazo">{{ tarefa.prazo }}</time>
+      <button
+        type="button"
+        class="botao-excluir"
+        :aria-label="`Excluir tarefa ${tarefa.titulo}`"
+        @click="emit('excluir', tarefa)"
+      >
+        Excluir
+      </button>
     </footer>
   </article>
 </template>
@@ -187,6 +197,7 @@ async function alterarStatus() {
 
 .cartao-rodape {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: var(--space-2);
   margin-top: auto;
@@ -206,6 +217,29 @@ async function alterarStatus() {
   margin-left: auto;
   font-family: 'Share Tech Mono', 'JetBrains Mono', monospace;
   white-space: nowrap;
+}
+
+.botao-excluir {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-1) var(--space-2);
+  border: 1px solid hsl(var(--destructive) / 0.6);
+  background: hsl(var(--destructive) / 0.08);
+  color: hsl(var(--destructive));
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  line-height: 1;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.botao-excluir:hover {
+  border-color: hsl(var(--destructive));
+  background: hsl(var(--destructive) / 0.18);
+  box-shadow: 0 0 12px hsl(var(--destructive) / 0.2);
 }
 
 .etiqueta {
