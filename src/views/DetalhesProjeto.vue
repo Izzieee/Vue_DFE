@@ -6,6 +6,7 @@ import type { ErroApi } from '@/api'
 import type { Projeto, Tarefa } from '@/tipos'
 import CartaoTarefa from '@/components/CartaoTarefa.vue'
 import ConfirmacaoExclusao from '@/components/ConfirmacaoExclusao.vue'
+import EstadoCarregamento from '@/components/EstadoCarregamento.vue'
 import { useExclusaoTarefa } from '@/exclusaoTarefa'
 
 const route = useRoute()
@@ -65,8 +66,8 @@ onMounted(carregarProjeto)
 </script>
 
 <template>
-  <section class="pagina">
-    <p v-if="carregando" class="estado">Carregando...</p>
+  <section class="pagina" :aria-busy="carregando">
+    <EstadoCarregamento v-if="carregando" mensagem="Carregando projeto..." />
     <div v-else-if="erro" class="estado estado-erro">
       <p>{{ erro }}</p>
 

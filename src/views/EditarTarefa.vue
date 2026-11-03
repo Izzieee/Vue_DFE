@@ -3,6 +3,7 @@ import { nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 import { RouterLink, useRoute, useRouter } from 'vue-router'
 import { atualizarTarefa, buscarTarefa, type ErroApi } from '@/api'
 import FormularioTarefa from '@/components/FormularioTarefa.vue'
+import EstadoCarregamento from '@/components/EstadoCarregamento.vue'
 import type { Tarefa } from '@/tipos'
 
 const route = useRoute()
@@ -79,8 +80,8 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <section class="pagina">
-    <p v-if="carregando" class="estado" role="status">Carregando tarefa...</p>
+  <section class="pagina" :aria-busy="carregando">
+    <EstadoCarregamento v-if="carregando" mensagem="Carregando tarefa..." />
 
     <template v-else-if="erro">
       <p class="estado estado-erro" role="alert">{{ erro }}</p>

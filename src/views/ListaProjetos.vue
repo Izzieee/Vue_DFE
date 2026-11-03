@@ -3,6 +3,7 @@ import { onMounted, ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import { listarProjetos } from '@/api'
 import type { Projeto } from '@/tipos'
+import EstadoCarregamento from '@/components/EstadoCarregamento.vue'
 
 const projetos = ref<Projeto[]>([])
 const carregando = ref(true)
@@ -25,14 +26,14 @@ onMounted(carregarProjetos)
 </script>
 
 <template>
-  <section class="pagina">
+  <section class="pagina" :aria-busy="carregando">
     <h1 class="titulo-secao">Projetos</h1>
 
     <div class="acoes-pagina">
       <RouterLink class="botao-novo" to="/projetos/novo"> + Novo Projeto</RouterLink>
     </div>
 
-    <p v-if="carregando" class="estado">Carregando...</p>
+    <EstadoCarregamento v-if="carregando" mensagem="Carregando projetos..." />
     <div v-else-if="erro" class="estado estado-erro">
       <p>Erro: {{ erro }}</p>
 

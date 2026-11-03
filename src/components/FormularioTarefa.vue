@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, nextTick, onMounted, ref, watch } from 'vue'
 import { listarProjetos } from '@/api'
+import EstadoCarregamento from '@/components/EstadoCarregamento.vue'
 import { ORDEM_CAMPOS, ROTULOS, validarTarefa, type Campo, type Erros } from '@/validacao'
 import type { Tarefa, Projeto } from '@/tipos'
 
@@ -212,7 +213,7 @@ function focarResumoErros() {
   <section class="formulario">
     <h1 class="titulo-secao">{{ titulo }}</h1>
 
-    <p v-if="carregando" class="estado" role="status">Carregando projetos...</p>
+    <EstadoCarregamento v-if="carregando" mensagem="Carregando projetos..." />
     <p v-else-if="erro" class="estado estado-erro" role="alert">Erro: {{ erro }}</p>
 
     <form v-else @submit="handleSubmit" class="form" :aria-busy="ocupado" novalidate>

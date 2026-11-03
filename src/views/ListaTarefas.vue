@@ -4,6 +4,7 @@ import { listarTarefas } from '@/api'
 import type { Tarefa } from '@/tipos'
 import CartaoTarefa from '@/components/CartaoTarefa.vue'
 import ConfirmacaoExclusao from '@/components/ConfirmacaoExclusao.vue'
+import EstadoCarregamento from '@/components/EstadoCarregamento.vue'
 import { useExclusaoTarefa } from '@/exclusaoTarefa'
 import { useFiltrosTarefas } from '@/estadoFiltros'
 
@@ -70,7 +71,7 @@ function limparFiltros() {
 </script>
 
 <template>
-  <section class="pagina">
+  <section class="pagina" :aria-busy="carregando">
     <h1 class="titulo-secao">Tarefas</h1>
 
     <div class="filtros">
@@ -117,7 +118,7 @@ function limparFiltros() {
       </button>
     </div>
 
-    <p v-if="carregando" class="estado">Carregando...</p>
+    <EstadoCarregamento v-if="carregando" mensagem="Carregando tarefas..." />
     <div v-else-if="erro" class="estado estado-erro">
       <p>Erro: {{ erro }}</p>
 
