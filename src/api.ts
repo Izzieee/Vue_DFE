@@ -84,6 +84,11 @@ export function atualizarStatusTarefa(id: string, status: Status): Promise<Taref
   return atualizarTarefa(id, { status })
 }
 
+/** Remove uma tarefa. A interface só deve ser atualizada depois desta confirmação. */
+export async function excluirTarefa(id: string): Promise<void> {
+  await requisicao<unknown>(`/tarefas/${encodeURIComponent(id)}`, { method: 'DELETE' })
+}
+
 export function criarProjeto(projeto: NovaProjeto): Promise<Projeto> {
   return requisicao<Projeto>('/projetos', { method: 'POST', body: projeto })
 }
