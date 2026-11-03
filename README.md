@@ -145,8 +145,8 @@ diálogo de confirmação, que começa com o foco em `Cancelar`. Somente ao conf
 `DELETE /tarefas/:id`. A tarefa é retirada do array local apenas quando a API responde com
 sucesso, e a atualização vale para a lista, o quadro e o detalhe do projeto. Se a API falhar,
 o diálogo exibe a mensagem e continua aberto, a tarefa permanece na tela e o usuário pode
-tentar novamente. O diálogo usa `role="alertdialog"`, `aria-modal`, fecha com `Esc` e mantém
-o foco entre os botões.
+tentar novamente. O diálogo usa `role="alertdialog"`, `aria-modal`, fecha com `Esc`, mantém
+o foco entre os botões e, ao cancelar, devolve o foco ao botão que abriu a confirmação.
 
 ### Issue concluída — #32 Mostrar o estado de carregamento
 
