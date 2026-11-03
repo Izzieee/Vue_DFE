@@ -2,6 +2,12 @@ import type { NovaProjeto, NovaTarefa, Projeto, Status, Tarefa } from './tipos'
 
 const API_URL = 'http://localhost:3000'
 
+/**
+ * Tempo máximo de espera por resposta. Sem esse limite, uma conexão travada
+ * deixaria as telas indefinidamente no estado de carregamento.
+ */
+const TEMPO_LIMITE_REQUISICAO = 10_000
+
 type MetodoHttp = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
 
 /**
@@ -27,6 +33,19 @@ async function requisicao<T>(url: string, options: OpcoesRequisicao = {}): Promi
     method,
     headers,
     body: body ? JSON.stringify(body) : undefined,
+    signal: AbortSignal.timeout(TEMPO_LIMITE_REQUISICAO),
+  }).catch((e: unknown) => {
+    const falha = e as Error
+
+    if (falha.name === 'TimeoutError') {
+      throw new Error('A API demorou para responder. Tente novamente.')
+    }
+
+    if (e instanceof TypeError) {
+      throw new Error('Não foi possível conectar à API. Verifique se ela está em execução.')
+    }
+
+    throw e
   })
 
   if (!resposta.ok) {
