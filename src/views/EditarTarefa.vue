@@ -64,6 +64,8 @@ async function salvar(dados: Omit<Tarefa, 'id'>) {
     if (falha.status === 404) {
       naoEncontrada.value = true
       erro.value = 'Tarefa não encontrada.'
+    } else if (falha.status === 500) {
+      erro.value = 'Erro interno do servidor. Tente novamente mais tarde.'
     } else {
       erro.value = falha.message || 'Erro ao salvar as alterações.'
     }

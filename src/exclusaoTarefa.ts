@@ -1,4 +1,5 @@
 import { ref } from 'vue'
+import type { ErroApi } from './api'
 import { excluirTarefa } from './api'
 import type { Tarefa } from './tipos'
 
@@ -52,8 +53,13 @@ export function useExclusaoTarefa(aoExcluir: (tarefa: Tarefa) => void) {
       tarefaSelecionada.value = null
       mensagem.value = `Tarefa "${tarefa.titulo}" excluída.`
     } catch (e) {
+      const falha = e as ErroApi
       // A tarefa permanece na lista para que o usuário possa tentar novamente.
-      erro.value = (e as Error).message || 'Não foi possível excluir a tarefa.'
+      if (falha.status === 500) {
+        erro.value = 'Erro interno do servidor. Tente novamente mais tarde.'
+      } else {
+        erro.value = falha.message || 'Não foi possível excluir a tarefa.'
+      }
     } finally {
       excluindo.value = false
     }

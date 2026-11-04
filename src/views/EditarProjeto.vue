@@ -56,6 +56,8 @@ async function salvarProjeto() {
 
     if (falha.status === 404) {
       erro.value = 'Projeto não encontrado'
+    } else if (falha.status === 500) {
+      erro.value = 'Erro interno do servidor. Tente novamente mais tarde.'
     } else {
       erro.value = falha.message
     }

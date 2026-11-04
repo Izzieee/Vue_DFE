@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { criarTarefa } from '@/api'
+import { criarTarefa, type ErroApi } from '@/api'
 import FormularioTarefa from '@/components/FormularioTarefa.vue'
 import type { Tarefa } from '@/tipos'
 
@@ -36,7 +36,12 @@ async function cadastrar(dados: Omit<Tarefa, 'id'>) {
     await criarTarefa(dados)
     router.push({ name: 'inicio' })
   } catch (e) {
-    erro.value = (e as Error).message || 'Erro ao salvar a tarefa.'
+    const falha = e as ErroApi
+    if (falha.status === 500) {
+      erro.value = 'Erro interno do servidor. Tente novamente mais tarde.'
+    } else {
+      erro.value = falha.message || 'Erro ao salvar a tarefa.'
+    }
   } finally {
     salvando.value = false
   }

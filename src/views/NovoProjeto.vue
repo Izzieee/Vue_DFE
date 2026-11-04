@@ -1,7 +1,7 @@
 <script setup lang="ts">
     import {ref} from 'vue'
     import { useRouter } from 'vue-router'
-    import { criarProjeto } from '@/api'
+    import { criarProjeto, type ErroApi } from '@/api'
 
     const router = useRouter()
 
@@ -13,22 +13,29 @@
     const erro = ref<string | null >(null)
 
     async function salvarProjeto() {
-      salvando.value = true
-      erro.value = null
+  salvando.value = true
+  erro.value = null
 
-      try{
-        await criarProjeto({
-          nome : nome.value,
-          descricao : descricao.value,
-          disciplina : disciplina.value,
-          criadoEm : new Date().toISOString(),
-        })
+  try {
+    await criarProjeto({
+      nome: nome.value,
+      descricao: descricao.value,
+      disciplina: disciplina.value,
+      criadoEm: new Date().toISOString(),
+    })
 
-        router.push('/projetos')
-      } catch (e) {
-        erro.value=(e as Error).message
-      }finally{ salvando.value = false}
+    router.push('/projetos')
+  } catch (e) {
+    const falha = e as ErroApi
+    if (falha.status === 500) {
+      erro.value = 'Erro interno do servidor. Tente novamente mais tarde.'
+    } else {
+      erro.value = falha.message || 'Erro ao salvar o projeto.'
     }
+  } finally {
+    salvando.value = false
+  }
+}
 </script>
 <template>
     <section class="pagina">
