@@ -100,7 +100,7 @@ async function alterarStatus() {
       <button
         type="button"
         class="botao-excluir"
-        :aria-label="`Excluir tarefa ${tarefa.titulo}`"
+        :aria-label="`Excluir a tarefa ${tarefa.titulo}`"
         @click="emit('excluir', tarefa)"
       >
         Excluir

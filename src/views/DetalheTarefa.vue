@@ -41,9 +41,9 @@ onMounted(carregarTarefa)
 </script>
 
 <template>
-  <section class="pagina" :aria-busy="carregando">
+  <section class="pagina" :aria-busy="carregando" aria-label="Detalhes da tarefa">
     <EstadoCarregamento v-if="carregando" mensagem="Carregando tarefa..." />
-    <div v-else-if="erro" class="estado estado-erro">
+    <div v-else-if="erro" class="estado estado-erro" role="alert">
       <p>{{ erro }}</p>
 
       <RouterLink class="botao-editar" to="/">Voltar para tarefas</RouterLink>
@@ -51,9 +51,9 @@ onMounted(carregarTarefa)
       <button type="button" class="botao" @click="carregarTarefa">Tentar Novamente</button>
     </div>
 
-    <article v-else-if="tarefa" class="tarefa">
+    <article v-else-if="tarefa" class="tarefa" aria-labelledby="titulo-tarefa">
       <header class="tarefa-cabecalho">
-        <h1>{{ tarefa.titulo }}</h1>
+        <h1 id="titulo-tarefa">{{ tarefa.titulo }}</h1>
         <div class="etiquetas">
           <span class="etiqueta status" :data-status="tarefa.status">{{ tarefa.status }}</span>
           <span class="etiqueta prioridade" :data-prioridade="tarefa.prioridade">

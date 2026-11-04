@@ -66,9 +66,9 @@ onMounted(carregarProjeto)
 </script>
 
 <template>
-  <section class="pagina" :aria-busy="carregando">
+  <section class="pagina" :aria-busy="carregando" aria-label="Detalhes do projeto">
     <EstadoCarregamento v-if="carregando" mensagem="Carregando projeto..." />
-    <div v-else-if="erro" class="estado estado-erro">
+    <div v-else-if="erro" class="estado estado-erro" role="alert">
       <p>{{ erro }}</p>
 
       <RouterLink class="botao-editar" to="/projetos">Voltar para projetos</RouterLink>

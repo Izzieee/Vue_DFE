@@ -26,11 +26,17 @@ onMounted(carregarProjetos)
 </script>
 
 <template>
-  <section class="pagina" :aria-busy="carregando">
+  <section class="pagina" :aria-busy="carregando" aria-label="Lista de projetos">
     <h1 class="titulo-secao">Projetos</h1>
 
     <div class="acoes-pagina">
-      <RouterLink class="botao-novo" to="/projetos/novo"> + Novo Projeto</RouterLink>
+      <RouterLink
+        class="botao-novo"
+        to="/projetos/novo"
+        aria-label="Criar novo projeto"
+      >
+        + Novo Projeto
+      </RouterLink>
     </div>
 
     <EstadoCarregamento v-if="carregando" mensagem="Carregando projetos..." />

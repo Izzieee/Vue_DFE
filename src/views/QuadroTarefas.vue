@@ -80,7 +80,7 @@ function aoAtualizarTarefa(atualizada: Tarefa) {
 </script>
 
 <template>
-  <section class="pagina" :aria-busy="carregando">
+  <section class="pagina" :aria-busy="carregando" aria-label="Quadro de tarefas">
     <h1 class="titulo-secao">Quadro de tarefas</h1>
 
     <EstadoCarregamento v-if="carregando" mensagem="Carregando tarefas..." />
@@ -96,8 +96,13 @@ function aoAtualizarTarefa(atualizada: Tarefa) {
       Nenhuma tarefa encontrada com os critérios selecionados.
     </div>
 
-    <div v-else class="quadro">
-      <section v-for="coluna in colunas" :key="coluna.status" class="coluna">
+    <div v-else class="quadro" role="region" aria-label="Quadro kanban por status">
+      <section
+        v-for="coluna in colunas"
+        :key="coluna.status"
+        class="coluna"
+        aria-label="Coluna {{ coluna.titulo }}"
+      >
         <h2 class="titulo-coluna">{{ coluna.titulo }}</h2>
 
         <div class="tarefas-coluna">
@@ -152,6 +157,20 @@ function aoAtualizarTarefa(atualizada: Tarefa) {
   grid-template-columns: repeat(4, minmax(250px, 1fr));
   gap: var(--space-3);
   overflow-x: auto;
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--border)) hsl(var(--background));
+}
+
+@media (max-width: 680px) {
+  .quadro {
+    grid-template-columns: repeat(2, minmax(200px, 1fr));
+  }
+}
+
+@media (max-width: 480px) {
+  .quadro {
+    grid-template-columns: 1fr;
+  }
 }
 
 .coluna {

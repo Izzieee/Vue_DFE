@@ -71,7 +71,7 @@ function limparFiltros() {
 </script>
 
 <template>
-  <section class="pagina" :aria-busy="carregando">
+  <section class="pagina" :aria-busy="carregando" aria-label="Lista de tarefas">
     <h1 class="titulo-secao">Tarefas</h1>
 
     <div class="filtros">

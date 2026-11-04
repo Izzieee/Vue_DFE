@@ -16,6 +16,13 @@ const hoje = new Date().toLocaleDateString('pt-BR', {
 
 <template>
   <div class="aplicacao">
+    <!-- Link de pular para o conteúdo (skip link) -->
+    <a
+      href="#conteudo"
+      class="pular-conteudo"
+      >Pular para o conteúdo</a
+    >
+
     <header class="cabecalho">
       <div class="cabecalho-conteudo">
         <RouterLink to="/" class="marca" aria-label="Ir para o início">
@@ -27,26 +34,44 @@ const hoje = new Date().toLocaleDateString('pt-BR', {
         </RouterLink>
 
         <nav class="navegacao" aria-label="Navegação principal">
-          <RouterLink to="/" class="link-navegacao" exact-active-class="ativo">
+          <RouterLink
+            to="/"
+            class="link-navegacao"
+            exact-active-class="ativo"
+            aria-current="page"
+          >
             Tarefas
           </RouterLink>
 
-          <RouterLink to="/quadro" class="link-navegacao" exact-active-class="ativo">
-            Quadro</RouterLink
+          <RouterLink
+            to="/quadro"
+            class="link-navegacao"
+            exact-active-class="ativo"
+            aria-current="page"
           >
+            Quadro
+          </RouterLink>
 
-          <RouterLink to="/tarefas/nova" class="link-navegacao" active-class="ativo">
+          <RouterLink
+            to="/tarefas/nova"
+            class="link-navegacao"
+            active-class="ativo"
+          >
             Nova Tarefa
           </RouterLink>
 
-          <RouterLink to="/projetos" class="link-navegacao" active-class="ativo">
+          <RouterLink
+            to="/projetos"
+            class="link-navegacao"
+            active-class="ativo"
+          >
             Projetos
           </RouterLink>
         </nav>
       </div>
     </header>
 
-    <main class="conteudo">
+    <main id="conteudo" class="conteudo" tabindex="-1">
       <RouterView />
     </main>
 
@@ -60,6 +85,7 @@ const hoje = new Date().toLocaleDateString('pt-BR', {
           :href="`https://github.com/${pessoa.usuario}`"
           target="_blank"
           rel="noopener noreferrer"
+          :aria-label="`Perfil do GitHub de ${pessoa.nome}`"
         >
           {{ pessoa.nome }}
         </a>
@@ -449,6 +475,29 @@ a {
   text-transform: uppercase;
 }
 
+.pular-conteudo {
+  position: absolute;
+  top: -100%;
+  left: 0;
+  background: hsl(var(--ring));
+  color: hsl(var(--background));
+  padding: var(--space-2) var(--space-3);
+  z-index: 100;
+  transition: top 0.3s ease-in-out;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border-radius: 0 0 var(--space-2) var(--space-2);
+}
+
+.pular-conteudo:focus {
+  top: var(--space-3);
+  outline: var(--focus-ring);
+  outline-offset: 2px;
+}
+
 @media (max-width: 560px) {
   .cabecalho-conteudo {
     flex-direction: column;
@@ -459,17 +508,34 @@ a {
 
   .navegacao {
     width: 100%;
+    flex-wrap: wrap;
+    gap: var(--space-1);
   }
 
   .link-navegacao {
-    flex: 1;
+    flex: 1 1 auto;
     justify-content: center;
+    text-align: center;
+  }
+
+  .aplicacao {
+    padding: var(--space-2);
+  }
+
+  .rodape {
+    padding: var(--space-3);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .cabecalho::before {
     animation: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pular-conteudo {
+    transition: none;
   }
 }
 </style>

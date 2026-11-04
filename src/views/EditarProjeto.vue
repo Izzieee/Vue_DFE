@@ -66,7 +66,6 @@ async function salvarProjeto() {
   }
 }
 </script>
-
 <template>
   <section class="pagina" :aria-busy="carregando">
     <h1 class="titulo-secao">Editar projeto</h1>
@@ -78,30 +77,51 @@ async function salvarProjeto() {
       <RouterLink class="botao-voltar" to="/projetos">Voltar para Projetos</RouterLink>
     </div>
 
-    <form v-else class="formulario" @submit.prevent="salvarProjeto">
+    <form v-else class="formulario" @submit.prevent="salvarProjeto" novalidate>
       <div class="campo">
-        <label for="nome">Nome</label>
-        <input id="nome" v-model="nome" type="text" />
+        <label for="nome" class="rotulo">Nome</label>
+        <input
+          id="nome"
+          name="nome"
+          v-model="nome"
+          type="text"
+          required
+          :disabled="salvando"
+          :aria-invalid="Boolean(erro)"
+        />
       </div>
 
       <div class="campo">
-        <label for="descricao">Descrição</label>
-        <textarea id="descricao" v-model="descricao"></textarea>
+        <label for="descricao" class="rotulo">Descrição</label>
+        <textarea
+          id="descricao"
+          name="descricao"
+          v-model="descricao"
+          rows="4"
+          required
+          :disabled="salvando"
+        ></textarea>
       </div>
 
       <div class="campo">
-        <label for="disciplina">Disciplina</label>
-        <input id="disciplina" v-model="disciplina" type="text" />
+        <label for="disciplina" class="rotulo">Disciplina</label>
+        <input
+          id="disciplina"
+          name="disciplina"
+          v-model="disciplina"
+          type="text"
+          required
+          :disabled="salvando"
+        />
       </div>
 
-      <button class="botao-salvar" type="submit" :disabled="salvando">
+      <button class="botao botao-salvar" type="submit" :disabled="salvando">
         {{ salvando ? 'Salvando...' : 'Salvar alterações' }}
       </button>
     </form>
   </section>
 </template>
-
-<style scoped>
+<style>
 .pagina {
   display: flex;
   flex-direction: column;
@@ -135,21 +155,24 @@ async function salvarProjeto() {
   gap: var(--space-1);
 }
 
-.campo label {
-  color: hsl(var(--ring));
+.rotulo {
   font-size: 0.78rem;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+  color: hsl(var(--ring));
 }
 
 .campo input,
 .campo textarea {
   padding: var(--space-2);
   border: 1px solid hsl(var(--border));
-  background: hsl(var(--background));
+  background: hsl(var(--input));
   color: hsl(var(--foreground));
   font: inherit;
+  font-size: 0.92rem;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .campo textarea {
@@ -160,7 +183,14 @@ async function salvarProjeto() {
 .campo input:focus,
 .campo textarea:focus {
   border-color: hsl(var(--ring));
-  outline: none;
+  outline: var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.campo input:disabled,
+.campo textarea:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
 }
 
 .botao-salvar {
@@ -173,10 +203,16 @@ async function salvarProjeto() {
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+  transition: all 0.3s var(--ease-glass);
 }
 
-.botao-salvar:hover {
+.botao-salvar:hover:not(:disabled) {
   background: hsl(var(--ring) / 0.2);
+}
+
+.botao-salvar:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .botao-voltar {
@@ -216,5 +252,15 @@ async function salvarProjeto() {
   border: 1px solid hsl(var(--destructive) / 0.5);
   background: hsl(var(--destructive) / 0.06);
   color: hsl(var(--destructive-foreground));
+}
+
+@media (max-width: 560px) {
+  .formulario {
+    padding: var(--space-2);
+  }
+
+  .pagina {
+    padding: var(--space-2);
+  }
 }
 </style>
