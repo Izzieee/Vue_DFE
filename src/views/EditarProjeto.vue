@@ -72,13 +72,15 @@ async function salvarProjeto() {
     <h1 class="titulo-secao">Editar projeto</h1>
 
     <EstadoCarregamento v-if="carregando" mensagem="Carregando projeto..." />
-    <div v-else-if="erro" class="estado estado-erro" role="alert">
-      <p>
+    <div v-else-if="erro" class="estado estado-erro estado-erro-combustao" role="alert">
+      <p class="texto-erro">
         <span class="erro-marcador" aria-hidden="true">!</span>
         {{ erro }}
       </p>
 
-      <RouterLink class="botao-voltar" to="/projetos">Voltar para Projetos</RouterLink>
+      <div class="botoes-erro">
+        <RouterLink class="botao botao-secundario" to="/projetos">Voltar para Projetos</RouterLink>
+      </div>
     </div>
 
     <form v-else class="formulario" @submit.prevent="salvarProjeto">
@@ -234,5 +236,50 @@ async function salvarProjeto() {
   line-height: 1;
   margin-right: var(--space-1);
   flex-shrink: 0;
+}
+
+.estado-erro-combustao {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  align-items: center;
+  text-align: center;
+}
+
+.texto-erro {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  margin: 0;
+}
+
+.botoes-erro {
+  display: flex;
+  gap: var(--space-2);
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.botao-primario {
+  background: hsl(var(--ring));
+  border-color: hsl(var(--ring));
+  color: hsl(var(--background));
+  box-shadow: 0 0 20px hsl(var(--ring) / 0.4);
+}
+
+.botao-primario:hover {
+  background: hsl(var(--ring));
+  color: hsl(var(--background));
+}
+
+.botao-secundario {
+  background: hsl(var(--secondary));
+  border-color: hsl(var(--border));
+  color: hsl(var(--muted-foreground));
+}
+
+.botao-secundario:hover {
+  border-color: hsl(var(--ring));
+  color: hsl(var(--ring));
 }
 </style>
