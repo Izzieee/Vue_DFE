@@ -57,7 +57,10 @@
                 <input id="disciplina" v-model="disciplina" type="text"/>
             </div>
 
-            <p v-if="erro" class="estado estado-erro"> Erro: {{ erro }}</p>
+            <p v-if="erro" class="estado estado-erro" role="alert">
+              <span class="erro-marcador" aria-hidden="true">!</span>
+              Erro: {{ erro }}
+            </p>
             <button class="botao-salvar" type="submit" :disabled="salvando">
               {{ salvando ? 'Salvando...' :'Salvar projeto' }}
             </button>
@@ -156,5 +159,20 @@
 .botao-salvar:hover {
   background: hsl(var(--ring) / 0.2);
   box-shadow: 0 0 18px hsl(var(--ring) / 0.2);
+}
+
+.erro-marcador {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1rem;
+  height: 1rem;
+  border: 1px solid hsl(var(--destructive));
+  border-radius: 50%;
+  font-size: 0.7rem;
+  font-weight: 700;
+  line-height: 1;
+  margin-right: var(--space-1);
+  flex-shrink: 0;
 }
 </style>

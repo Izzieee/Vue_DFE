@@ -50,7 +50,10 @@ async function cadastrar(dados: Omit<Tarefa, 'id'>) {
 
 <template>
   <section class="pagina">
-    <p v-if="erro" class="estado estado-erro" role="alert">Erro: {{ erro }}</p>
+    <p v-if="erro" class="estado estado-erro" role="alert">
+      <span class="erro-marcador" aria-hidden="true">!</span>
+      Erro: {{ erro }}
+    </p>
 
     <FormularioTarefa modo="criar" :inicial="inicial" :enviando="salvando" @submit="cadastrar" />
   </section>
@@ -63,4 +66,19 @@ async function cadastrar(dados: Omit<Tarefa, 'id'>) {
   gap: var(--space-3);
   padding: var(--space-3);
 }
+.erro-marcador {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1rem;
+  height: 1rem;
+  border: 1px solid hsl(var(--destructive));
+  border-radius: 50%;
+  font-size: 0.7rem;
+  font-weight: 700;
+  line-height: 1;
+  margin-right: var(--space-1);
+  flex-shrink: 0;
+}
+
 </style>

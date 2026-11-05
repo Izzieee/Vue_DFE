@@ -119,8 +119,11 @@ function limparFiltros() {
     </div>
 
     <EstadoCarregamento v-if="carregando" mensagem="Carregando tarefas..." />
-    <div v-else-if="erro" class="estado estado-erro">
-      <p>Erro: {{ erro }}</p>
+    <div v-else-if="erro" class="estado estado-erro" role="alert">
+      <p>
+        <span class="erro-marcador" aria-hidden="true">!</span>
+        Erro: {{ erro }}
+      </p>
 
       <button type="button" class="botao" @click="carregarTarefas">Tentar Novamente</button>
     </div>
@@ -290,6 +293,21 @@ function limparFiltros() {
   border: 1px solid hsl(var(--terminal-green) / 0.5);
   background: hsl(var(--terminal-green) / 0.08);
   color: hsl(var(--terminal-green));
+}
+
+.erro-marcador {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1rem;
+  height: 1rem;
+  border: 1px solid hsl(var(--destructive));
+  border-radius: 50%;
+  font-size: 0.7rem;
+  font-weight: 700;
+  line-height: 1;
+  margin-right: var(--space-1);
+  flex-shrink: 0;
 }
 
 @media (min-width: 680px) {

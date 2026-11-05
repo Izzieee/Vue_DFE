@@ -72,8 +72,11 @@ async function salvarProjeto() {
     <h1 class="titulo-secao">Editar projeto</h1>
 
     <EstadoCarregamento v-if="carregando" mensagem="Carregando projeto..." />
-    <div v-else-if="erro" class="estado estado-erro">
-      <p>{{ erro }}</p>
+    <div v-else-if="erro" class="estado estado-erro" role="alert">
+      <p>
+        <span class="erro-marcador" aria-hidden="true">!</span>
+        {{ erro }}
+      </p>
 
       <RouterLink class="botao-voltar" to="/projetos">Voltar para Projetos</RouterLink>
     </div>
@@ -216,5 +219,20 @@ async function salvarProjeto() {
   border: 1px solid hsl(var(--destructive) / 0.5);
   background: hsl(var(--destructive) / 0.06);
   color: hsl(var(--destructive-foreground));
+}
+
+.erro-marcador {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1rem;
+  height: 1rem;
+  border: 1px solid hsl(var(--destructive));
+  border-radius: 50%;
+  font-size: 0.7rem;
+  font-weight: 700;
+  line-height: 1;
+  margin-right: var(--space-1);
+  flex-shrink: 0;
 }
 </style>
