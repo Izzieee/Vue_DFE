@@ -1,18 +1,18 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
-import { criarProjeto, type ErroApi } from '@/api'
+    import {ref} from 'vue'
+    import { useRouter } from 'vue-router'
+    import { criarProjeto, type ErroApi } from '@/api'
 
-const router = useRouter()
+    const router = useRouter()
 
-const nome = ref('')
-const descricao = ref('')
-const disciplina = ref('')
+    const nome = ref('')
+    const descricao = ref('')
+    const disciplina = ref('')
 
-const salvando = ref(false)
-const erro = ref<string | null>(null)
+    const salvando = ref(false)
+    const erro = ref<string | null >(null)
 
-async function salvarProjeto() {
+    async function salvarProjeto() {
   salvando.value = true
   erro.value = null
 
@@ -38,59 +38,36 @@ async function salvarProjeto() {
 }
 </script>
 <template>
-  <section class="pagina">
-    <h1 class="titulo-secao">Novo Projeto</h1>
+    <section class="pagina">
+        <h1 class="titulo-secao">Novo Projeto</h1>
 
-    <p v-if="erro" class="estado estado-erro" role="alert">Erro: {{ erro }}</p>
+        <form class="formulario" @submit.prevent="salvarProjeto">
+            <div class="campo">
+                <label for="nome">Nome</label>
+                <input id="nome" v-model="nome" type="text"/>
+            </div>
 
-    <form class="formulario" @submit.prevent="salvarProjeto" novalidate>
-      <div class="campo">
-        <label for="nome" class="rotulo">Nome</label>
-        <input
-          id="nome"
-          name="nome"
-          v-model="nome"
-          type="text"
-          required
-          :disabled="salvando"
-          :aria-invalid="Boolean(erro)"
-          placeholder="Nome do projeto"
-        />
-      </div>
+            <div class="campo">
+                <label for="descricao">Descrição</label>
+                <textarea id="descricao" v-model="descricao"></textarea>
+            </div>
 
-      <div class="campo">
-        <label for="descricao" class="rotulo">Descrição</label>
-        <textarea
-          id="descricao"
-          name="descricao"
-          v-model="descricao"
-          rows="4"
-          required
-          :disabled="salvando"
-          placeholder="Descreva o projeto"
-        ></textarea>
-      </div>
+            <div class="campo">
+                <label for="disciplina">disciplina</label>
+                <input id="disciplina" v-model="disciplina" type="text"/>
+            </div>
 
-      <div class="campo">
-        <label for="disciplina" class="rotulo">Disciplina</label>
-        <input
-          id="disciplina"
-          name="disciplina"
-          v-model="disciplina"
-          type="text"
-          required
-          :disabled="salvando"
-          placeholder="Disciplina ou curso"
-        />
-      </div>
-
-      <button class="botao botao-salvar" type="submit" :disabled="salvando">
-        {{ salvando ? 'Salvando...' : 'Salvar projeto' }}
-      </button>
-    </form>
-  </section>
+            <p v-if="erro" class="estado estado-erro estado-erro-combustao" role="alert">
+              <span class="erro-marcador" aria-hidden="true">!</span>
+              Erro: {{ erro }}
+            </p>
+            <button class="botao-salvar" type="submit" :disabled="salvando">
+              {{ salvando ? 'Salvando...' :'Salvar projeto' }}
+            </button>
+        </form>
+    </section>
 </template>
-<style>
+<style scoped>
 .pagina {
   display: flex;
   flex-direction: column;
@@ -135,12 +112,12 @@ async function salvarProjeto() {
   gap: var(--space-1);
 }
 
-.rotulo {
+.campo label {
+  color: hsl(var(--ring));
   font-size: 0.78rem;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: hsl(var(--ring));
 }
 
 .campo input,
@@ -149,10 +126,9 @@ async function salvarProjeto() {
   box-sizing: border-box;
   padding: var(--space-2);
   border: 1px solid hsl(var(--border));
-  background: hsl(var(--input));
+  background: hsl(var(--background));
   color: hsl(var(--foreground));
   font: inherit;
-  font-size: 0.92rem;
 }
 
 .campo textarea {
@@ -163,14 +139,8 @@ async function salvarProjeto() {
 .campo input:focus,
 .campo textarea:focus {
   border-color: hsl(var(--ring));
-  outline: var(--focus-ring);
-  outline-offset: 2px;
-}
-
-.campo input:disabled,
-.campo textarea:disabled {
-  opacity: 0.55;
-  cursor: not-allowed;
+  outline: none;
+  box-shadow: 0 0 12px hsl(var(--ring) / 0.15);
 }
 
 .botao-salvar {
@@ -184,43 +154,70 @@ async function salvarProjeto() {
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  transition: all 0.3s var(--ease-glass);
 }
 
-.botao-salvar:hover:not(:disabled) {
+.botao-salvar:hover {
   background: hsl(var(--ring) / 0.2);
   box-shadow: 0 0 18px hsl(var(--ring) / 0.2);
 }
 
-.botao-salvar:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
+.erro-marcador {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1rem;
+  height: 1rem;
+  border: 1px solid hsl(var(--destructive));
+  border-radius: 50%;
+  font-size: 0.7rem;
+  font-weight: 700;
+  line-height: 1;
+  margin-right: var(--space-1);
+  flex-shrink: 0;
 }
 
-.estado {
-  padding: var(--space-5) var(--space-3);
-  border: 1px dashed hsl(var(--border));
-  background: hsl(var(--card) / 0.9);
-  color: hsl(var(--muted-foreground));
-  font-size: 0.9rem;
-  letter-spacing: 0.05em;
+.estado-erro-combustao {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  align-items: center;
   text-align: center;
-  text-transform: uppercase;
 }
 
-.estado-erro {
-  border: 1px solid hsl(var(--destructive) / 0.5);
-  background: hsl(var(--destructive) / 0.06);
-  color: hsl(var(--destructive-foreground));
+.texto-erro {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  margin: 0;
 }
 
-@media (max-width: 560px) {
-  .formulario {
-    padding: var(--space-2);
-  }
+.botoes-erro {
+  display: flex;
+  gap: var(--space-2);
+  justify-content: center;
+  flex-wrap: wrap;
+}
 
-  .pagina {
-    padding: var(--space-2);
-  }
+.botao-primario {
+  background: transparent;
+  border: 1px solid hsl(var(--ring));
+  color: hsl(var(--ring));
+}
+
+.botao-primario:hover {
+  background: hsl(var(--ring) / 0.08);
+  color: hsl(var(--ring));
+}
+
+.botao-secundario {
+  background: transparent;
+  border: 1px solid hsl(var(--border));
+  color: hsl(var(--muted-foreground));
+}
+
+.botao-secundario:hover {
+  background: hsl(var(--secondary) / 0.05);
+  border-color: hsl(var(--ring));
+  color: hsl(var(--ring));
 }
 </style>

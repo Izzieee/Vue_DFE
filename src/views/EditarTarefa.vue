@@ -86,7 +86,10 @@ onUnmounted(() => {
     <EstadoCarregamento v-if="carregando" mensagem="Carregando tarefa..." />
 
     <template v-else-if="erro">
-      <p class="estado estado-erro" role="alert">{{ erro }}</p>
+      <p class="estado estado-erro estado-erro-combustao" role="alert">
+        <span class="erro-marcador" aria-hidden="true">!</span>
+        {{ erro }}
+      </p>
       <RouterLink class="botao-voltar" to="/">Voltar para a lista de tarefas</RouterLink>
     </template>
 
@@ -153,5 +156,65 @@ onUnmounted(() => {
 .botao-voltar:hover {
   background: hsl(var(--ring) / 0.2);
   box-shadow: 0 0 18px hsl(var(--ring) / 0.2);
+}
+
+.erro-marcador {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1rem;
+  height: 1rem;
+  border: 1px solid hsl(var(--destructive));
+  border-radius: 50%;
+  font-size: 0.7rem;
+  font-weight: 700;
+  line-height: 1;
+  margin-right: var(--space-1);
+  flex-shrink: 0;
+}
+
+.estado-erro-combustao {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  align-items: center;
+  text-align: center;
+}
+
+.texto-erro {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  margin: 0;
+}
+
+.botoes-erro {
+  display: flex;
+  gap: var(--space-2);
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.botao-primario {
+  background: transparent;
+  border: 1px solid hsl(var(--ring));
+  color: hsl(var(--ring));
+}
+
+.botao-primario:hover {
+  background: hsl(var(--ring) / 0.08);
+  color: hsl(var(--ring));
+}
+
+.botao-secundario {
+  background: transparent;
+  border: 1px solid hsl(var(--border));
+  color: hsl(var(--muted-foreground));
+}
+
+.botao-secundario:hover {
+  background: hsl(var(--secondary) / 0.05);
+  border-color: hsl(var(--ring));
+  color: hsl(var(--ring));
 }
 </style>
