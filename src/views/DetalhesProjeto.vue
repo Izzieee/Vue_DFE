@@ -310,24 +310,24 @@ onMounted(carregarProjeto)
 }
 
 .botao-primario {
-  background: hsl(var(--ring));
-  border-color: hsl(var(--ring));
-  color: hsl(var(--background));
-  box-shadow: 0 0 20px hsl(var(--ring) / 0.4);
+  background: transparent;
+  border: 1px solid hsl(var(--ring));
+  color: hsl(var(--ring));
 }
 
 .botao-primario:hover {
-  background: hsl(var(--ring));
-  color: hsl(var(--background));
+  background: hsl(var(--ring) / 0.08);
+  color: hsl(var(--ring));
 }
 
 .botao-secundario {
-  background: hsl(var(--secondary));
-  border-color: hsl(var(--border));
+  background: transparent;
+  border: 1px solid hsl(var(--border));
   color: hsl(var(--muted-foreground));
 }
 
 .botao-secundario:hover {
+  background: hsl(var(--secondary) / 0.05);
   border-color: hsl(var(--ring));
   color: hsl(var(--ring));
 }
