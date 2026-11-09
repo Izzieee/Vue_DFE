@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "api": "json-server db.json --port 3000",
+    "api:prod": "node server.js",
     "build": "run-p type-check \"build-only {@}\" --",
     "preview": "vite preview",
     "build-only": "vite build",
