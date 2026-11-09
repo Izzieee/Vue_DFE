@@ -1,4 +1,3 @@
-import { createServer } from 'node:http'
 import { createApp } from './node_modules/json-server/lib/app.js'
 import { Low } from 'lowdb'
 import { JSONFile } from 'lowdb/node'
@@ -13,9 +12,6 @@ await db.read()
 // Cria a aplicação do json-server
 const app = createApp(db, { logger: false })
 
-// Cria o servidor HTTP
-const httpServer = createServer(app)
-
-httpServer.listen(PORT, () => {
+app.listen(PORT, () => {
   console.log(`JSON Server está rodando na porta ${PORT}`)
 })
