@@ -1,6 +1,6 @@
 import type { NovaProjeto, NovaTarefa, Projeto, Status, Tarefa } from './tipos'
 
-const API_URL = 'http://localhost:3000'
+const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:3000'
 
 /**
  * Tempo máximo de espera por resposta. Sem esse limite, uma conexão travada
