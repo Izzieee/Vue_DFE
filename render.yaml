@@ -10,7 +10,3 @@ services:
     envVars:
       - key: PORT
         value: 10000
-    disk:
-      name: db-disk
-      mountPath: /var/data
-      sizeGB: 1
