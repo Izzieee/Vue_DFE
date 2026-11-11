@@ -1,0 +1,81 @@
+import { createRouter, createWebHistory } from 'vue-router'
+import PlaceholderView from './views/PlaceholderView.vue'
+import ListaTarefas from './views/ListaTarefas.vue'
+import QuadroTarefas from './views/QuadroTarefas.vue'
+import DetalheTarefa from './views/DetalheTarefa.vue'
+import EditarTarefa from './views/EditarTarefa.vue'
+import NovaTarefa from './views/NovaTarefa.vue'
+import ListaProjetos from './views/ListaProjetos.vue'
+import DetalhesProjeto from './views/DetalhesProjeto.vue'
+import NovoProjeto from './views/NovoProjeto.vue'
+import EditarProjeto from './views/EditarProjeto.vue'
+
+const router = createRouter({
+  // Usa a base configurada no Vite para funcionar também em subdiretórios
+  // (por exemplo, GitHub Pages em /Vue_DFE/).
+  history: createWebHistory(import.meta.env.BASE_URL),
+  routes: [
+    {
+      path: '/',
+      name: 'inicio',
+      component: ListaTarefas,
+      meta: { titulo: 'Tarefas' },
+    },
+    {
+      path:'/quadro',
+      name: 'quadro-tarefas',
+      component: QuadroTarefas,
+      meta: {titulo: 'Quadro de tarefas'},
+    },
+    {
+      path: '/tarefas/nova',
+      name: 'nova-tarefa',
+      component: NovaTarefa,
+      meta: { titulo: 'Nova tarefa' },
+    },
+    {
+      path: '/tarefas/:id',
+      name: 'detalhe-tarefa',
+      component: DetalheTarefa,
+      meta: { titulo: 'Detalhes da tarefa' },
+    },
+    {
+      path: '/tarefas/:id/editar',
+      name: 'editar-tarefa',
+      component: EditarTarefa,
+      meta: { titulo: 'Editar tarefa' },
+    },
+    {
+      path: '/projetos',
+      name: 'lista-projetos',
+      component: ListaProjetos,
+      meta: { titulo: 'Projetos' },
+    },
+    {
+      path: '/projetos/novo',
+      name: 'novo-projeto',
+      component: NovoProjeto,
+      meta: { titulo: 'Novo projeto' },
+    },
+    {
+      path: '/projetos/:id',
+      name: 'detalhe-projeto',
+      component: DetalhesProjeto,
+      meta: { titulo: 'Detalhes do projeto' },
+    },
+    {
+      path: '/projetos/:id/editar',
+      name: 'editar-projeto',
+      component: EditarProjeto,
+      meta: { titulo: 'Editar projeto' },
+    },
+    {
+      path: '/:pathMatch(.*)*',
+      name: 'nao-encontrada',
+      component: PlaceholderView,
+      meta: { titulo: 'Página não encontrada' },
+    },
+  ],
+})
+
+export default router

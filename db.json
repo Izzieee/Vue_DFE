@@ -1,0 +1,70 @@
+{
+  "projetos": [
+    {
+      "id": "1",
+      "nome": "Sistema de Biblioteca",
+      "descricao": "Controle de livros, leitores e empréstimos",
+      "disciplina": "Desenvolvimento Frontend",
+      "criadoEm": "2026-09-15"
+    },
+    {
+      "id": "2",
+      "nome": "App de Tarefas",
+      "descricao": "Gerenciador de tarefas por projeto",
+      "disciplina": "Desenvolvimento Frontend",
+      "criadoEm": "2026-09-20"
+    }
+  ],
+  "tarefas": [
+    {
+      "id": "1",
+      "projetoId": "1",
+      "titulo": "Modelar entidades",
+      "descricao": "Livro, leitor e empréstimo",
+      "status": "a-fazer",
+      "prioridade": "alta",
+      "responsavel": "Ana",
+      "prazo": "2026-10-10"
+    },
+    {
+      "id": "2",
+      "projetoId": "1",
+      "titulo": "Criar tela de listagem",
+      "descricao": "Listar livros com busca",
+      "status": "em-andamento",
+      "prioridade": "media",
+      "responsavel": "Bruno",
+      "prazo": "2026-10-15"
+    },
+    {
+      "id": "3",
+      "projetoId": "1",
+      "titulo": "Implementar formulário",
+      "descricao": "Cadastro de novos livros",
+      "status": "em-revisao",
+      "prioridade": "media",
+      "responsavel": "Carla",
+      "prazo": "2026-10-18"
+    },
+    {
+      "id": "4",
+      "projetoId": "1",
+      "titulo": "Publicar no GitHub Pages",
+      "descricao": "Configurar deploy",
+      "status": "concluida",
+      "prioridade": "baixa",
+      "responsavel": "Ana",
+      "prazo": "2026-10-01"
+    },
+    {
+      "id": "5",
+      "projetoId": "2",
+      "titulo": "Desenhar o diagrama ER",
+      "descricao": "Entidades livro, leitor e empréstimo",
+      "status": "a-fazer",
+      "prioridade": "baixa",
+      "responsavel": "Ana",
+      "prazo": "2026-10-20"
+    }
+  ]
+}

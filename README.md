@@ -1,0 +1,377 @@
+# Projeto de Desenvolvimento Frontend G2
+
+Projeto em equipe da disciplina **Desenvolvimento Frontend — 2026.2**, ministrada pela
+Profª Marianne Lacerda Dutra Theodoro.
+
+**Marco atual:** Marco 6 — Build de produção, publicação e deploy da aplicação
+
+## Integrantes da equipe
+
+| Nome completo | Usuário no GitHub |
+|---|---|
+| [Raquel Aires Pimenta Silva] | [@RaquelAires](https://github.com/RaquelAires) |
+| [Jacyane Carvalho Martins] | [@Izzieee](https://github.com/Izzieee) |
+| [Ryllen Alves da Silva Nascimento] | [@Ryllen](https://github.com/Ryllen) |
+
+**Professora:** [@mariannedutra](https://github.com/mariannedutra)
+
+---
+
+## Stack do projeto
+
+- **Framework:** Vue 3 (Composition API com `<script setup>`)
+- **Linguagem:** TypeScript
+- **Roteamento:** Vue Router
+- **Build tool:** Vite
+- **API local:** json-server (v1.x)
+- **Node.js:** 24 LTS ou superior
+
+---
+
+## Como executar
+
+Instale as dependências:
+
+```sh
+npm install
+```
+
+Suba a API local (json-server na porta 3000):
+
+```sh
+npm run api
+```
+
+Em outro terminal, suba o servidor de desenvolvimento:
+
+```sh
+npm run dev
+```
+
+Para gerar a build de produção:
+
+```sh
+npm run build
+```
+
+Para validar a aplicação a partir dos arquivos gerados (equivalente ao ambiente de
+produção):
+
+```sh
+npm run preview
+```
+
+---
+
+## Publicação (Marco 6)
+
+A aplicação foi publicada em um serviço de hospedagem estática.
+
+- **Aplicação publicada:** <https://vocal-boba-e78234.netlify.app>
+  - Senha da proteção temporária: `My-Drop-Site` (o site anônimo do Netlify Drop fica
+    protegido até a claim da instância).
+- **API pública em uso no build atual:** <https://inputs-abs-arabic-casio.trycloudflare.com>
+  - Serviço temporário criado com Cloudflare Tunnel para expor o `json-server` local.
+
+### Build de produção
+
+O comando abaixo gera o diretório `dist/`, com o `index.html`, os assets, o `favicon.ico`
+e o `_redirects` (fallback de SPA) e o `404.html` gerado a partir do `index.html`:
+
+```sh
+npm run build
+```
+
+A validação do build é feita com o `vue-tsc` (type-check) e o `vite build`; o script
+`postbuild` gera o `dist/404.html` a partir do `dist/index.html`.
+
+### Variáveis de ambiente
+
+No build de produção, a URL da API vem de `VITE_API_URL`. O arquivo
+`.env.production.example` documenta as variáveis:
+
+- `VITE_API_URL`: URL base da API (ex.: `https://sua-api.onrender.com`).
+- `VITE_BASE_PATH` (opcional): prefixo usado quando a aplicação é publicada em um
+  subdiretório (ex.: `/Vue_DFE/`). Em hospedagens de raiz, deixe vazio.
+
+No deploy atual, o valor usado foi:
+
+```sh
+VITE_API_URL=https://inputs-abs-arabic-casio.trycloudflare.com npm run build
+```
+
+### Hospedagem estática
+
+Configuração atual da hospedagem estática:
+
+- [`netlify.toml`](./netlify.toml): diretório público (`publish = "dist"`) e redirecionamento
+  SPA (`/*` -> `/index.html` com status `200`).
+- [`public/_redirects`](./public/_redirects): fallback de SPA para hospedagens que leem esse arquivo.
+- [`scripts/gerar-404.mjs`](./scripts/gerar-404.mjs) e o script `postbuild`: geram `dist/404.html`.
+
+---
+
+## Rotas
+
+| Rota | Tela |
+|---|---|
+| `/` | Lista de tarefas |
+| `/tarefas/nova` | Nova tarefa |
+| `/tarefas/:id` | Detalhe da tarefa |
+| `/tarefas/:id/editar` | Edição da tarefa |
+| `/projetos` | Lista de projetos |
+| `/projetos/novo` | Novo projeto |
+| `/projetos/:id` | Detalhe do projeto com as tarefas |
+| `/projetos/:id/editar` | Edição do projeto |
+| `*` | Página não encontrada |
+
+## Contrato de dados
+
+Definido em `db.json` e tipado em `src/tipos.ts`. As tarefas de um projeto são obtidas por
+`GET /projetos/:id?_embed=tarefas`, pois o json-server trata os ids numéricos da URL
+(`?projetoId=1`) de forma diferente do texto usado no `db.json`.
+
+---
+
+## Registro de issues
+
+Issues do quadro do projeto ([GitHub Projects](https://github.com/Izzieee/Vue_DFE/projects)),
+em ordem de execução. Cada issue do repositório é identificada por dois números: o da issue
+(`[#17](https://github.com/Izzieee/Vue_DFE/issues/17)`) e o número do item do roadmap citado
+no título (`#19`).
+
+### Marco 6 — Build, publicação e deploy
+
+| Issue | Item | Título | Responsável | Situação |
+|---|---|---|---|---|
+| [#39](https://github.com/Izzieee/Vue_DFE/issues/39) | #41 | Gerar e conferir o build de produção | @Izzieee | Concluída |
+| [#40](https://github.com/Izzieee/Vue_DFE/issues/40) | #42 | Publicar a aplicação | @Izzieee | Concluída (deploy temporário do Netlify Drop publicado e validado) |
+
+### Marco 3 — Cadastro e edição
+
+| Issue | Item | Título | Responsável | Situação |
+|---|---|---|---|---|
+| [#15](https://github.com/Izzieee/Vue_DFE/issues/15) | #17 | Criar o componente de formulário de tarefa | @RaquelAires | Concluída |
+| [#16](https://github.com/Izzieee/Vue_DFE/issues/16) | #18 | Criar a tela de nova tarefa | @RaquelAires | Concluída |
+| [#20](https://github.com/Izzieee/Vue_DFE/issues/20) | #22 | Criar cadastro e edição de projeto | @Izzieee | Concluída |
+| [#17](https://github.com/Izzieee/Vue_DFE/issues/17) | #19 | Criar a tela de edição de tarefa | @Izzieee | Concluída |
+| [#18](https://github.com/Izzieee/Vue_DFE/issues/18) | #20 | **Validar o formulário** | @Izzieee | **Concluída** |
+| [#19](https://github.com/Izzieee/Vue_DFE/issues/19) | #21 | **Tornar o formulário acessível** | @Izzieee | **Concluída** |
+| [#21](https://github.com/Izzieee/Vue_DFE/issues/21) | #23 | Criar o slide de apresentação do Marco 3 | @Ryllen | A fazer |
+
+### Marco 4 — Busca, filtros e quadro
+
+| Issue | Item | Título | Responsável | Situação |
+|---|---|---|---|---|
+| [#22](https://github.com/Izzieee/Vue_DFE/issues/22) | #24 | Implementar a busca por título | @RaquelAires | Concluída |
+| [#23](https://github.com/Izzieee/Vue_DFE/issues/23) | #25 | Implementar os filtros por status e prioridade | @RaquelAires | Concluída |
+| [#24](https://github.com/Izzieee/Vue_DFE/issues/24) | #26 | Centralizar o estado de busca e filtros | @Ryllen | Concluída |
+| [#25](https://github.com/Izzieee/Vue_DFE/issues/25) | #27 | Criar a visão de quadro | @Ryllen | Concluída |
+| [#26](https://github.com/Izzieee/Vue_DFE/issues/26) | #28 | Alternar entre lista e quadro | @Ryllen | Concluída |
+| [#27](https://github.com/Izzieee/Vue_DFE/issues/27) | #29 | Mudar o status pelo cartão | @Izzieee | Concluída |
+| [#28](https://github.com/Izzieee/Vue_DFE/issues/28) | #30 | Criar o slide de apresentação do Marco 4 | @Izzieee | Em andamento |
+
+### Marco 5 — Exclusão, erros e estados da tela
+
+| Issue | Item | Título | Responsável | Situação |
+|---|---|---|---|---|
+| [#29](https://github.com/Izzieee/Vue_DFE/issues/29) | #31 | Excluir tarefa com confirmação | @Izzieee | Concluída |
+| [#30](https://github.com/Izzieee/Vue_DFE/issues/30) | #32 | Mostrar o estado de carregamento | @Izzieee | Concluída |
+
+### Issue concluída — #31 Excluir tarefa com confirmação
+
+Issue [#29](https://github.com/Izzieee/Vue_DFE/issues/29) · rótulo `marco-5` · responsável @Izzieee
+
+**Objetivo:** permitir a exclusão de tarefas pela API somente depois de uma confirmação
+explícita do usuário, mantendo a lista coerente quando a operação falhar.
+
+**Arquivos alvo:** `src/api.ts`, `src/exclusaoTarefa.ts`,
+`src/components/ConfirmacaoExclusao.vue`, `src/components/CartaoTarefa.vue`,
+`src/views/ListaTarefas.vue`, `src/views/QuadroTarefas.vue` e
+`src/views/DetalhesProjeto.vue`.
+
+**Dependências:** #1 (módulo de acesso à API), #5 (cartão de tarefa) e #7 (tela de lista de
+tarefas), além da issue #25 (visão de quadro) para manter o quadro coerente.
+
+**Critérios de aceite**
+
+- [x] Existe um botão para excluir tarefas.
+- [x] A exclusão solicita confirmação do usuário.
+- [x] A tarefa é removida da API após a confirmação.
+- [x] A lista é atualizada após a exclusão bem-sucedida.
+- [x] Uma mensagem é exibida caso ocorra uma falha na exclusão.
+- [x] A tarefa permanece na lista caso a exclusão não seja concluída.
+
+**Como funciona:** o botão `Excluir` do cartão emite o evento `excluir` e a tela abre o
+diálogo de confirmação, que começa com o foco em `Cancelar`. Somente ao confirmar é feito
+`DELETE /tarefas/:id`. A tarefa é retirada do array local apenas quando a API responde com
+sucesso, e a atualização vale para a lista, o quadro e o detalhe do projeto. Se a API falhar,
+o diálogo exibe a mensagem e continua aberto, a tarefa permanece na tela e o usuário pode
+tentar novamente. O diálogo usa `role="alertdialog"`, `aria-modal`, fecha com `Esc`, mantém
+o foco entre os botões e, ao cancelar, devolve o foco ao botão que abriu a confirmação.
+
+### Issue concluída — #32 Mostrar o estado de carregamento
+
+Issue [#30](https://github.com/Izzieee/Vue_DFE/issues/30) · rótulo `marco-5` · responsável @Izzieee
+
+**Objetivo:** informar que os dados estão sendo carregados e garantir que a interface saia
+desse estado ao final da requisição, inclusive quando ocorrer uma falha.
+
+**Arquivos alvo:** `src/components/EstadoCarregamento.vue`, `src/api.ts`,
+`src/views/ListaTarefas.vue`, `src/views/QuadroTarefas.vue`, `src/views/ListaProjetos.vue`,
+`src/views/DetalheTarefa.vue`, `src/views/DetalhesProjeto.vue`, `src/views/EditarTarefa.vue`,
+`src/views/EditarProjeto.vue` e `src/components/FormularioTarefa.vue`.
+
+**Dependências:** #1 (módulo de acesso à API) e as telas dos Marcos 2, 3 e 4 (#7, #8, #9,
+#10, #17, #19, #25 e #26).
+
+**Critérios de aceite**
+
+- [x] As telas que buscam dados exibem um indicador de carregamento.
+- [x] O indicador permanece visível enquanto a requisição está em andamento.
+- [x] O indicador desaparece após a conclusão da requisição.
+- [x] O carregamento é encerrado mesmo quando ocorre uma falha.
+- [x] A interface não permanece indefinidamente no estado de carregamento.
+
+**Como funciona:** o componente `EstadoCarregamento` reúne um girador e um texto em uma
+região `role="status"`, respeitando `prefers-reduced-motion`. Todas as telas que consultam a
+API usam o componente e marcam a seção com `aria-busy`. O estado de carregamento é encerrado
+no `finally` de cada requisição, então uma falha também libera a tela. Além disso, a camada de
+API limita cada requisição a 10 segundos e converte falhas de conexão em mensagens
+compreensíveis, impedindo que a tela fique carregando para sempre.
+
+### Issue concluída — #29 Mudar o status pelo cartão
+
+Issue [#27](https://github.com/Izzieee/Vue_DFE/issues/27) · rótulo `marco-4` · responsável @Izzieee
+
+**Objetivo:** permitir que o usuário altere o status de uma tarefa diretamente pelo cartão,
+gravando a alteração na API e apresentando o novo status na lista.
+
+**Arquivos alvo:** `src/components/CartaoTarefa.vue`, `src/views/ListaTarefas.vue`,
+`src/views/QuadroTarefas.vue`, `src/views/DetalhesProjeto.vue` e `src/api.ts`.
+
+**Dependências:** #23 (filtros por status e prioridade), das funções de atualização da API do
+Marco 3 e da issue #25 (visão de quadro).
+
+**Critérios de aceite**
+
+- [x] Disponibiliza um controle para alterar o status no cartão.
+- [x] Utiliza os valores de status previstos no contrato da API.
+- [x] Envia a alteração para a API.
+- [x] Atualiza a interface após a confirmação da gravação.
+- [x] No quadro, o cartão passa para a coluna correspondente ao novo status.
+- [x] Na lista, o status atualizado também é apresentado.
+- [x] Trata erros de gravação e informa o usuário.
+- [x] Evita indicar uma alteração como concluída quando a API retornar erro.
+- [x] Não utiliza arrastar e soltar para modificar o status.
+
+**Como funciona:** o seletor do cartão envia um `PATCH /tarefas/:id` com apenas o novo status.
+Enquanto a requisição acontece o seletor fica bloqueado. Quando a API confirma, o cartão emite
+`atualizada` e a lista, o detalhe do projeto e o quadro substituem a tarefa no array; no quadro,
+como as colunas são derivadas do status, o cartão muda de coluna sem arrastar e soltar. Em caso
+de erro, o seletor volta ao status anterior e a mensagem da API aparece no próprio cartão.
+
+### Issue concluída — #21 Tornar o formulário acessível
+
+Issue [#19](https://github.com/Izzieee/Vue_DFE/issues/19) · rótulo `marco-3` · responsável @Izzieee
+
+**Objetivo:** garantir que o formulário de tarefas seja acessível, permitindo a navegação por
+teclado e tornando os campos e as mensagens de erro compreensíveis para diferentes usuários.
+
+**Arquivos alvo:** `src/components/FormularioTarefa.vue` e as telas de cadastro e edição que
+apresentam o resultado das operações.
+
+**Dependências:** #15 (formulário de tarefa) e as validações definidas em #18 (validar o
+formulário).
+
+**Critérios de aceite**
+
+- [x] Todos os campos possuem labels associadas corretamente.
+- [x] É possível navegar pelos campos utilizando o teclado.
+- [x] A ordem de navegação é lógica e previsível.
+- [x] Os campos inválidos possuem identificação acessível.
+- [x] As mensagens de erro são perceptíveis sem depender apenas de cores.
+- [x] Os estados de erro são associados aos respectivos campos.
+- [x] Os controles interativos podem ser utilizados por teclado.
+- [x] A acessibilidade é mantida tanto no cadastro quanto na edição.
+
+**Recursos de acessibilidade aplicados**
+
+| Recurso | Onde foi aplicado |
+|---|---|
+| `label` associada por `for`/`id` | Todos os sete campos do formulário |
+| `aria-invalid` | Campos com erro, `false` quando o campo está válido |
+| `aria-describedby` | Campo inválido aponta para a sua mensagem de erro |
+| Resumo de erros (`role="alert"`) | Lista os campos com erro e recebe o foco no envio bloqueado |
+| Marcador textual de erro | As mensagens não dependem apenas da cor |
+| Aviso de envio (`role="status"`) | Informa o estado do envio e evita a perda de foco no botão desabilitado |
+| Foco dirigido | Resumo de erros, links do resumo e mensagem de sucesso |
+
+A ordem de navegação segue a ordem visual dos campos e todos os controles são nativos
+(`input`, `select`, `textarea` e `button`), portanto funcionam apenas com o teclado.
+
+### Issue concluída — #20 Validar o formulário
+
+Issue [#18](https://github.com/Izzieee/Vue_DFE/issues/18) · rótulo `marco-3` · responsável @Izzieee
+
+**Objetivo:** implementar validações nos formulários de cadastro e edição de tarefas para evitar o
+envio de dados inválidos e informar os erros de maneira clara.
+
+**Arquivos alvo:** `src/components/FormularioTarefa.vue` e as telas de cadastro e edição que
+controlam o estado de envio.
+
+**Dependências:** #15 (formulário de tarefa) e a integração com as telas de cadastro e edição,
+#16 (tela de nova tarefa) e #17 (tela de edição de tarefa).
+
+**Critérios de aceite**
+
+- [x] Valida os campos obrigatórios conforme o contrato da API.
+- [x] Impede o envio quando houver campos obrigatórios inválidos.
+- [x] Exibe mensagens de erro próximas aos respectivos campos.
+- [x] Permite corrigir os campos após a identificação de erros.
+- [x] Bloqueia o botão enquanto a requisição estiver em andamento.
+- [x] Evita envios duplicados durante o processamento.
+- [x] Libera o botão após o término da requisição, mesmo quando ocorrer uma falha.
+- [x] Mantém o comportamento de validação nas telas de cadastro e edição.
+
+**Regras aplicadas**
+
+| Campo | Regra |
+|---|---|
+| Título | Obrigatório, entre 3 e 80 caracteres |
+| Descrição | Obrigatória, entre 10 e 300 caracteres |
+| Responsável | Obrigatório, entre 3 e 60 caracteres |
+| Prazo | Obrigatório e precisa ser uma data existente |
+| Projeto | Obrigatório e precisa existir na lista de projetos |
+| Status e Prioridade | Precisam ser valores aceitos pelo contrato |
+
+O prazo não é comparado com a data atual: tarefas já cadastradas podem estar vencidas e
+precisam continuar sendo editáveis.
+
+### Issue concluída — #19 Criar a tela de edição de tarefa
+
+Issue [#17](https://github.com/Izzieee/Vue_DFE/issues/17) · rótulo `marco-3` · responsável @Izzieee
+
+**Objetivo:** criar a tela que permite editar uma tarefa existente, carregando os dados atuais e
+salvando as alterações na API.
+
+**Arquivo alvo:** `src/views/EditarTarefa.vue`
+
+**Dependências:** #14 (API de escrita), #15 (formulário de tarefa) e das rotas e funções de
+consulta já existentes no projeto.
+
+**Critérios de aceite**
+
+- [x] Cria e disponibiliza a rota `/tarefas/:id/editar`.
+- [x] Obtém o ID da tarefa pelos parâmetros da rota.
+- [x] Busca os dados atuais da tarefa na API.
+- [x] Preenche o componente `FormularioTarefa.vue` com os dados existentes.
+- [x] Permite modificar os campos da tarefa.
+- [x] Salva as alterações utilizando a função de atualização da API.
+- [x] Apresenta feedback de carregamento, sucesso e erro.
+- [x] Trata situações em que a tarefa não é encontrada.
+- [x] Retorna à tela adequada após salvar com sucesso.
+
+**Edição sem alterações:** quando nenhum campo é modificado, o formulário avisa que não há
+alterações em relação aos dados atuais, mas mantém o botão de salvar habilitado. A gravação
+continua sendo um `PATCH` idempotente, então salvar novamente não altera os dados.
