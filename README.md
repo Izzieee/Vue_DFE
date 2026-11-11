@@ -65,13 +65,13 @@ npm run preview
 
 ## Publicação (Marco 6)
 
-A aplicação foi publicada em um serviço de hospedagem estática.
+A aplicação foi publicada em serviços de hospedagem permanentes:
 
-- **Aplicação publicada:** <https://vocal-boba-e78234.netlify.app>
-  - Senha da proteção temporária: `My-Drop-Site` (o site anônimo do Netlify Drop fica
-    protegido até a claim da instância).
-- **API pública em uso no build atual:** <https://inputs-abs-arabic-casio.trycloudflare.com>
-  - Serviço temporário criado com Cloudflare Tunnel para expor o `json-server` local.
+- **Aplicação publicada:** <https://error404-vue.netlify.app> (Netlify)
+- **API publicada:** <https://vue-dfe-api.onrender.com> (Render.com — json-server)
+
+O deploy da API é automatizado via `render.yaml` (Blueprint do Render).
+O frontend é publicado via Netlify conectado ao GitHub com build contínuo.
 
 ### Build de produção
 
@@ -97,10 +97,10 @@ No build de produção, a URL da API vem de `VITE_API_URL`. O arquivo
 No deploy atual, o valor usado foi:
 
 ```sh
-VITE_API_URL=https://inputs-abs-arabic-casio.trycloudflare.com npm run build
+VITE_API_URL=https://vue-dfe-api.onrender.com npm run build
 ```
 
-### Hospedagem estática
+### Hospedagem estática (frontend)
 
 Configuração atual da hospedagem estática:
 
@@ -108,6 +108,13 @@ Configuração atual da hospedagem estática:
   SPA (`/*` -> `/index.html` com status `200`).
 - [`public/_redirects`](./public/_redirects): fallback de SPA para hospedagens que leem esse arquivo.
 - [`scripts/gerar-404.mjs`](./scripts/gerar-404.mjs) e o script `postbuild`: geram `dist/404.html`.
+
+### Hospedagem da API (backend)
+
+- [`render.yaml`](./render.yaml): Blueprint para deploy no Render.com (plano gratuito).
+- [`server.js`](./server.js): aplicação `json-server` que serve o `db.json`.
+- [`DEPLOY_API.md`](./DEPLOY_API.md): guia original de deploy da API.
+- [`DEPLOY_PERMANENTE.md`](./DEPLOY_PERMANENTE.md): guia passo a passo do deploy permanente.
 
 ---
 
