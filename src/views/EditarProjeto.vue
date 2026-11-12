@@ -150,6 +150,7 @@ async function salvarProjeto() {
 
 .campo input,
 .campo textarea {
+  width: 100%;
   padding: var(--space-2);
   border: 1px solid hsl(var(--border));
   background: hsl(var(--background));

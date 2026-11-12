@@ -1,10 +1,16 @@
 # Deploy Permanente — Vue_DFE (Marco 6)
 
-Este guia leva o projeto da hospedagem temporária (Netlify Drop + Cloudflare Tunnel) para um deploy permanente:
+Este guia documenta o deploy permanente do projeto (substituindo a hospedagem temporária em Netlify Drop + Cloudflare Tunnel):
 
 - **Frontend:** Netlify (conectado ao GitHub, build contínuo)
 - **API:** Render.com (Web Service gratuito com `json-server`)
 - **Variável de ambiente:** `VITE_API_URL` definida nos dois serviços
+
+## Situação atual
+
+- **Frontend publicado:** <https://error404-vue.netlify.app>
+- **API publicada:** <https://vue-dfe-api.onrender.com>
+- **Última validação:** 11/11/2026 — rotas principais, CRUD e responsividade de 320 px a 1024 px
 
 ---
 
@@ -33,7 +39,7 @@ O código já foi ajustado no repositório:
    - Build Command: `npm install`
    - Start Command: `npm run api:prod`
    - Porta: `10000`
-   - Disco: 1 GB montado em `/var/data` (persistência básica do `db.json`)
+   - Disco: nenhum (plano gratuito; o `db.json` é efêmero)
 5. Clique em **"Apply"**
 
 ### Opção B: Manual (se o Blueprint não estiver disponível)
@@ -53,15 +59,18 @@ O código já foi ajustado no repositório:
 
 ### Após o deploy da API
 
-O Render gerará uma URL como:
+A URL publicada da API é:
+
 ```
 https://vue-dfe-api.onrender.com
 ```
 
 Aguarde o deploy finalizar e teste no navegador:
+
 ```
-https://sua-api.onrender.com/tarefas
+https://vue-dfe-api.onrender.com/tarefas
 ```
+
 Deve retornar o JSON das tarefas.
 
 > **Aviso:** no plano gratuito do Render o serviço hiberna após inatividade. A primeira requisição pode demorar alguns segundos (o famoso "cold start").
@@ -70,7 +79,7 @@ Deve retornar o JSON das tarefas.
 
 ## Passo 2 — Publicar o frontend no Netlify (permanente)
 
-O site atual está em **Netlify Drop** (anônimo, temporário, com senha `My-Drop-Site`). Para torná-lo permanente:
+O frontend está publicado em **<https://error404-vue.netlify.app>**, conectado ao repositório no GitHub com build contínuo. Para recriar esse deploy:
 
 1. Acesse https://app.netlify.com e faça login
 2. Clique em **"Add new site"** → **"Import an existing project"**
@@ -87,9 +96,9 @@ No painel do Netlify, vá em **Site settings** → **Build & deploy** → **Envi
 
 | Chave | Valor |
 |-------|-------|
-| `VITE_API_URL` | `https://sua-api.onrender.com` |
+| `VITE_API_URL` | `https://vue-dfe-api.onrender.com` |
 
-Substitua `https://sua-api.onrender.com` pela URL real gerada no Passo 1.
+A URL já está definida no serviço do Render criado no Passo 1.
 
 Após salvar, o Netlify fará um novo build automaticamente com a URL da API embutida.
 
@@ -101,7 +110,7 @@ Se quiser testar o build localmente com a URL da API do Render:
 
 ```sh
 # Crie o arquivo .env.production (não é versionado)
-echo "VITE_API_URL=https://sua-api.onrender.com" > .env.production
+echo "VITE_API_URL=https://vue-dfe-api.onrender.com" > .env.production
 
 # Gere o build de produção
 npm run build
@@ -116,10 +125,11 @@ npm run preview
 
 | O que testar | Como |
 |--------------|------|
-| API no ar | Acesse `https://sua-api.onrender.com/tarefas` no navegador |
-| Frontend no ar | Acesse a URL do Netlify (ex.: `https://seu-site.netlify.app`) |
+| API no ar | Acesse `https://vue-dfe-api.onrender.com/tarefas` no navegador |
+| Frontend no ar | Acesse <https://error404-vue.netlify.app> |
 | Carregamento de tarefas | O frontend deve exibir as tarefas da API |
-| Criar/editar/excluir | As operações devem gravar na API (sujeito ao hibernação do Render) |
+| Criar/editar/excluir | As operações devem gravar na API (sujeito à hibernação do Render) |
+| Responsividade | Testar em larguras de 320 px a 1024 px (celular e tablet) |
 
 ---
 
@@ -128,8 +138,7 @@ npm run preview
 | Problema | Causa | Mitigação |
 |----------|-------|-----------|
 | Primeira requisição lenta | Render hiberna o serviço gratuito | Normal após alguns segundos |
-| Alterações (POST/PUT/DELETE) resetadas | `db.json` no disco efêmero do Render | O disco de 1 GB no `render.yaml` ajuda, mas reinicializações podem resetar. Para dados críticos, use um banco real (PostgreSQL). |
-| Site Netlify Drop expira | Site anônimo não claimado | Este guia migra para um site conectado ao GitHub, permanente |
+| Alterações (POST/PUT/DELETE) resetadas | `db.json` no disco efêmero do Render | O plano gratuito não oferece disco persistente; reinicializações e novos deploys resetam o `db.json` para o conteúdo versionado. Para dados críticos, use um banco real (PostgreSQL). |
 
 ---
 

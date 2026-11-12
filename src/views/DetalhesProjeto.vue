@@ -148,6 +148,7 @@ onMounted(carregarProjeto)
 
 .projeto-cabecalho h1 {
   margin: 0;
+  overflow-wrap: anywhere;
   color: hsl(var(--ring));
   font-size: clamp(1.4rem, 1.1rem + 1vw, 1.9rem);
   letter-spacing: 0.1em;
@@ -157,6 +158,7 @@ onMounted(carregarProjeto)
 
 .projeto-descricao {
   margin: 0;
+  overflow-wrap: anywhere;
   color: hsl(var(--muted-foreground));
   font-family: 'Share Tech Mono', 'JetBrains Mono', monospace;
   font-size: 0.9rem;
@@ -165,7 +167,9 @@ onMounted(carregarProjeto)
 .tag-disciplina {
   display: inline-flex;
   width: fit-content;
+  max-width: 100%;
   align-items: center;
+  overflow-wrap: anywhere;
   padding: var(--space-1) var(--space-2);
   border: 1px solid hsl(var(--ring) / 0.5);
   background: hsl(var(--ring) / 0.1);

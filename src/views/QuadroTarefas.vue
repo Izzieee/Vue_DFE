@@ -161,13 +161,13 @@ function aoAtualizarTarefa(atualizada: Tarefa) {
   scrollbar-color: hsl(var(--border)) hsl(var(--background));
 }
 
-@media (max-width: 680px) {
+@media (max-width: 1100px) {
   .quadro {
     grid-template-columns: repeat(2, minmax(200px, 1fr));
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 560px) {
   .quadro {
     grid-template-columns: 1fr;
   }

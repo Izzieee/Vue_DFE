@@ -498,7 +498,7 @@ a {
   outline-offset: 2px;
 }
 
-@media (max-width: 560px) {
+@media (max-width: 760px) {
   .cabecalho-conteudo {
     flex-direction: column;
     align-items: flex-start;

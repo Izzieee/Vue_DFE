@@ -126,6 +126,7 @@ onMounted(carregarTarefa)
 
 .tarefa-cabecalho h1 {
   margin: 0;
+  overflow-wrap: anywhere;
   color: hsl(var(--foreground));
   font-size: clamp(1.3rem, 1.05rem + 0.9vw, 1.7rem);
   letter-spacing: 0.06em;
@@ -134,6 +135,7 @@ onMounted(carregarTarefa)
 
 .etiquetas {
   display: flex;
+  flex-wrap: wrap;
   gap: var(--space-2);
 }
 

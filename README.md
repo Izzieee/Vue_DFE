@@ -73,6 +73,9 @@ A aplicação foi publicada em serviços de hospedagem permanentes:
 O deploy da API é automatizado via `render.yaml` (Blueprint do Render).
 O frontend é publicado via Netlify conectado ao GitHub com build contínuo.
 
+A interface foi ajustada e validada em telas de **320 px a 1024 px** (celulares e tablets),
+incluindo o cabeçalho, os cartões de tarefa, o quadro, os formulários e as telas de detalhe.
+
 ### Build de produção
 
 O comando abaixo gera o diretório `dist/`, com o `index.html`, os assets, o `favicon.ico`
@@ -152,7 +155,7 @@ no título (`#19`).
 | Issue | Item | Título | Responsável | Situação |
 |---|---|---|---|---|
 | [#39](https://github.com/Izzieee/Vue_DFE/issues/39) | #41 | Gerar e conferir o build de produção | @Izzieee | Concluída |
-| [#40](https://github.com/Izzieee/Vue_DFE/issues/40) | #42 | Publicar a aplicação | @Izzieee | Concluída (deploy temporário do Netlify Drop publicado e validado) |
+| [#40](https://github.com/Izzieee/Vue_DFE/issues/40) | #42 | Publicar a aplicação | @Izzieee | Concluída (deploy permanente no Netlify + Render, validado em 11/11/2026) |
 
 ### Marco 3 — Cadastro e edição
 
