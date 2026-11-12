@@ -174,6 +174,8 @@ no título (`#19`).
 | [#40](https://github.com/Izzieee/Vue_DFE/issues/40) | #42 | Publicar a aplicação | @Izzieee | Concluída (deploy permanente no Netlify + Render, validado em 11/11/2026) |
 | [#41](https://github.com/Izzieee/Vue_DFE/issues/41) | #43 | Garantir que as rotas internas abrem direto | @Ryllen | Concluída (validada em 11/11/2026; veja `VALIDACAO_ROTAS.md`) |
 | [#42](https://github.com/Izzieee/Vue_DFE/issues/42) | #44 | Criar o slide de apresentação do Marco 6 | @Ryllen | Concluída (`apresentacoes/MARCO6.md` e `MARCO6.pptx`) |
+| [#37](https://github.com/Izzieee/Vue_DFE/issues/37) | #39 | Tirar a URL da API do código | @RaquelAires | Concluída (`VITE_API_URL` em `src/api.ts` + `.env.example`) |
+| [#38](https://github.com/Izzieee/Vue_DFE/issues/38) | #40 | Migrar a API para um serviço hospedado | @RaquelAires | Concluída (`server.js`, `DEPLOY_API.md`, `package.json` e `render.yaml`) |
 
 ### Desafio opcional — Marco 6
 
