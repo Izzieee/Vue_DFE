@@ -3,7 +3,7 @@
 Projeto em equipe da disciplina **Desenvolvimento Frontend — 2026.2**, ministrada pela
 Profª Marianne Lacerda Dutra Theodoro.
 
-**Marco atual:** Marco 5 — Exclusão, erros e estados da tela
+**Marco atual:** Marco 6 — Build de produção, publicação e deploy da aplicação
 
 ## Integrantes da equipe
 
@@ -54,6 +54,87 @@ Para gerar a build de produção:
 npm run build
 ```
 
+Para validar a aplicação a partir dos arquivos gerados (equivalente ao ambiente de
+produção):
+
+```sh
+npm run preview
+```
+
+---
+
+## Publicação (Marco 6)
+
+A aplicação foi publicada em serviços de hospedagem permanentes:
+
+- **Aplicação publicada:** <https://error404-vue.netlify.app> (Netlify)
+- **API publicada:** <https://vue-dfe-api.onrender.com> (Render.com — json-server)
+
+O deploy da API é automatizado via `render.yaml` (Blueprint do Render).
+O frontend é publicado via Netlify conectado ao GitHub com build contínuo.
+
+A interface foi ajustada e validada em telas de **320 px a 1024 px** (celulares e tablets),
+incluindo o cabeçalho, os cartões de tarefa, o quadro, os formulários e as telas de detalhe.
+
+### Build de produção
+
+O comando abaixo gera o diretório `dist/`, com o `index.html`, os assets, o `favicon.ico`
+e o `_redirects` (fallback de SPA) e o `404.html` gerado a partir do `index.html`:
+
+```sh
+npm run build
+```
+
+A validação do build é feita com o `vue-tsc` (type-check) e o `vite build`; o script
+`postbuild` gera o `dist/404.html` a partir do `dist/index.html`.
+
+### Variáveis de ambiente
+
+No build de produção, a URL da API vem de `VITE_API_URL`. O arquivo
+`.env.production.example` documenta as variáveis:
+
+- `VITE_API_URL`: URL base da API (ex.: `https://sua-api.onrender.com`).
+- `VITE_BASE_PATH` (opcional): prefixo usado quando a aplicação é publicada em um
+  subdiretório (ex.: `/Vue_DFE/`). Em hospedagens de raiz, deixe vazio.
+
+No deploy atual, o valor usado foi:
+
+```sh
+VITE_API_URL=https://vue-dfe-api.onrender.com npm run build
+```
+
+### Hospedagem estática (frontend)
+
+Configuração atual da hospedagem estática:
+
+- [`netlify.toml`](./netlify.toml): diretório público (`publish = "dist"`) e redirecionamento
+  SPA (`/*` -> `/index.html` com status `200`).
+- [`public/_redirects`](./public/_redirects): fallback de SPA para hospedagens que leem esse arquivo.
+- [`scripts/gerar-404.mjs`](./scripts/gerar-404.mjs) e o script `postbuild`: geram `dist/404.html`.
+
+### Hospedagem da API (backend)
+
+- [`render.yaml`](./render.yaml): Blueprint para deploy no Render.com (plano gratuito).
+- [`server.js`](./server.js): aplicação `json-server` que serve o `db.json`.
+- [`DEPLOY_API.md`](./DEPLOY_API.md): guia original de deploy da API.
+- [`DEPLOY_PERMANENTE.md`](./DEPLOY_PERMANENTE.md): guia passo a passo do deploy permanente.
+
+### Rotas internas e SPA
+
+O Vue Router usa `createWebHistory`, então o servidor precisa devolver o `index.html` para
+qualquer rota interna. A configuração está em `netlify.toml` (`/*` -> `/index.html`, status
+`200`), `public/_redirects` e no `dist/404.html` gerado pelo `postbuild`. A rota catch-all
+`/:pathMatch(.*)*` renderiza a página 404 para endereços desconhecidos.
+
+A validação completa, rota por rota, está em [`VALIDACAO_ROTAS.md`](./VALIDACAO_ROTAS.md).
+
+### Quadro com arrastar e soltar (desafio opcional)
+
+No quadro, os cartões podem ser arrastados entre as colunas. O novo status é enviado por
+`PATCH /tarefas/:id` e o cartão só muda de coluna depois que a API confirma. Em caso de falha,
+a mensagem é exibida e o cartão permanece na coluna original. Em telas de toque, o seletor de
+status do cartão continua sendo a forma de alteração.
+
 ---
 
 ## Rotas
@@ -84,6 +165,27 @@ Issues do quadro do projeto ([GitHub Projects](https://github.com/Izzieee/Vue_DF
 em ordem de execução. Cada issue do repositório é identificada por dois números: o da issue
 (`[#17](https://github.com/Izzieee/Vue_DFE/issues/17)`) e o número do item do roadmap citado
 no título (`#19`).
+
+### Marco 6 — Build, publicação e deploy
+
+| Issue | Item | Título | Responsável | Situação |
+|---|---|---|---|---|
+| [#39](https://github.com/Izzieee/Vue_DFE/issues/39) | #41 | Gerar e conferir o build de produção | @Izzieee | Concluída |
+| [#40](https://github.com/Izzieee/Vue_DFE/issues/40) | #42 | Publicar a aplicação | @Izzieee | Concluída (deploy permanente no Netlify + Render, validado em 11/11/2026) |
+| [#41](https://github.com/Izzieee/Vue_DFE/issues/41) | #43 | Garantir que as rotas internas abrem direto | @Ryllen | Concluída (validada em 11/11/2026; veja `VALIDACAO_ROTAS.md`) |
+| [#42](https://github.com/Izzieee/Vue_DFE/issues/42) | #44 | Criar o slide de apresentação do Marco 6 | @Ryllen | Concluída (`apresentacoes/MARCO6.md` e `MARCO6.pptx`) |
+
+### Desafio opcional — Marco 6
+
+| Issue | Item | Título | Responsável | Situação |
+|---|---|---|---|---|
+| [#44](https://github.com/Izzieee/Vue_DFE/issues/44) | #46 | Implementar arrastar e soltar no quadro | @Ryllen | Concluída (DnD com persistência via API e tratamento de falhas) |
+
+### Apresentação final
+
+| Issue | Item | Título | Responsável | Situação |
+|---|---|---|---|---|
+| [#43](https://github.com/Izzieee/Vue_DFE/issues/43) | #45 | Preparar a apresentação final da equipe | @Ryllen | Concluída (`apresentacoes/FINAL.md` e `FINAL.pptx`) |
 
 ### Marco 3 — Cadastro e edição
 

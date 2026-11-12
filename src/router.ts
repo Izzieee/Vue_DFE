@@ -11,7 +11,9 @@ import NovoProjeto from './views/NovoProjeto.vue'
 import EditarProjeto from './views/EditarProjeto.vue'
 
 const router = createRouter({
-  history: createWebHistory(),
+  // Usa a base configurada no Vite para funcionar também em subdiretórios
+  // (por exemplo, GitHub Pages em /Vue_DFE/).
+  history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/',

@@ -41,3 +41,10 @@ __screenshots__/
 # Variáveis de ambiente locais (não versionar)
 .env
 .env.local
+.env.production
+.env.production.local
+
+apresentacoes/
+db-backup-antes-da-limpeza.json
+
+db.json

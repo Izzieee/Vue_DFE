@@ -1,0 +1,3 @@
+# Fallback de SPA para hospedagens estáticas (Netlify e compatíveis).
+# As rotas internas do Vue Router são resolvidas pelo index.html.
+/* /index.html 200

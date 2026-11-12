@@ -134,6 +134,7 @@ onMounted(carregarProjetos)
 
 .cartao-projeto {
   display: flex;
+  min-width: 0;
   flex-direction: column;
   gap: var(--space-2);
   padding: var(--space-3);
@@ -154,13 +155,16 @@ onMounted(carregarProjetos)
 
 .cartao-cabecalho {
   display: flex;
+  flex-wrap: wrap;
   align-items: baseline;
   justify-content: space-between;
   gap: var(--space-3);
 }
 
 .cartao-cabecalho h3 {
+  min-width: 0;
   margin: 0;
+  overflow-wrap: anywhere;
   color: hsl(var(--foreground));
   font-size: 0.98rem;
   font-weight: 500;
@@ -175,6 +179,7 @@ onMounted(carregarProjetos)
 
 .cartao-descricao {
   margin: 0;
+  overflow-wrap: anywhere;
   color: hsl(var(--muted-foreground));
   font-family: 'Share Tech Mono', 'JetBrains Mono', monospace;
   font-size: 0.82rem;
@@ -182,6 +187,7 @@ onMounted(carregarProjetos)
 
 .cartao-rodape {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: var(--space-3);
@@ -191,7 +197,9 @@ onMounted(carregarProjetos)
 
 .tag-disciplina {
   display: inline-flex;
+  max-width: 100%;
   align-items: center;
+  overflow-wrap: anywhere;
   padding: var(--space-1) var(--space-2);
   border: 1px solid hsl(var(--ring) / 0.5);
   background: hsl(var(--ring) / 0.1);

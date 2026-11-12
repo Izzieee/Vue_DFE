@@ -1,0 +1,12 @@
+# Deploy da API (json-server) no Render
+# Aplica automaticamente ao conectar este repositório no Render como "Blueprint"
+services:
+  - type: web
+    name: vue-dfe-api
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm run api:prod
+    envVars:
+      - key: PORT
+        value: 10000

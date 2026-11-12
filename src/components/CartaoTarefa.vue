@@ -113,6 +113,7 @@ async function alterarStatus() {
 .cartao {
   position: relative;
   display: flex;
+  min-width: 0;
   flex-direction: column;
   gap: var(--space-2);
   padding: var(--space-3);
@@ -163,6 +164,7 @@ async function alterarStatus() {
 
 .cartao-cabecalho {
   display: flex;
+  flex-wrap: wrap;
   align-items: flex-start;
   justify-content: space-between;
   gap: var(--space-3);
@@ -190,6 +192,7 @@ async function alterarStatus() {
 
 .cartao-descricao {
   margin: 0;
+  overflow-wrap: anywhere;
   color: hsl(var(--muted-foreground));
   font-family: 'Share Tech Mono', 'JetBrains Mono', monospace;
   font-size: 0.82rem;
@@ -375,5 +378,21 @@ async function alterarStatus() {
 
 .prioridade[data-prioridade='alta'] {
   color: hsl(var(--priority-high));
+}
+
+@media (max-width: 480px) {
+  .cartao-cabecalho {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-2);
+  }
+
+  .cartao-titulo {
+    white-space: normal;
+  }
+
+  .status-controle {
+    align-self: flex-start;
+  }
 }
 </style>

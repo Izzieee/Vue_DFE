@@ -2,6 +2,8 @@
 
 Este guia explica como hospedar a API do Vue_DFE em um serviço gratuito, como o [Render.com](https://render.com).
 
+> **Situação atual:** a API já está publicada em <https://vue-dfe-api.onrender.com>. Este guia serve para recriar o serviço ou entender a configuração usada.
+
 ## 1. Faça upload do código para o GitHub
 
 Certifique-se de que os arquivos `db.json` e `server.js` estejam no repositório.
