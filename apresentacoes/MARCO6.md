@@ -57,6 +57,7 @@ Raquel Aires · Jacyane Carvalho · Ryllen Alves
 - API publicada no Render
 - Rotas internas acessíveis diretamente (SPA)
 - Interface validada de 320 px a 1024 px
+- Desafio opcional: arrastar e soltar no quadro
 
 <!-- nota: Raquel. Destacar que não é só "subir o site": o build foi conferido, a API está em outro serviço e as rotas internas funcionam ao recarregar. -->
 
@@ -170,7 +171,8 @@ Raquel Aires · Jacyane Carvalho · Ryllen Alves
 
 - Render free hiberna; dados não persistem
 - Sem autenticação de usuários
-- Próximo: apresentação final e desafio opcional
+- Desafio opcional implementado: arrastar e soltar
+- Próxima etapa: apresentação final
 - **Obrigado!**
 
-<!-- nota: Todos. Encerrar em 5 minutos. Dizer que a aplicação está no ar e que o código e a documentação estão no GitHub. -->
+<!-- nota: Todos. Encerrar em 5 minutos. Dizer que a aplicação está no ar, que o desafio opcional foi entregue e que o código e a documentação estão no GitHub. -->
