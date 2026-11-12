@@ -135,13 +135,6 @@ No quadro, os cartões podem ser arrastados entre as colunas. O novo status é e
 a mensagem é exibida e o cartão permanece na coluna original. Em telas de toque, o seletor de
 status do cartão continua sendo a forma de alteração.
 
-## Apresentações
-
-- [`apresentacoes/MARCO6.md`](./apresentacoes/MARCO6.md): roteiro do Marco 6 (até 5 minutos).
-- [`apresentacoes/FINAL.md`](./apresentacoes/FINAL.md): roteiro da apresentação final (até 20 minutos).
-- Versões em PowerPoint: `apresentacoes/MARCO6.pptx` e `apresentacoes/FINAL.pptx`.
-- [`apresentacoes/README.md`](./apresentacoes/README.md): como abrir, exportar e dividir a fala.
-
 ---
 
 ## Rotas
