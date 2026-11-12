@@ -119,6 +119,29 @@ Configuração atual da hospedagem estática:
 - [`DEPLOY_API.md`](./DEPLOY_API.md): guia original de deploy da API.
 - [`DEPLOY_PERMANENTE.md`](./DEPLOY_PERMANENTE.md): guia passo a passo do deploy permanente.
 
+### Rotas internas e SPA
+
+O Vue Router usa `createWebHistory`, então o servidor precisa devolver o `index.html` para
+qualquer rota interna. A configuração está em `netlify.toml` (`/*` -> `/index.html`, status
+`200`), `public/_redirects` e no `dist/404.html` gerado pelo `postbuild`. A rota catch-all
+`/:pathMatch(.*)*` renderiza a página 404 para endereços desconhecidos.
+
+A validação completa, rota por rota, está em [`VALIDACAO_ROTAS.md`](./VALIDACAO_ROTAS.md).
+
+### Quadro com arrastar e soltar (desafio opcional)
+
+No quadro, os cartões podem ser arrastados entre as colunas. O novo status é enviado por
+`PATCH /tarefas/:id` e o cartão só muda de coluna depois que a API confirma. Em caso de falha,
+a mensagem é exibida e o cartão permanece na coluna original. Em telas de toque, o seletor de
+status do cartão continua sendo a forma de alteração.
+
+## Apresentações
+
+- [`apresentacoes/MARCO6.md`](./apresentacoes/MARCO6.md): roteiro do Marco 6 (até 5 minutos).
+- [`apresentacoes/FINAL.md`](./apresentacoes/FINAL.md): roteiro da apresentação final (até 20 minutos).
+- Versões em PowerPoint: `apresentacoes/MARCO6.pptx` e `apresentacoes/FINAL.pptx`.
+- [`apresentacoes/README.md`](./apresentacoes/README.md): como abrir, exportar e dividir a fala.
+
 ---
 
 ## Rotas
@@ -156,6 +179,20 @@ no título (`#19`).
 |---|---|---|---|---|
 | [#39](https://github.com/Izzieee/Vue_DFE/issues/39) | #41 | Gerar e conferir o build de produção | @Izzieee | Concluída |
 | [#40](https://github.com/Izzieee/Vue_DFE/issues/40) | #42 | Publicar a aplicação | @Izzieee | Concluída (deploy permanente no Netlify + Render, validado em 11/11/2026) |
+| [#41](https://github.com/Izzieee/Vue_DFE/issues/41) | #43 | Garantir que as rotas internas abrem direto | @Ryllen | Concluída (validada em 11/11/2026; veja `VALIDACAO_ROTAS.md`) |
+| [#42](https://github.com/Izzieee/Vue_DFE/issues/42) | #44 | Criar o slide de apresentação do Marco 6 | @Ryllen | Concluída (`apresentacoes/MARCO6.md` e `MARCO6.pptx`) |
+
+### Desafio opcional — Marco 6
+
+| Issue | Item | Título | Responsável | Situação |
+|---|---|---|---|---|
+| [#44](https://github.com/Izzieee/Vue_DFE/issues/44) | #46 | Implementar arrastar e soltar no quadro | @Ryllen | Concluída (DnD com persistência via API e tratamento de falhas) |
+
+### Apresentação final
+
+| Issue | Item | Título | Responsável | Situação |
+|---|---|---|---|---|
+| [#43](https://github.com/Izzieee/Vue_DFE/issues/43) | #45 | Preparar a apresentação final da equipe | @Ryllen | Concluída (`apresentacoes/FINAL.md` e `FINAL.pptx`) |
 
 ### Marco 3 — Cadastro e edição
 

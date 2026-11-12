@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
-import { listarTarefas } from '@/api'
+import { atualizarStatusTarefa, listarTarefas } from '@/api'
 import type { Status, Tarefa } from '@/tipos'
 import CartaoTarefa from '@/components/CartaoTarefa.vue'
 import ConfirmacaoExclusao from '@/components/ConfirmacaoExclusao.vue'
@@ -77,11 +77,102 @@ function aoAtualizarTarefa(atualizada: Tarefa) {
     tarefas.value[indice] = atualizada
   }
 }
+
+const tarefaArrastada = ref<Tarefa | null>(null)
+const colunaDestacada = ref<Status | null>(null)
+const salvandoMovimentacao = ref(false)
+const erroMovimentacao = ref<string | null>(null)
+const mensagemMovimentacao = ref<string | null>(null)
+
+/** Inicia o arrasto apenas quando o gesto começa fora dos controles do cartão. */
+function iniciarArrasto(evento: DragEvent, tarefa: Tarefa) {
+  const alvo = evento.target as HTMLElement | null
+
+  if (alvo?.closest('a, button, select, input, textarea, label')) {
+    evento.preventDefault()
+    return
+  }
+
+  tarefaArrastada.value = tarefa
+  erroMovimentacao.value = null
+  mensagemMovimentacao.value = null
+
+  if (evento.dataTransfer) {
+    evento.dataTransfer.effectAllowed = 'move'
+    evento.dataTransfer.setData('text/plain', tarefa.id)
+  }
+}
+
+function finalizarArrasto() {
+  tarefaArrastada.value = null
+  colunaDestacada.value = null
+}
+
+function aoArrastarSobre(evento: DragEvent, status: Status) {
+  if (!tarefaArrastada.value || salvandoMovimentacao.value) {
+    return
+  }
+
+  evento.preventDefault()
+
+  if (evento.dataTransfer) {
+    evento.dataTransfer.dropEffect = 'move'
+  }
+
+  colunaDestacada.value = status
+}
+
+function aoSairColuna(evento: DragEvent, status: Status) {
+  const coluna = evento.currentTarget as HTMLElement | null
+  const destino = evento.relatedTarget as Node | null
+
+  // Evita limpar o destaque ao passar sobre os cartões dentro da própria coluna.
+  if (coluna && destino && coluna.contains(destino)) {
+    return
+  }
+
+  if (colunaDestacada.value === status) {
+    colunaDestacada.value = null
+  }
+}
+
+async function soltarTarefa(evento: DragEvent, status: Status) {
+  evento.preventDefault()
+
+  const tarefa = tarefaArrastada.value
+  colunaDestacada.value = null
+  tarefaArrastada.value = null
+
+  if (!tarefa || tarefa.status === status || salvandoMovimentacao.value) {
+    return
+  }
+
+  salvandoMovimentacao.value = true
+  erroMovimentacao.value = null
+  mensagemMovimentacao.value = null
+
+  try {
+    const atualizada = await atualizarStatusTarefa(tarefa.id, status)
+    aoAtualizarTarefa(atualizada)
+    const tituloColuna = colunas.find((coluna) => coluna.status === status)?.titulo ?? status
+    mensagemMovimentacao.value = `Tarefa "${atualizada.titulo}" movida para ${tituloColuna}.`
+  } catch (e) {
+    erroMovimentacao.value =
+      (e as Error).message || 'Não foi possível mover a tarefa. Tente novamente.'
+  } finally {
+    salvandoMovimentacao.value = false
+  }
+}
 </script>
 
 <template>
   <section class="pagina" :aria-busy="carregando" aria-label="Quadro de tarefas">
     <h1 class="titulo-secao">Quadro de tarefas</h1>
+
+    <p v-if="!carregando && !erro && tarefas.length > 0" class="dica-arrastar">
+      Arraste os cartões entre as colunas para alterar o status. Em telas de toque, use o
+      seletor de status de cada cartão.
+    </p>
 
     <EstadoCarregamento v-if="carregando" mensagem="Carregando tarefas..." />
 
@@ -96,12 +187,22 @@ function aoAtualizarTarefa(atualizada: Tarefa) {
       Nenhuma tarefa encontrada com os critérios selecionados.
     </div>
 
-    <div v-else class="quadro" role="region" aria-label="Quadro kanban por status">
+    <div
+      v-else
+      class="quadro"
+      role="region"
+      aria-label="Quadro kanban por status"
+      :aria-busy="salvandoMovimentacao"
+    >
       <section
         v-for="coluna in colunas"
         :key="coluna.status"
         class="coluna"
-        aria-label="Coluna {{ coluna.titulo }}"
+        :data-destacada="colunaDestacada === coluna.status ? 'true' : undefined"
+        :aria-label="`Coluna ${coluna.titulo}`"
+        @dragover="aoArrastarSobre($event, coluna.status)"
+        @dragleave="aoSairColuna($event, coluna.status)"
+        @drop="soltarTarefa($event, coluna.status)"
       >
         <h2 class="titulo-coluna">{{ coluna.titulo }}</h2>
 
@@ -110,6 +211,10 @@ function aoAtualizarTarefa(atualizada: Tarefa) {
             v-for="tarefa in tarefasPorStatus[coluna.status]"
             :key="tarefa.id"
             :tarefa="tarefa"
+            draggable="true"
+            :class="{ 'cartao-arrastando': tarefaArrastada?.id === tarefa.id }"
+            @dragstart="iniciarArrasto($event, tarefa)"
+            @dragend="finalizarArrasto"
             @atualizada="aoAtualizarTarefa"
             @excluir="solicitarExclusao"
           />
@@ -120,6 +225,14 @@ function aoAtualizarTarefa(atualizada: Tarefa) {
         </div>
       </section>
     </div>
+
+    <p v-if="erroMovimentacao" class="estado estado-erro" role="alert">
+      Erro: {{ erroMovimentacao }}
+    </p>
+
+    <p v-if="mensagemMovimentacao" class="estado estado-sucesso" role="status">
+      {{ mensagemMovimentacao }}
+    </p>
 
     <p v-if="mensagemExclusao" class="estado estado-sucesso" role="status">
       {{ mensagemExclusao }}
@@ -152,6 +265,25 @@ function aoAtualizarTarefa(atualizada: Tarefa) {
   text-transform: uppercase;
 }
 
+.dica-arrastar {
+  margin: 0;
+  color: hsl(var(--muted-foreground));
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+}
+
+.quadro :deep(.cartao) {
+  cursor: grab;
+}
+
+.quadro :deep(.cartao:active) {
+  cursor: grabbing;
+}
+
+.quadro :deep(.cartao-arrastando) {
+  opacity: 0.5;
+}
+
 .quadro {
   display: grid;
   grid-template-columns: repeat(4, minmax(250px, 1fr));
@@ -181,6 +313,16 @@ function aoAtualizarTarefa(atualizada: Tarefa) {
   padding: var(--space-3);
   border: 1px solid hsl(var(--border));
   background: hsl(var(--card) / 0.5);
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.coluna[data-destacada='true'] {
+  border-color: hsl(var(--ring));
+  background: hsl(var(--ring) / 0.08);
+  box-shadow: 0 0 0 1px hsl(var(--ring) / 0.4);
 }
 
 .titulo-coluna {
